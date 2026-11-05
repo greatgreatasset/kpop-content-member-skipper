@@ -41,7 +41,10 @@ async function init() {
   }
   // tests open popup.html in a tab of its own and name the video with ?video=
   const q = new URLSearchParams(location.search);
-  if (q.get("video")) status = await testStatus(q.get("video"), q.get("rescan") === "1", profiles, choices);
+  if (q.get("video")) {
+    const hlWhen = (await browser.storage.local.get("hlWhen")).hlWhen || "any";
+    status = await testStatus(q.get("video"), q.get("rescan") === "1", profiles, choices, hlWhen);
+  }
   if (status && status.videoId) initScan(status.videoId, status.scanned);
   // what is skipped: this video's groups once it is scanned, else every group's
   const scanned = status && status.videoId && status.scanned;
@@ -83,11 +86,11 @@ ${status.stats}`;
 }
 
 // popup.html?video=<id> (tests): the status the content script would report
-async function testStatus(videoId, rescan, profiles, choices) {
+async function testStatus(videoId, rescan, profiles, choices, hlWhen) {
   const r = await browser.runtime.sendMessage({ type: "getList", id: videoId });
   let d = r && r.data;
   if (!d || rescan) return { videoId, scanned: rescan, loading: false };
-  const v = KmsRules.forList(d, profiles, choices); // this user's choices, as the content script does
+  const v = KmsRules.forList(d, profiles, choices, hlWhen); // this user's choices, as the content script does
   if (v) d = { ...d, ...v };
   const hl = (d.highlights || []).filter((h) => h.ranges && h.ranges.length);
   const members = (d.skipMembers || []).map((m) => (typeof m === "string" ? { name: m, group: d.group } : m));

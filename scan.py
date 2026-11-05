@@ -35,8 +35,8 @@ from common import CACHE, SKIPLISTS, Gallery, update_index
 # harmless deprecation notice from insightface's use of scikit-image
 warnings.filterwarnings("ignore", category=FutureWarning, message=".*estimate.*deprecated")
 
-SCANNER_VERSION = "0.5.0"
-SKIPLIST_FORMAT = 4
+SCANNER_VERSION = "0.6.0"
+SKIPLIST_FORMAT = 5
 CACHE_FORMAT = "2"  # bump when the cached detection arrays change
 
 DEFAULTS = dict(
@@ -72,6 +72,12 @@ DEFAULTS = dict(
     # groups that are (a stray look-alike match never turns into a skip).
     group_min=20,         # faces: a group needs at least this many ...
     group_frac=0.05,      # ... and this share of all confidently matched faces
+    # "Main focus" of a frame (for "highlight only when she's the main focus"):
+    # the largest face in the frame, if it is a recognized member, at least
+    # focus_ratio times the area of the next largest face (any face), and its
+    # centre at most focus_center x frame width from the middle.
+    focus_ratio=1.5,
+    focus_center=0.3,
 )
 
 
@@ -393,11 +399,37 @@ def choice_of(gal, c):
     return "skip" if m in prof.skip else "highlight" if m in prof.highlight else "normal"
 
 
-def build_timeline(n_frames, rows, lab, full, gal, groups, p):
+def frame_focus(n_frames, rows, lab, frame_size, gal, p):
+    """Per frame: the key of the member who is the main subject, or None (see
+    focus_ratio / focus_center)."""
+    out = [None] * n_frames
+    if not len(rows) or frame_size is None:
+        return out
+    W = frame_size[0]
+    area = (rows[:, 3] - rows[:, 1]) * (rows[:, 4] - rows[:, 2])
+    by_frame = {}
+    for i, fi in enumerate(rows[:, 0].astype(int)):
+        by_frame.setdefault(fi, []).append(i)
+    for fi, idx in by_frame.items():
+        idx = sorted(idx, key=lambda i: -area[i])
+        top = idx[0]
+        if lab[top] < 0:
+            continue
+        if len(idx) > 1 and area[top] < p["focus_ratio"] * area[idx[1]]:
+            continue
+        cx = (rows[top, 1] + rows[top, 3]) / 2
+        if abs(cx / W - 0.5) > p["focus_center"]:
+            continue
+        out[fi] = gal.keys[lab[top]]
+    return out
+
+
+def build_timeline(n_frames, rows, lab, full, gal, groups, p, frame_size=None):
     """Presence timeline of the members of the groups in the video: per frame,
     who is recognized in the foreground with her face fully shown ("members")
     or cut off by the frame edge ("partial"); frames with nobody recognized are
-    "wide" (all faces tiny), "unknown" (only non-members) or "none" (no face).
+    "wide" (all faces tiny), "unknown" (only non-members) or "none" (no face),
+    and the member who is the main focus of the frame, if any ("focus").
     Run-length coded into segments (see rules.py)."""
     fps = p["fps"]
     full_set = [set() for _ in range(n_frames)]
@@ -414,22 +446,25 @@ def build_timeline(n_frames, rows, lab, full, gal, groups, p):
         wide = (faces > 0) & (small == faces)
     else:
         wide = np.zeros(n_frames, bool)
+    focus = frame_focus(n_frames, rows, lab, frame_size, gal, p)
     tokens = []
     for i in range(n_frames):
         f, pp = sorted(full_set[i]), sorted(part_set[i] - full_set[i])
         st = "" if (f or pp) else "wide" if wide[i] else "unknown" if faces[i] else "none"
-        tokens.append((tuple(f), tuple(pp), st))
+        tokens.append((tuple(f), tuple(pp), st, focus[i]))
     segs, i = [], 0
     while i < n_frames:
         j = i + 1
         while j < n_frames and tokens[j] == tokens[i]:
             j += 1
-        f, pp, st = tokens[i]
+        f, pp, st, fo = tokens[i]
         s = {"start": round(i / fps, 2), "end": round(j / fps, 2)}
         if f:
             s["members"] = list(f)
         if pp:
             s["partial"] = list(pp)
+        if fo:
+            s["focus"] = fo
         if st:
             s["state"] = st
         segs.append(s)
@@ -442,6 +477,8 @@ def build_timeline(n_frames, rows, lab, full, gal, groups, p):
                   "minSkip": p["min_skip"], "edgeTrim": p["edge_trim"], "minTrimmed": p["min_trimmed"],
                   "hlMedian": 3 if p["median"] > 1 else 1, "hlMergeGap": p["hl_merge_gap"],
                   "hlMin": p["hl_min"]},
+        # segments carry "focus" (format 5); its presence here tells the add-on so
+        "focusRule": {"minRatio": p["focus_ratio"], "maxOffCenter": p["focus_center"]},
         "segments": segs,
     }
 
@@ -451,7 +488,7 @@ def build_segments(times, rows, emb, gal, p, kps=None, frame_size=None):
     choices of the profiles (rules.py) -> default skips and highlights."""
     lab, score, (thr, thr_src), (groups, counts) = classify(rows, emb, gal, p)  # identity (after tracking)
     full = full_face_mask(rows, kps, frame_size, p)
-    tl = build_timeline(len(times), rows, lab, full, gal, groups, p)
+    tl = build_timeline(len(times), rows, lab, full, gal, groups, p, frame_size)
     res = rules.apply(tl, debug=True)
     skips = res["skips"]
     cls = {k: c for c, k in enumerate(gal.keys)}
@@ -487,8 +524,8 @@ def build_segments(times, rows, emb, gal, p, kps=None, frame_size=None):
 
 # ---------------------------------------------------------------- skip list file
 def make_list(vid, title, duration, skips, highlights, dbg, only_profiles=None):
-    """Skip list (format 4): the presence timeline, from which the add-on works
-    out each user's own skips, plus the skips and highlights for the profiles'
+    """Skip list (format 5): the presence timeline (with per-frame focus), from
+    which the add-on works out each user's own skips, plus the skips and highlights for the profiles'
     default choices (read by add-on 0.5.0, and a check for the add-on's rules)."""
     out = dict(
         format=SKIPLIST_FORMAT, videoId=vid, title=title, duration=duration,

@@ -73,6 +73,22 @@ async function init() {
   browser.storage.onChanged.addListener((ch, area) => {
     if (area === "local" && "choices" in ch) renderGroups(profiles, ch.choices.newValue || {});
   });
+  // "Highlight when": any time she's on screen (default, not stored) / only when she's the main focus
+  const renderHlWhen = (v) => {
+    for (const inp of document.querySelectorAll("input[name='hlWhen']")) inp.checked = inp.value === (v || "any");
+  };
+  renderHlWhen((await browser.storage.local.get("hlWhen")).hlWhen);
+  for (const inp of document.querySelectorAll("input[name='hlWhen']")) {
+    inp.addEventListener("change", () => {
+      if (!inp.checked) return;
+      if (inp.value === "focus") browser.storage.local.set({ hlWhen: "focus" });
+      else browser.storage.local.remove("hlWhen");
+    });
+  }
+  browser.storage.onChanged.addListener((ch, area) => {
+    if (area === "local" && "hlWhen" in ch) renderHlWhen(ch.hlWhen.newValue);
+  });
+
   $("resetChoices").addEventListener("click", async () => {
     await browser.storage.local.remove("choices");
     renderGroups(profiles, {});

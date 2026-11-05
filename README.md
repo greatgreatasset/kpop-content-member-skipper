@@ -157,11 +157,11 @@ video after adding a group or changing the rules takes seconds.
 
 ## Skip list format (`skiplists/<videoId>.json`)
 
-One list per video, for whichever groups are in it (format 4, scanner 0.5.0):
+One list per video, for whichever groups are in it (format 5, scanner 0.6.0):
 
 ```json
-{"format": 4, "videoId": "oVMQTIUI_2c", "title": "...", "duration": 1672,
- "scannedAt": "...", "scannerVersion": "0.5.0",
+{"format": 5, "videoId": "oVMQTIUI_2c", "title": "...", "duration": 1672,
+ "scannedAt": "...", "scannerVersion": "0.6.0",
  "groups": [{"id": "hearts2hearts", "name": "Hearts2Hearts", "faces": 7476}],
  "skipMembers": [{"member": "carmen", "name": "Carmen", "group": "Hearts2Hearts", "profile": "hearts2hearts"}, ...],
  "skips": [{"start": 4.5, "end": 23.17}],
@@ -173,10 +173,11 @@ One list per video, for whichever groups are in it (format 4, scanner 0.5.0):
                 "group": "Hearts2Hearts", "profile": "hearts2hearts", "default": "skip"}, ...],
    "rules": {"fillGap": 3.0, "median": 5, "mergeGap": 1.0, "minSkip": 2.0, "edgeTrim": 0.5,
              "minTrimmed": 1.5, "hlMedian": 3, "hlMergeGap": 2.0, "hlMin": 1.0},
+   "focusRule": {"minRatio": 1.5, "maxOffCenter": 0.3},
    "segments": [
     {"start":0.0,"end":4.0,"state":"none"},
     {"start":4.0,"end":8.67,"partial":["hearts2hearts:carmen"]},
-    {"start":8.67,"end":12.33,"members":["hearts2hearts:carmen"]}, ...]}}
+    {"start":8.67,"end":12.33,"members":["hearts2hearts:carmen"],"focus":"hearts2hearts:carmen"}, ...]}}
 ```
 
 `groups` are the groups found in the video (with the number of confidently
@@ -185,7 +186,13 @@ segments covering every frame, with `members` (recognized foreground members
 whose face is fully shown), `partial` (recognized, but cut off by the frame
 edge), or, when nobody is recognized, a `state`: `wide` (all faces tiny: a
 wide group shot, never skipped), `unknown` (only non-members, e.g. backup
-dancers) or `none` (no face). The add-on works out each user's own skips and
+dancers) or `none` (no face). `focus` is the member who is the main subject
+of the frame, if any: the largest face in the frame is hers, it is at least
+1.5x the area of the next largest face (anyone's, recognized or not), and its
+centre is in the middle 60% of the width (`--focus-ratio`, `--focus-center`).
+It is only used for "Highlight when: only when she's the main focus". Format 4
+(scanner 0.5.0) is the same without `focusRule` and `focus`; the add-on still
+reads it (with "any time" highlights). The add-on works out each user's own skips and
 highlights from it with the rules below (`rules.js`, the same as the scanner's
 `rules.py`). `skips`, `highlights` and `skipMembers` are the results for the
 profiles' default choices: add-on 0.5.0 reads only those, and they are the
@@ -231,7 +238,9 @@ across short gaps. Then a median filter, gap merge (< 1 s) and minimum length (2
 applied, and each skip is trimmed 0.5 s inward at both ends (dropped if under
 1.5 s) so it never cuts into someone else's part. Highlights are the ranges
 where a highlighted member is on screen (median filter over 3 frames, gaps
-under 2 s merged, at least 1 s), minus the skipped ranges.
+under 2 s merged, at least 1 s), minus the skipped ranges. With "Highlight
+when: only when she's the main focus" the same steps use only the frames where
+she is the `focus`. Skips never depend on that setting.
 
 ## Firefox extension (`extension/`)
 
@@ -256,8 +265,8 @@ What it does on youtube.com/watch pages:
 - toolbar popup: who is skipped, e.g. "Skipping Yunah (ILLIT)" (without a
   scanned video: every group's skipped members), skipping on/off, highlights
   on/off, and e.g. "10 skips (… s) · 22 Ian parts" for the current video
-- settings page: each group's members with Skip / Normal / Highlight (see
-  below), skip list base URL and cache time. There is no group to pick. Lists are fetched from
+- settings page: each group's members with Skip / Normal / Highlight and
+  "Highlight when" (see below), skip list base URL and cache time. There is no group to pick. Lists are fetched from
   `https://raw.githubusercontent.com/greatgreatasset/kpop-content-member-skipper/master/skiplists/<videoId>.json`
   by default (falling back to the pre-0.5.0 `skiplists/hearts2hearts/<videoId>.json`),
   and the copy bundled in the extension is used when a video has no list
@@ -279,7 +288,22 @@ Yunah Skip, Kya Highlight, everyone else Normal) and are marked with a dot.
 
 Changes are saved for this Firefox only (`storage.local`, nothing is sent
 anywhere) and apply right away, also to a video that is already open (no
-reload). **Reset to defaults** goes back to the profiles' choices. It works for
+reload). **Reset to defaults** goes back to the profiles' choices.
+
+**Highlight when** (one setting for all highlighted members):
+- **any time she's on screen** (default): every part she is recognized in,
+  also in group shots.
+- **only when she's the main focus**: only the parts where hers is clearly the
+  largest face (1.5x the next one) near the middle of the picture. In an MV
+  this drops group shots where she is beside a member in front (e.g. KiiiKiii
+  '404 (New Era)': Kya's 0:32 and 1:02 parts stay, 2:03 and 2:08, where Haum is
+  in front, drop). In vlogs it is much stricter: Ian is often next to a member of
+  similar size, so e.g. oVMQTIUI_2c goes from 22 parts (490 s) to 17 (112 s)
+  and FQmWuyL3vSk from 28 (501 s) to 6 (161 s). Skipping is not affected.
+  Lists from before scanner 0.6.0 (format 4) have no focus info and keep "any
+  time" until rescanned.
+
+Member choices work for
 every video scanned with scanner 0.5.0 or later (format 4, which has the
 timeline); for an older list the add-on can only use its default skips until
 the video is rescanned (`rescan_cached.py`, or scan it again).
@@ -336,6 +360,7 @@ under the title and in-page navigation; then on the settings page Carmen →
 Highlight and Ian → Skip (the open video's skips, markers, line and button
 must follow, compared with `rules.py`), both Carmen and Ian highlighted
 (distinct colours, Ian pink, Next goes through both), Reset to defaults, and a
-KiiiKiii video with Kya's highlights. `--scan-video`
+KiiiKiii video with Kya's highlights, then "Highlight when: only when she's the
+main focus" (Kya's markers and line must follow `rules.py`) and back. `--scan-video`
 needs install_native_host.bat and checks button → progress banner → skips
 applied (it commits and pushes the skip list like scan.bat).

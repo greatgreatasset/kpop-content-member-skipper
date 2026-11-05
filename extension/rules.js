@@ -1,5 +1,5 @@
 // Skip / highlight rules applied to a video's presence timeline (skip list
-// format 4). The same rules are in rules.py (the scanner's default skips);
+// format 5, or 4 without focus). The same rules are in rules.py (the scanner's default skips);
 // tests/rules_test.js checks both give the same result for every skip list.
 // Change them together. See rules.py for the timeline format and the rules.
 //
@@ -11,6 +11,9 @@
   const SKIP = 1, KEEP = 0, NONE = -1;
   const EPS = 1e-6; // see rules.py: ties at a limit come out the same in both
   const CHOICES = ["skip", "normal", "highlight"];
+  // highlight any time she's on screen (default) / only when she's the main focus
+  const HL_WHEN = ["any", "focus"];
+  const hasFocus = (tl) => !!tl && !!tl.focusRule && typeof tl.focusRule === "object";
 
   const r2 = (x) => Math.round(x * 100) / 100;
 
@@ -21,17 +24,20 @@
     const full = new Array(n).fill(empty);
     const part = new Array(n).fill(empty);
     const state = new Array(n).fill("none");
+    const focus = new Array(n).fill(null);
     for (const s of tl.segments || []) {
       const a = Math.round(s.start * fps), b = Math.min(n, Math.round(s.end * fps));
       const f = new Set(s.members || []), p = new Set(s.partial || []);
       const st = f.size || p.size ? "" : s.state || "";
+      const fo = s.focus || null;
       for (let i = Math.max(0, a); i < b; i++) {
         full[i] = f;
         part[i] = p;
         state[i] = st;
+        focus[i] = fo;
       }
     }
-    return { full, part, state };
+    return { full, part, state, focus };
   }
 
   function frameStates(full, part, state, skip) {
@@ -145,13 +151,16 @@
   const defaultChoices = (tl) => Object.fromEntries((tl.members || []).map((m) => [m.key, m.default || "normal"]));
 
   // choices: {member key: "skip" | "normal" | "highlight"}; members not in it keep
-  // their default. -> {skips: [{start, end}], highlights: [{key, ranges}]}
-  function apply(tl, choices) {
+  // their default. hlWhen: "any" (default) or "focus" (only the frames she is
+  // the main focus of; a list without focus info, format 4, falls back to "any").
+  // -> {skips: [{start, end}], highlights: [{key, ranges}]}
+  function apply(tl, choices, hlWhen = "any") {
     const ch = { ...defaultChoices(tl), ...(choices || {}) };
     const R = tl.rules;
     const fps = tl.fps;
     const skip = new Set(Object.keys(ch).filter((k) => ch[k] === "skip"));
-    const { full, part, state } = expand(tl);
+    const { full, part, state, focus } = expand(tl);
+    const byFocus = hlWhen === "focus" && hasFocus(tl);
     const st = frameStates(full, part, state, skip);
     const filled = fillGaps(st, Math.round(R.fillGap * fps));
     const mask = medianFilter(filled.map((s) => s === SKIP), R.median);
@@ -160,7 +169,8 @@
     for (const m of tl.members || []) {
       const k = m.key;
       if (ch[k] !== "highlight") continue;
-      const hm = medianFilter(full.map((f, i) => f.has(k) || part[i].has(k)), R.hlMedian);
+      const on = byFocus ? focus.map((fo) => fo === k) : full.map((f, i) => f.has(k) || part[i].has(k));
+      const hm = medianFilter(on, R.hlMedian);
       const rng = subtract(toSegments(hm, fps, R.hlMergeGap, R.hlMin), skips)
         .filter((s) => s.end - s.start >= R.hlMin - EPS);
       if (rng.length) highlights.push({ key: k, ranges: rng });
@@ -193,16 +203,16 @@
     return out;
   }
 
-  // A format-4 skip list with this user's choices -> what the page uses:
+  // A format-4/5 skip list with this user's choices and hlWhen -> what the page uses:
   // {skips, highlights: [{key, member, name, group, profile, ranges, byDefault}],
   //  skipMembers: [{name, group}], choices}. Default highlights come first (so
   // they keep the first colour). null for lists without a timeline (format <= 3:
   // only their precomputed default skips can be used).
-  function forList(d, profiles, userChoices) {
+  function forList(d, profiles, userChoices, hlWhen = "any") {
     const tl = d && d.timeline;
     if (!tl || !Array.isArray(tl.members) || !Array.isArray(tl.segments) || !tl.rules) return null;
     const ch = effectiveChoices(tl, profiles, userChoices);
-    const res = apply(tl, ch);
+    const res = apply(tl, ch, HL_WHEN.includes(hlWhen) ? hlWhen : "any");
     const info = Object.fromEntries(tl.members.map((m) => [m.key, m]));
     const defs = profileDefaults(profiles);
     const order = Object.fromEntries(tl.members.map((m, i) => [m.key, i]));
@@ -217,7 +227,7 @@
     return { skips: res.skips, highlights, skipMembers, choices: ch };
   }
 
-  const api = { SKIP, KEEP, NONE, CHOICES, apply, defaultChoices, profileDefaults, effectiveChoices, keyOf,
+  const api = { SKIP, KEEP, NONE, CHOICES, HL_WHEN, hasFocus, apply, defaultChoices, profileDefaults, effectiveChoices, keyOf,
                 forList, expand, frameStates, fillGaps, medianFilter, toSegments, subtract };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.KmsRules = api;

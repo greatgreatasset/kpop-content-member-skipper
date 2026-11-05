@@ -15,7 +15,8 @@ button, popup "Skipping Yunah (ILLIT)". Then per-user choices: on the settings
 page Carmen -> Highlight and Ian -> Skip, which must change the skips, markers
 and stats line of the open video without a reload (expected values from
 rules.py), and "Reset to defaults" restores them. Last, a KiiiKiii video
-(--kiiikiii) shows Kya's highlights. With --scan-video it instead runs "Filter this video" for real (needs
+(--kiiikiii) shows Kya's highlights, and with "Highlight when: only when she's
+the main focus" only her focus parts (rules.py), back to all with "any time". With --scan-video it instead runs "Filter this video" for real (needs
 install_native_host.bat; commits and pushes the skip list like scan.bat):
 button -> progress banner -> skips applied. Screenshots go to cache/debug/.
 """
@@ -92,12 +93,12 @@ def by_group(members):
     return ", ".join(f"{' & '.join(n)} ({g})" for g, n in groups.items())
 
 
-def with_choices(sl, choices):
+def with_choices(sl, choices, hl_when="any"):
     """The skip list as the add-on shows it with these member choices
     ({"<profile>:<member>": choice}): skips and highlights from rules.py, default
     highlights first (as rules.js orders them)."""
     tl = sl["timeline"]
-    res = rules.apply(tl, choices)
+    res = rules.apply(tl, choices, hl_when=hl_when)
     info = {m["key"]: m for m in tl["members"]}
     order = {m["key"]: i for i, m in enumerate(tl["members"])}
     hls = sorted(res["highlights"], key=lambda h: (info[h["key"]]["default"] != "highlight", order[h["key"]]))
@@ -315,6 +316,8 @@ def check_settings(d):
     n = sum(len(p["members"]) for p in profiles)
     check(f"settings: {n} members with Skip/Normal/Highlight, defaults marked and selected", not bad, repr(bad[:3]))
     check("settings: Reset to defaults button", d.find_elements(By.ID, "resetChoices"))
+    hw = [(e.get_attribute("value"), e.is_selected()) for e in d.find_elements(By.CSS_SELECTOR, "input[name='hlWhen']")]
+    check("settings: Highlight when = any time (default)", hw == [("any", True), ("focus", False)], repr(hw))
 
 
 def pick(d, key, choice):
@@ -443,7 +446,7 @@ def custom_choices(d, a, ext_uuid):
           wait(d, lambda: markers_match(js(d, MARKERS_JS), sl, video_duration(d)), 10))
 
 
-def kiiikiii(d, a):
+def kiiikiii(d, a, ext_uuid):
     """A KiiiKiii video: Kya (highlighted by default) has pink markers, the
     stats line and a "Kya ⏭" button; nobody is skipped."""
     sl = load_list(a.kiiikiii)
@@ -478,6 +481,46 @@ def kiiikiii(d, a):
     js(d, "document.querySelector('#movie_player').dispatchEvent(new MouseEvent('mousemove',{bubbles:true}))")
     time.sleep(0.4)
     d.save_screenshot(str(OUT / "ext_kiiikiii.png"))
+    hl_focus(d, ext_uuid, sl)
+
+
+def hl_when_pick(d, value):
+    d.find_element(By.CSS_SELECTOR, f"input[name='hlWhen'][value='{value}']").find_element(By.XPATH, "..").click()
+    time.sleep(0.3)
+    return d.execute_async_script("""const done = arguments[arguments.length - 1];
+        browser.storage.local.get('hlWhen').then(r => done(r.hlWhen || null));""")
+
+
+def hl_focus(d, ext_uuid, sl):
+    """Settings "Highlight when: only when she's the main focus": the open
+    KiiiKiii video's Kya markers and stats follow rules.py (fewer parts), no
+    reload; "any time" brings back the default ones."""
+    yt = d.current_window_handle
+    want_def = expected_stats(sl)
+    fs = with_choices(sl, {}, "focus")
+    n_def = sum(len(h["ranges"]) for h in sl["highlights"])
+    n_foc = sum(len(h["ranges"]) for h in fs["highlights"])
+    check("focus: fewer Kya parts than any time (rules.py)", 0 < n_foc < n_def, f"{n_foc} vs {n_def}")
+    open_ext_page(d, ext_uuid, "options.html")
+    opts = d.current_window_handle
+    stored = hl_when_pick(d, "focus")
+    check("focus: stored in storage.local", stored == "focus", repr(stored))
+    d.switch_to.window(yt)
+    m = wait(d, lambda: (lambda x: x if markers_match(x, fs, video_duration(d)) else None)(js(d, MARKERS_JS)), 10)
+    got_m = js(d, MARKERS_JS) or {"skip": [], "hl": []}
+    check("focus: Kya markers = rules.py focus parts", m, f"{len(got_m['hl'])} hl markers, expected {n_foc}")
+    want = expected_stats(fs)
+    got = wait(d, lambda: (lambda t: t if t == want else None)(stats_text(d)), 10)
+    check("focus: stats line follows", got == want, f"{stats_text(d)!r}, expected {want!r}")
+    d.switch_to.window(opts)
+    stored = hl_when_pick(d, "any")
+    d.close()
+    d.switch_to.window(yt)
+    check("focus: any time removes the setting", stored is None, repr(stored))
+    got = wait(d, lambda: (lambda t: t if t == want_def else None)(stats_text(d)), 10)
+    check("focus: any time restores the default stats line", got == want_def, f"{stats_text(d)!r}")
+    check("focus: any time restores the default markers",
+          wait(d, lambda: markers_match(js(d, MARKERS_JS), sl, video_duration(d)), 10))
 
 
 def main():
@@ -524,7 +567,7 @@ def main():
         if "watch" not in d.current_url:
             d.get(f"https://www.youtube.com/watch?v={a.video}")
         page = d.page_source.lower()
-        if "confirm you" in page and "not a bot" in page:
+        if ("confirm you" in page and "not a bot" in page) or "unusual traffic" in page:
             check("youtube playable", False, "YouTube asked for a bot check; stopping (not bypassing it)")
             return
         ok = wait_no_ad(d)
@@ -671,7 +714,7 @@ def main():
         d.switch_to.window(yt)
         other_group(d, a, ext_uuid)
         custom_choices(d, a, ext_uuid)
-        kiiikiii(d, a)
+        kiiikiii(d, a, ext_uuid)
     finally:
         d.quit()
         passed = sum(ok for _, ok, _ in results)

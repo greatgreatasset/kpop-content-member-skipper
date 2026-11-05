@@ -1,8 +1,12 @@
 // The add-on's rules (extension/rules.js) with the default choices must give
 // the scanner's default skips and highlights for every skip list in the repo.
+// Also: "Highlight when: only when she's the main focus" never changes the
+// skips, and a list without focus info (format 4) gives exactly the same
+// result as before with either setting.
 //
 //   node tests/rules_test.js                 every skiplists/<videoId>.json
-//   node tests/rules_test.js --apply <list.json> <choices.json>   (used by rules_crosscheck.py)
+//   node tests/rules_test.js --apply <list.json> <cases.json>   (used by rules_crosscheck.py;
+//        cases: [{choices, hlWhen}])
 "use strict";
 
 const fs = require("fs");
@@ -28,7 +32,7 @@ function main() {
   const args = process.argv.slice(2);
   if (args[0] === "--apply") {
     const tl = readJson(args[1]).timeline;
-    const out = readJson(args[2]).map((ch) => R.apply(tl, ch));
+    const out = readJson(args[2]).map((c) => R.apply(tl, c.choices, c.hlWhen));
     process.stdout.write(JSON.stringify(out));
     return 0;
   }
@@ -57,11 +61,25 @@ function main() {
         if (r && r !== "within") problems.push(`${h.name}: ${r}`);
       });
     }
+    // "only when she's the main focus": same skips, highlights only where she has focus frames
+    const ch = R.effectiveChoices(d.timeline, profiles, {});
+    const foc = R.apply(d.timeline, ch, "focus");
+    if (JSON.stringify(foc.skips) !== JSON.stringify(res.skips)) problems.push("focus setting changed the skips");
+    if (!R.hasFocus(d.timeline)) problems.push(`format ${d.format}: no focus info`);
+    // the same list as format 4 (no focus info): either setting = today's result
+    const tl4 = { ...d.timeline, segments: d.timeline.segments.map(({ focus, ...s }) => s) };
+    delete tl4.focusRule;
+    for (const w of ["any", "focus"]) {
+      if (JSON.stringify(R.apply(tl4, ch, w)) !== JSON.stringify(res)) problems.push(`format-4 copy with "${w}" differs`);
+    }
+    const v4 = R.forList({ ...d, format: 4, timeline: tl4 }, profiles, {}, "focus");
+    if (!v4 || JSON.stringify(v4.skips) !== JSON.stringify(res.skips)) problems.push("forList on format 4 differs");
     if (problems.length) fails++;
     const exact = !problems.length && JSON.stringify(res.skips) === JSON.stringify(d.skips) &&
       res.highlights.every((h, i) => JSON.stringify(h.ranges) === JSON.stringify(d.highlights[i].ranges));
     console.log(`[${problems.length ? "FAIL" : "PASS"}] ${f}: ${res.skips.length} skips, ` +
                 `${res.highlights.map((h) => `${h.ranges.length} ${h.key.split(":")[1]}`).join(", ") || "no highlights"}` +
+                `${foc.highlights.length ? ` (focus: ${foc.highlights.map((h) => `${h.ranges.length} ${h.key.split(":")[1]}`).join(", ")})` : ""}` +
                 `${problems.length ? " - " + problems.join("; ") : exact ? " (exact)" : " (within 0.1 s)"}`);
   }
   console.log(`\n${checked - fails}/${checked} skip lists: add-on defaults = scanner defaults`);

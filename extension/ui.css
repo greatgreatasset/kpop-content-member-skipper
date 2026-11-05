@@ -81,3 +81,8 @@ button.secondary { background: none; color: var(--accent); }
   background: currentColor; opacity: 0.7; vertical-align: middle;
 }
 .dot-default::before { background: var(--muted); }
+
+/* settings: "Highlight when" */
+.options .choice-list { display: flex; flex-direction: column; gap: 2px; }
+.options label.radio { display: flex; align-items: center; gap: 6px; margin: 2px 0; font-weight: 400; cursor: pointer; }
+.options label.radio input { accent-color: var(--accent); margin: 0; }

@@ -16,6 +16,7 @@
     list: null,          // raw + this user's choices applied (skips, highlights, skipMembers)
     profiles: [],        // groups and their members' default choices (profiles.json)
     choices: {},         // this user's choices {"<profile>:<member>": "skip" | "normal" | "highlight"}
+    hlWhen: "any",       // highlight any time she's on screen / only when she's the main focus ("focus")
     source: "none",
     loading: false,
     suppressed: new Set(), // skip indexes undone by the user (until next video)
@@ -70,7 +71,7 @@
   // keep their precomputed default skips and highlights
   function view(raw) {
     if (!raw) return null;
-    const v = globalThis.KmsRules ? globalThis.KmsRules.forList(raw, st.profiles, st.choices) : null;
+    const v = globalThis.KmsRules ? globalThis.KmsRules.forList(raw, st.profiles, st.choices, st.hlWhen) : null;
     if (!v) return raw;
     const highlights = v.highlights.map((h, i) => ({ ...h, color: HL_COLORS[i % HL_COLORS.length] }));
     return { ...raw, skips: v.skips, highlights, skipMembers: v.skipMembers, custom: true };
@@ -481,11 +482,12 @@
 
   // ------------------------------------------------------------ wiring
   Promise.all([
-    browser.storage.local.get(["enabled", "highlights", "choices"]),
+    browser.storage.local.get(["enabled", "highlights", "choices", "hlWhen"]),
     browser.runtime.sendMessage({ type: "profiles" }).catch(() => []),
   ]).then(([s, profiles]) => {
     for (const k of ["enabled", "highlights"]) if (k in s) st.settings[k] = s[k];
     st.choices = s.choices || {};
+    st.hlWhen = s.hlWhen || "any";
     st.profiles = profiles || [];
     applyChoices();
     ensure();
@@ -493,8 +495,9 @@
   browser.storage.onChanged.addListener((ch, area) => {
     if (area !== "local") return;
     for (const k of ["enabled", "highlights"]) if (k in ch) st.settings[k] = ch[k].newValue;
-    if ("choices" in ch) {
-      st.choices = ch.choices.newValue || {};
+    if ("choices" in ch || "hlWhen" in ch) {
+      if ("choices" in ch) st.choices = ch.choices.newValue || {};
+      if ("hlWhen" in ch) st.hlWhen = ch.hlWhen.newValue || "any";
       applyChoices(); // settings page changed who is skipped / highlighted: no reload
     }
     if ("baseUrl" in ch) {

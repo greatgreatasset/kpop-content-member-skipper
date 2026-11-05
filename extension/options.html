@@ -15,6 +15,15 @@
     <button id="resetChoices" class="secondary">Reset to defaults</button>
   </div>
   <p class="hint">Every video is checked for all of these groups; its skip list says which are in it.</p>
+  <label>Highlight when</label>
+  <div class="choice-list" id="hlWhen" role="radiogroup" aria-label="Highlight when">
+    <label class="radio"><input type="radio" name="hlWhen" value="any"> any time she's on screen
+      <span class="dot-default" title="Default"></span></label>
+    <label class="radio"><input type="radio" name="hlWhen" value="focus"> only when she's the main focus</label>
+  </div>
+  <p class="hint">"Main focus": hers is the largest face, clearly bigger (1.5&times;) than anyone else's,
+    and near the middle of the picture. Fewer, shorter highlights; skipping is not affected. Older skip lists
+    without focus info keep "any time" until they are rescanned.</p>
   <label for="baseUrl">Skip list base URL</label>
   <input type="url" id="baseUrl">
   <p class="hint">The <code>skiplists/</code> folder that holds <code>&lt;videoId&gt;.json</code>.

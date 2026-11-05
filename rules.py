@@ -4,19 +4,26 @@ The same rules live in extension/rules.js (the add-on computes each user's own
 skips from the timeline in the skip list); tests/rules_test.js checks that both
 give the same result for every list in skiplists/. Change them together.
 
-Timeline (skip list format 4, "timeline"):
+Timeline (skip list format 5, "timeline"; format 4 is the same without
+"focusRule" and the segments' "focus"):
     {"fps": 3, "frames": 5015,
      "members": [{"key": "hearts2hearts:carmen", "member": "carmen", "name": "Carmen",
                   "group": "Hearts2Hearts", "profile": "hearts2hearts", "default": "skip"}, ...],
      "rules": {"fillGap": 3.0, "median": 5, "mergeGap": 1.0, "minSkip": 2.0,
                "edgeTrim": 0.5, "minTrimmed": 1.5, "hlMedian": 3, "hlMergeGap": 2.0, "hlMin": 1.0},
+     "focusRule": {"minRatio": 1.5, "maxOffCenter": 0.3},
      "segments": [{"start": 4.33, "end": 5.0, "members": ["hearts2hearts:carmen"],
-                   "partial": ["hearts2hearts:ian"]}, {"start": 5.0, "end": 6.33, "state": "wide"}, ...]}
+                   "partial": ["hearts2hearts:ian"], "focus": "hearts2hearts:carmen"},
+                  {"start": 5.0, "end": 6.33, "state": "wide"}, ...]}
 
 Segments cover every frame, back to back. Per segment:
   members  recognized foreground members whose face is fully shown
   partial  recognized foreground members whose face is cut off by the frame edge
-  state    only when nobody is recognized: "wide" (all faces tiny: a wide group
+  focus    the member who is the main subject of the frame, if any: the largest
+           face is hers, it is at least minRatio x the area of the next largest
+           face, and its centre is at most maxOffCenter x the frame width from
+           the middle
+  state   only when nobody is recognized: "wide" (all faces tiny: a wide group
            shot), "unknown" (only faces of people who aren't members), "none" (no face)
 
 Rules for a set of skip-members S (a user's choices):
@@ -32,7 +39,9 @@ Rules for a set of skip-members S (a user's choices):
      ends and dropped if under minTrimmed s.
 Highlights of a member: the frames she is recognized in (fully or partly),
 median filter (hlMedian), merge (< hlMergeGap s), at least hlMin s, minus the
-skips.
+skips. With hl_when="focus" ("highlight only when she's the main focus") the
+frames she is the focus of are used instead, with the same steps; a timeline
+without focus info (format 4) falls back to "any". Skips never depend on it.
 """
 
 SKIP, KEEP, NONE = 1, 0, -1
@@ -41,22 +50,29 @@ SKIP, KEEP, NONE = 1, 0, -1
 # same here and in rules.js: "< 2 s" excludes exactly 2 s, ">= 1 s" includes 1 s.
 EPS = 1e-6
 CHOICES = ("skip", "normal", "highlight")
+HL_WHEN = ("any", "focus")  # highlight any time she's on screen / only when she's the main focus
+
+
+def has_focus(tl):
+    return isinstance(tl.get("focusRule"), dict)
 
 
 def expand(tl):
-    """Per frame: (fully shown member keys, partly shown keys, state)."""
+    """Per frame: (fully shown member keys, partly shown keys, state, focus key or None)."""
     fps = tl["fps"]
     n = int(tl["frames"])
     full = [frozenset()] * n
     part = [frozenset()] * n
     state = ["none"] * n
+    focus = [None] * n
     for s in tl["segments"]:
         a, b = int(round(s["start"] * fps)), min(n, int(round(s["end"] * fps)))
         f, p = frozenset(s.get("members", ())), frozenset(s.get("partial", ()))
         st = s.get("state", "") if not (f or p) else ""
+        fo = s.get("focus")
         for i in range(a, b):
-            full[i], part[i], state[i] = f, p, st
-    return full, part, state
+            full[i], part[i], state[i], focus[i] = f, p, st, fo
+    return full, part, state, focus
 
 
 def frame_states(full, part, state, skip):
@@ -166,9 +182,10 @@ def default_choices(tl):
     return {m["key"]: m.get("default", "normal") for m in tl["members"]}
 
 
-def apply(tl, choices=None, debug=False):
+def apply(tl, choices=None, debug=False, hl_when="any"):
     """Skips and highlights for these choices ({member key: "skip" | "normal" |
-    "highlight"}; members not in it keep their default).
+    "highlight"}; members not in it keep their default). hl_when: "any" or
+    "focus" (see above).
 
     -> {"skips": [{start, end}], "highlights": [{"key", "ranges"}]} (+ "debug")"""
     ch = default_choices(tl)
@@ -176,7 +193,8 @@ def apply(tl, choices=None, debug=False):
     R = tl["rules"]
     fps = tl["fps"]
     skip = frozenset(k for k, v in ch.items() if v == "skip")
-    full, part, state = expand(tl)
+    full, part, state, focus = expand(tl)
+    by_focus = hl_when == "focus" and has_focus(tl)
     st = frame_states(full, part, state, skip)
     filled = fill_gaps(st, int(round(R["fillGap"] * fps)))
     mask = median_filter([s == SKIP for s in filled], R["median"])
@@ -186,7 +204,8 @@ def apply(tl, choices=None, debug=False):
         k = m["key"]
         if ch.get(k) != "highlight":
             continue
-        hm = median_filter([k in f or k in p for f, p in zip(full, part)], R["hlMedian"])
+        on = [fo == k for fo in focus] if by_focus else [k in f or k in p for f, p in zip(full, part)]
+        hm = median_filter(on, R["hlMedian"])
         hl_masks[k] = hm
         rng = subtract(to_segments(hm, fps, R["hlMergeGap"], R["hlMin"]), skips)
         rng = [s for s in rng if s["end"] - s["start"] >= R["hlMin"] - EPS]

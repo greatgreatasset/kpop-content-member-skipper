@@ -1,6 +1,7 @@
 """rules.py (scanner) and extension/rules.js (add-on) must agree for any member
 choices, not just the defaults: random Skip / Normal / Highlight choices for
-every skip list in the repo, computed by both (the JS side through node).
+every skip list in the repo, each with "Highlight when" = any and = focus,
+computed by both (the JS side through node).
 
     python tests/rules_crosscheck.py [--cases 25] [--seed 1]
 """
@@ -44,6 +45,7 @@ def main():
         for k in keys:  # each member alone set to skip, then to highlight
             cases += [{k: "skip"}, {k: "highlight"}]
         cases += [{k: rng.choice(rules.CHOICES) for k in keys} for _ in range(a.cases)]
+        cases = [{"choices": ch, "hlWhen": w} for ch in cases for w in rules.HL_WHEN]
         with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as t:
             json.dump(cases, t)
         js = json.loads(subprocess.run(["node", str(ROOT / "tests" / "rules_test.js"), "--apply", str(f), t.name],
@@ -51,7 +53,7 @@ def main():
         Path(t.name).unlink()
         bad = 0
         for ch, j in zip(cases, js):
-            py = rules.apply(tl, ch)
+            py = rules.apply(tl, ch["choices"], hl_when=ch["hlWhen"])
             ok = close(py["skips"], j["skips"]) and [h["key"] for h in py["highlights"]] == \
                 [h["key"] for h in j["highlights"]] and all(close(x["ranges"], y["ranges"])
                                                             for x, y in zip(py["highlights"], j["highlights"]))
