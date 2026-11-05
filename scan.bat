@@ -42,7 +42,10 @@ if errorlevel 1 (
   echo !! Could not refresh the bundled skip lists.
   goto :end
 )
-".venv\Scripts\python.exe" publish_skiplists.py
+rem set KMS_NO_PUSH=1 to commit locally without uploading (used for testing)
+set "PUBARGS="
+if "%KMS_NO_PUSH%"=="1" set "PUBARGS=--no-push"
+".venv\Scripts\python.exe" publish_skiplists.py %PUBARGS%
 
 :end
 if defined INTERACTIVE pause
