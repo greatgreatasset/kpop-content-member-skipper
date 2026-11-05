@@ -1,6 +1,8 @@
 // Content script for youtube.com: skips the ranges of the selected profile's
 // skip list, draws progress-bar markers, "Skipped" toast with Undo, and a
-// "next highlight" button / shortcut for the highlighted member(s).
+// "next highlight" button / shortcut for the highlighted member(s), the
+// "Ian: 25% · Skipped: 17%" line under the video title, and progress of
+// "Filter this video" scans (run by the background script on Kirk's PC).
 "use strict";
 
 (() => {
@@ -15,8 +17,13 @@
     settings: { enabled: true, highlights: true },
     video: null,
     toastTimer: null,
+    scan: null,          // {available, job} from the background script for videoId
+    scanAskedAt: 0,
+    bannerTimer: null,
+    bannerShown: false,
   };
   const hooked = new WeakSet();
+  const applied = new Set(); // videoIds whose finished scan was already applied
 
   const fmt = (t) => {
     t = Math.max(0, Math.round(t));
@@ -60,8 +67,11 @@
     st.list = null;
     st.source = "none";
     st.suppressed = new Set();
+    st.scan = null;
     removeMarkers();
     hideToast();
+    hideBanner();
+    renderStats();
     if (!id) return;
     st.loading = true;
     try {
@@ -76,7 +86,184 @@
     } finally {
       if (st.videoId === id) st.loading = false;
     }
+    if (!st.list) await refreshScan(id);
     ensure();
+  }
+
+  // ------------------------------------------------------------ scanning
+  async function refreshScan(id) {
+    st.scanAskedAt = Date.now();
+    try {
+      const r = await browser.runtime.sendMessage({ type: "scanState", id });
+      if (st.videoId !== id) return;
+      st.scan = r || null;
+      if (r && r.job) {
+        await onScanUpdate(r.job);
+        return;
+      }
+    } catch (e) {
+      st.scan = null;
+    }
+    renderStats();
+  }
+
+  async function startScan() {
+    const id = st.videoId;
+    if (!id) return;
+    await onScanUpdate({ videoId: id, state: "running", stage: "starting", percent: 0, eta: null });
+    try {
+      const r = await browser.runtime.sendMessage({ type: "startScan", id });
+      if (st.videoId !== id) return;
+      if (r && r.job) {
+        await onScanUpdate(r.job);
+      } else {
+        st.scan = r || null; // scanner not installed after all
+        hideBanner();
+        renderStats();
+      }
+    } catch (e) {
+      console.warn("[kms] could not start the scan", e);
+    }
+  }
+
+  const etaText = (eta) => (eta ? `, about ${fmt(eta)} left` : "");
+  const progressText = (j) =>
+    j.stage === "upload" ? `Filtering… ${j.percent}%, uploading` : `Filtering… ${j.percent}%${etaText(j.eta)}`;
+
+  async function onScanUpdate(job) {
+    if (!job || job.videoId !== st.videoId) return;
+    const wasRunning = st.scan?.job?.state === "running";
+    st.scan = { available: true, ...st.scan, job };
+    st.scanAskedAt = Date.now();
+    if (job.state === "running") {
+      showBanner(progressText(job));
+    } else if (job.state === "error") {
+      showBanner(`Filtering failed: ${job.error || "unknown error"}`, 8000);
+    } else if (job.state === "done") {
+      if (!wasRunning && (st.list || applied.has(job.videoId))) {
+        renderStats(); // already applied
+        return;
+      }
+      applied.add(job.videoId);
+      const keep = st.scan;
+      await reload(); // picks up the list the background script just stored
+      st.scan = keep;
+      const parts = statsParts();
+      const text = parts.length ? parts.map((p) => `${p.label.replace(":", "")} ${p.pct}%`).join(" · ") : "nothing to skip";
+      showBanner(`Done: ${text}`, 8000, job.note);
+    }
+    renderStats();
+  }
+
+  // ------------------------------------------------------------ stats line
+  // Percent of the video's duration, per highlighted member and skipped.
+  function statsParts() {
+    const l = st.list;
+    const d = l?.duration || duration();
+    if (!l || !d) return [];
+    const pct = (ranges) => Math.round((100 * ranges.reduce((a, r) => a + Math.max(0, r.end - r.start), 0)) / d);
+    const parts = [];
+    if (st.settings.highlights) {
+      for (const h of l.highlights) parts.push({ label: `${h.name}:`, pct: pct(h.ranges), color: h.color });
+    }
+    if (st.settings.enabled) parts.push({ label: "Skipped:", pct: pct(l.skips) });
+    return parts;
+  }
+
+  function statsAnchor() {
+    return document.querySelector("ytd-watch-metadata #title");
+  }
+
+  function renderStats() {
+    let el = document.querySelector(".cys-stats");
+    const anchor = statsAnchor();
+    const id = st.videoId;
+    const job = st.scan?.job;
+    let content = null;
+    if (!id || !anchor || st.loading) {
+      content = null;
+    } else if (job && job.state === "running") {
+      content = [{ text: progressText(job) }];
+    } else if (st.list) {
+      const parts = statsParts();
+      if (parts.length) {
+        content = [];
+        parts.forEach((p, i) => {
+          if (i) content.push({ text: " · " });
+          content.push({ text: `${p.label} ${p.pct}%`, color: p.color });
+        });
+      }
+    } else if (st.settings.enabled || st.settings.highlights) {
+      const failed = job && job.state === "error";
+      content = [{ text: failed ? "Filtering failed" : "Not filtered yet" }];
+      if (st.scan?.available) {
+        content.push({ text: " · " });
+        content.push({ text: failed ? "Try again" : "Filter this video", action: startScan });
+      }
+    }
+    if (!content) {
+      el?.remove();
+      return;
+    }
+    const key = id + JSON.stringify(content.map((c) => [c.text, c.color || "", !!c.action]));
+    if (el && el.dataset.key === key && el.previousElementSibling === anchor) return;
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "cys-stats";
+    }
+    if (el.previousElementSibling !== anchor) anchor.after(el);
+    el.dataset.key = key;
+    el.dataset.videoId = id;
+    el.replaceChildren();
+    for (const c of content) {
+      if (c.action) {
+        const b = document.createElement("button");
+        b.className = "cys-filter";
+        b.textContent = c.text;
+        b.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          c.action();
+        });
+        el.appendChild(b);
+      } else {
+        const span = document.createElement("span");
+        span.textContent = c.text;
+        if (c.color) {
+          span.className = "cys-stat-hl";
+          span.style.color = c.color;
+        }
+        el.appendChild(span);
+      }
+    }
+  }
+
+  // ------------------------------------------------------------ banner
+  function showBanner(text, hideAfter, note) {
+    const p = player();
+    if (!p) return;
+    let el = p.querySelector(".cys-banner");
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "cys-banner";
+      p.appendChild(el);
+    }
+    el.textContent = text;
+    if (note) {
+      const small = document.createElement("small");
+      small.textContent = note;
+      el.appendChild(small);
+    }
+    el.classList.add("cys-show");
+    st.bannerShown = true;
+    clearTimeout(st.bannerTimer);
+    if (hideAfter) st.bannerTimer = setTimeout(hideBanner, hideAfter);
+  }
+
+  function hideBanner() {
+    clearTimeout(st.bannerTimer);
+    st.bannerShown = false;
+    document.querySelector(".cys-banner")?.classList.remove("cys-show");
   }
 
   async function reload() {
@@ -251,6 +438,9 @@
     if (stale) box.remove();
     if (st.list && (!box || stale || !box.isConnected)) drawMarkers();
     ensureNextButton();
+    renderStats();
+    // keep following a running scan if updates stop (e.g. the background restarted)
+    if (st.scan?.job?.state === "running" && Date.now() - st.scanAskedAt > 5000) refreshScan(st.videoId);
   }
 
   // ------------------------------------------------------------ wiring
@@ -267,9 +457,11 @@
     }
     drawMarkers();
     ensureNextButton();
+    renderStats();
   });
   browser.runtime.onMessage.addListener((msg) => {
     if (msg?.type === "nextHighlight") nextHighlight();
+    if (msg?.type === "scanUpdate") onScanUpdate(msg.job);
     if (msg?.type === "status") {
       return Promise.resolve({
         videoId: st.videoId,
@@ -282,6 +474,7 @@
         skipSeconds: Math.round((st.list?.skips || []).reduce((a, r) => a + r.end - r.start, 0)),
         highlights: (st.list?.highlights || []).map((h) => ({ name: h.name, count: h.ranges.length })),
         scannedAt: st.list?.scannedAt || null,
+        stats: statsParts().map((p) => `${p.label} ${p.pct}%`).join(" · "),
       });
     }
     return undefined;

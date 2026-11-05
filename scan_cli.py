@@ -136,12 +136,8 @@ def run(argv, interactive, out):
     p = {k: getattr(a, k) for k in scan.DEFAULTS}
     prog = Progress(out)
     prog.start_download()
-    # insightface/onnxruntime print setup chatter; keep it off the progress lines
-    chatter = io.StringIO()
     try:
-        with contextlib.redirect_stdout(sys.stdout if a.debug else chatter):
-            res, T, st, diag, _ = scan.scan(scan.watch_url(vid), p, a.rescan, a.profile,
-                                             a.debug, progress=prog)
+        res, T = scan_video(vid, p, a.rescan, a.profile, a.debug, prog)
     except scan.DownloadFailed as e:
         prog.end()
         print(f"Couldn't download the video: {e}. Check the link and your internet.")
@@ -156,23 +152,53 @@ def run(argv, interactive, out):
         print(NOTHING)
         return 4
     prog.detect_end()
-    secs = round(sum(s["end"] - s["start"] for s in res["skips"]))
-    def n(k, word):
-        return f"{k} {word}{'' if k == 1 else 's'}"
-    hl = ", ".join(n(len(h["ranges"]), f"{h['name']} part") for h in res["highlights"])
-    print(f"    {res['videoId']}: {n(len(res['skips']), 'skip')} ({secs} s)" + (f", {hl}" if hl else "")
-          + f"  [{T['total']:.0f} s total]")
+    print(f"    {res['videoId']}: {summary(res)}  [{T['total']:.0f} s total]")
 
     print("3/3 Uploading skip list...", flush=True)
+    rc, _ = publish(res["videoId"], a.profile, a.no_push or os.environ.get("KMS_NO_PUSH") == "1")
+    return rc
+
+
+# ---- shared with native_host.py (the extension's "Filter this video" button)
+
+def scan_video(vid, p, rescan, profile, debug, progress):
+    """Download + scan one video, writing skiplists/<profile>/<vid>.json.
+    Returns (skip list dict, timings). Raises scan.DownloadFailed or other errors."""
+    import scan
+
+    # insightface/onnxruntime print setup chatter; keep it off the progress lines
+    chatter = io.StringIO()
+    with contextlib.redirect_stdout(sys.stdout if debug else chatter):
+        res, T, _, _, _ = scan.scan(scan.watch_url(vid), p, rescan, profile, debug, progress=progress)
+    return res, T
+
+
+def summary(res):
+    def n(k, word):
+        return f"{k} {word}{'' if k == 1 else 's'}"
+    secs = round(sum(s["end"] - s["start"] for s in res["skips"]))
+    hl = ", ".join(n(len(h["ranges"]), f"{h['name']} part") for h in res["highlights"])
+    return f"{n(len(res['skips']), 'skip')} ({secs} s)" + (f", {hl}" if hl else "")
+
+
+def publish(vid, profile, no_push, capture=False):
+    """Refresh the bundled copies, then commit (+ push) only this video's skip list.
+    Returns (exit code, output if capture). 0 = uploaded/unchanged, 2 = committed
+    but the push failed, 5 = bundled copies could not be refreshed."""
     py = sys.executable
-    r = subprocess.run([py, "sync_skiplists.py"], cwd=ROOT, stdout=subprocess.DEVNULL)
+    r = subprocess.run([py, "sync_skiplists.py"], cwd=ROOT, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.PIPE if capture else None, text=True, encoding="utf-8")
     if r.returncode:
-        print("!! Could not refresh the bundled skip lists.")
-        return 5
-    cmd = [py, "publish_skiplists.py", res["videoId"], "--profile", a.profile]
-    if a.no_push or os.environ.get("KMS_NO_PUSH") == "1":
+        msg = "Could not refresh the bundled skip lists."
+        if not capture:
+            print("!! " + msg)
+        return 5, msg + (f"\n{r.stderr}" if capture else "")
+    cmd = [py, "publish_skiplists.py", vid, "--profile", profile]
+    if no_push:
         cmd.append("--no-push")
-    return subprocess.run(cmd, cwd=ROOT).returncode
+    r = subprocess.run(cmd, cwd=ROOT, capture_output=capture, text=True, encoding="utf-8",
+                       errors="replace")
+    return r.returncode, ((r.stdout or "") + (r.stderr or "")).strip() if capture else ""
 
 
 def main():

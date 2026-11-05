@@ -54,3 +54,7 @@ button {
 .options input[type="number"] { width: 120px; }
 .hint { color: var(--muted); font-size: 12px; margin: 4px 0; }
 .buttons { display: flex; gap: 8px; margin-top: 16px; }
+.status { white-space: pre-line; }
+#scan { margin: 4px 0 6px; }
+#scan progress { width: 100%; accent-color: var(--accent); }
+#scan .hint { margin: 6px 0 0; }

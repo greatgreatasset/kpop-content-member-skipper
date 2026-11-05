@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 profiles/*.local.json
 dist/
+native_host.local.json

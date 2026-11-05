@@ -79,6 +79,31 @@ prompt takes them as they are. A failed download prints one short line
 `--no-push` (or `set KMS_NO_PUSH=1`) commits the skip list without uploading.
 scan.bat itself only starts `scan_cli.py`, which holds all the logic.
 
+### From Firefox: "Filter this video"
+
+On this PC the add-on can start the scan itself. Once, double-click
+**install_native_host.bat** (per user, no admin): it registers the scanner with
+Firefox under `HKCU\Software\Mozilla\NativeMessagingHosts\kpop_content_member_skipper`
+and writes the gitignored `native_host.local.json` (the paths on this PC).
+`install_native_host.bat /uninstall` removes both. Reload the add-on afterwards.
+
+Then on a YouTube video, click **Filter this video** in the add-on's popup (or
+under the title of a video that isn't filtered yet). It runs the same scan,
+commit and upload as scan.bat. A small banner on the video shows
+"Filtering… 62%, about 0:20 left"; when it ends, the skips apply right away
+(without waiting for GitHub) and it shows e.g. "Done: Ian 25% · Skipped 17%".
+The popup can be closed meanwhile; the scan keeps running even if Firefox
+closes, and clicking again for the same video shows the running scan instead of
+starting another. Scans log to `cache/jobs/<videoId>.log`.
+
+On PCs without the scanner (friends' PCs) the button is replaced by "Scanning
+is only available on the PC with the scanner installed".
+
+How it works: Firefox starts `native_host.bat` (venv Python, `native_host.py`)
+over native messaging; it starts a separate worker process for the scan (using
+`scan_cli.py`'s scan and publish functions) that writes its progress to
+`cache/jobs/<videoId>.json`, and relays that to the add-on.
+
 ## Usage (individual steps)
 
 ```
@@ -138,6 +163,8 @@ What it does on youtube.com/watch pages:
 - a button in the player controls (**Ian ⏭** for Hearts2Hearts) and
   **Alt+Shift+H** jump to the next highlighted part (rebind under
   about:addons → ⚙ → Manage Extension Shortcuts)
+- under the video title: e.g. "**Ian: 25%** · Skipped: 17%" (share of the
+  video's length; follows the on/off switches), or "Not filtered yet"
 - toolbar popup: skipping on/off, highlights on/off, and e.g.
   "10 skips (… s) · 22 Ian parts" for the current video (or "not scanned yet")
 - settings page: profile (group), skip list base URL and cache time. Lists are
@@ -185,9 +212,12 @@ with it installed.
 ```
 cd extension && npx web-ext lint --self-hosted   # manifest/code lint (self-distributed add-on)
 .venv\Scripts\python tests\browser_test.py       # end-to-end in headless Firefox
+.venv\Scripts\python tests\browser_test.py --scan-video <id> [--rescan]   # "Filter this video", real scan + upload
 ```
 
 `browser_test.py` (needs `pip install -r requirements-dev.txt`) installs the
 add-on into a fresh temporary Firefox profile, opens the test video, and checks
 markers, the skip, toast/Undo, the next-highlight button, the popup, the
-settings page and in-page navigation.
+settings page, the line under the title and in-page navigation. `--scan-video`
+needs install_native_host.bat and checks button → progress banner → skips
+applied (it commits and pushes the skip list like scan.bat).

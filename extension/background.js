@@ -1,5 +1,7 @@
 // Loads skip lists for the selected profile (remote base URL first, then the
-// bundled copy), caches them, and relays the "next highlight" command.
+// bundled copy), caches them, relays the "next highlight" command, and runs
+// "Filter this video" scans through the native host (only on the PC where
+// install_native_host.bat was run).
 "use strict";
 
 const DEFAULT_BASE =
@@ -57,6 +59,17 @@ async function loadRemote(baseUrl, profile, id) {
 }
 
 async function getList(id) {
+  const r = await getListOnline(id);
+  const key = `scanned:${r.profile}:${id}`;
+  const mine = ID_RE.test(id) ? (await browser.storage.local.get(key))[key] : null;
+  // a list just scanned on this PC wins until GitHub serves the same or a newer one
+  if (mine && (!r.data || String(r.data.scannedAt || "") < String(mine.scannedAt || ""))) {
+    return { data: mine, source: "scanned on this PC", profile: r.profile };
+  }
+  return r;
+}
+
+async function getListOnline(id) {
   const s = await getSettings();
   const profile = PROFILE_RE.test(s.profile) ? s.profile : DEFAULTS.profile;
   if (!ID_RE.test(id)) return { data: null, source: "none", profile };
@@ -90,9 +103,151 @@ async function clearCache() {
   await browser.storage.local.remove(Object.keys(all).filter((k) => k.startsWith("cache:")));
 }
 
+// ------------------------------------------------------------ scanning
+const HOST = "kpop_content_member_skipper";
+const jobs = new Map(); // videoId -> {videoId, profile, state, stage, percent, eta, ...}
+let hostOk = null;      // null = not checked yet, true/false = native host installed
+let hostCheckedAt = 0;
+
+function broadcast(job) {
+  const msg = { type: "scanUpdate", job };
+  browser.runtime.sendMessage(msg).catch(() => {}); // the popup, if open
+  browser.tabs.query({}).then((tabs) => {
+    for (const t of tabs) browser.tabs.sendMessage(t.id, msg).catch(() => {});
+  });
+}
+
+async function finishJob(job, msg) {
+  const list = msg.list;
+  if (list && list.videoId === job.videoId) {
+    const p = list.profile || job.profile;
+    await browser.storage.local.set({
+      [`scanned:${p}:${list.videoId}`]: list,
+      [`cache:${p}:${list.videoId}`]: { at: Date.now(), baseUrl: (await getSettings()).baseUrl, data: list },
+    });
+  }
+  Object.assign(job, { state: "done", stage: "done", percent: 100, eta: 0, note: msg.note || "",
+                       pushed: !!msg.pushed, list });
+}
+
+// One native connection per scan/attach request. Resolves with the first answer
+// (hello + progress/idle), keeps relaying progress until the host finishes.
+function talk(request, onFirst) {
+  let answered = false;
+  const vid = request.videoId;
+  const answer = (v) => {
+    if (!answered) {
+      answered = true;
+      onFirst(v);
+    }
+  };
+  let port;
+  try {
+    port = browser.runtime.connectNative(HOST);
+  } catch (e) {
+    hostOk = false;
+    hostCheckedAt = Date.now();
+    answer(null);
+    return;
+  }
+  let hello = false;
+  port.onMessage.addListener(async (m) => {
+    if (m.type === "hello") {
+      hello = true;
+      hostOk = true;
+      hostCheckedAt = Date.now();
+      return;
+    }
+    if (m.videoId !== vid) return;
+    if (m.type === "idle") {
+      port.disconnect();
+      answer(null);
+      return;
+    }
+    let job = jobs.get(vid);
+    if (!job) {
+      job = { videoId: vid, profile: request.profile || null, state: "running", stage: "starting",
+              percent: 0, eta: null, startedAt: Date.now() };
+      jobs.set(vid, job);
+    }
+    if (m.type === "progress") {
+      Object.assign(job, { state: "running", stage: m.stage, percent: m.percent, eta: m.eta });
+    } else if (m.type === "done") {
+      await finishJob(job, m);
+      port.disconnect();
+    } else if (m.type === "error") {
+      Object.assign(job, { state: "error", error: m.message || "Scan failed." });
+      port.disconnect();
+    }
+    answer(job);
+    broadcast(job);
+  });
+  port.onDisconnect.addListener((p) => {
+    if (!hello) {
+      // not installed (or not allowed): no button, no error shown
+      hostOk = false;
+      hostCheckedAt = Date.now();
+      answer(null);
+      return;
+    }
+    answer(jobs.get(vid) || null);
+    const job = jobs.get(vid);
+    if (job && job.state === "running") {
+      Object.assign(job, { state: "error", error: "Lost the connection to the scanner." });
+      if (p.error) console.warn("[kms] native host:", p.error.message);
+      broadcast(job);
+    }
+  });
+  port.postMessage(request);
+}
+
+const ask = (request) => new Promise((resolve) => talk(request, resolve));
+
+async function hostAvailable() {
+  // re-check a "not installed" answer after a minute, so installing it needs no reload
+  if (hostOk === false && Date.now() - hostCheckedAt > 60000) hostOk = null;
+  if (hostOk !== null) return hostOk;
+  await ask({ type: "attach", videoId: "___________" }); // valid-looking id, never a job
+  return !!hostOk;
+}
+
+const publicJob = (j) => j && { videoId: j.videoId, profile: j.profile, state: j.state, stage: j.stage,
+                                percent: j.percent, eta: j.eta, error: j.error || null,
+                                note: j.note || "", pushed: !!j.pushed };
+
+async function scanState(id) {
+  if (!ID_RE.test(id)) return { available: false, job: null };
+  let job = jobs.get(id);
+  if (!job && hostOk !== false) {
+    // after a background restart: follow a scan that is still running on this PC
+    job = await ask({ type: "attach", videoId: id });
+  }
+  return { available: await hostAvailable(), job: publicJob(job) };
+}
+
+async function startScan(id, rescan) {
+  if (!ID_RE.test(id)) return { available: false, job: null };
+  const cur = jobs.get(id);
+  if (cur && cur.state === "running") return { available: true, job: publicJob(cur) };
+  const s = await getSettings();
+  const profile = PROFILE_RE.test(s.profile) ? s.profile : DEFAULTS.profile;
+  const job = { videoId: id, profile, state: "running", stage: "starting", percent: 0, eta: null,
+                startedAt: Date.now() };
+  jobs.set(id, job);
+  broadcast(job);
+  const first = await ask({ type: "scan", videoId: id, profile, rescan: !!rescan });
+  if (!first && !hostOk) {
+    jobs.delete(id);
+    return { available: false, job: null };
+  }
+  return { available: true, job: publicJob(jobs.get(id)) };
+}
+
 browser.runtime.onMessage.addListener((msg) => {
   if (!msg) return undefined;
   if (msg.type === "getList") return getList(msg.id);
+  if (msg.type === "scanState") return scanState(msg.id);
+  if (msg.type === "startScan") return startScan(msg.id, msg.rescan);
   if (msg.type === "clearCache") return clearCache();
   if (msg.type === "profiles") return getProfiles();
   if (msg.type === "defaults") return Promise.resolve(DEFAULTS);

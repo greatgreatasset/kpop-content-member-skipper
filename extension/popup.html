@@ -11,6 +11,11 @@
   <label class="row"><span id="hlLabel">Highlights</span><input type="checkbox" id="highlights"></label>
   <p id="status" class="status">…</p>
   <button id="nextHl" hidden>Jump to next highlighted part</button>
+  <div id="scan" hidden>
+    <button id="scanBtn" hidden>Filter this video</button>
+    <progress id="scanBar" max="100" value="0" hidden></progress>
+    <p id="scanText" class="hint"></p>
+  </div>
   <p class="foot"><a href="#" id="options">Settings</a> · Alt+Shift+H = next highlight</p>
   <script src="popup.js"></script>
 </body>
