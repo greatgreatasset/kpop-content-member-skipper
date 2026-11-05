@@ -39,12 +39,27 @@ or set `KMS_PHOTOS_<ID>` (e.g. `KMS_PHOTOS_HEARTS2HEARTS`).
 collect photos per member, run `build_refs.py --profile <id>`, then scan videos
 with `--profile <id>`. Run `sync_skiplists.py` so the extension lists it.
 
-## Usage
+## Scanning a video
+
+Double-click **scan.bat**, paste the YouTube link (youtube.com/watch, youtu.be
+or shorts) and press Enter. It scans the video (about 1.5 minutes for a
+30-minute video), then commits **only** that video's skip-list files and pushes
+them to GitHub, and ends with e.g. `Done: 10 skips (176 s), 22 Ian parts.`
+Refresh the YouTube tab; the extension checks GitHub first, so no add-on reload
+is needed (GitHub can take a minute or two to serve a new file). If the upload
+fails, the window says so; the list is still committed locally, so
+`git push origin master` later, or reload the add-on to use the bundled copy.
+
+From a terminal: `scan.bat "<link>" [--profile hearts2hearts] [scan.py options]`
+(quote links that contain `&`).
+
+## Usage (individual steps)
 
 ```
 python build_refs.py [--profile hearts2hearts]   # photos -> data/<profile>/refs.npz (~7 min)
-scan.bat <youtube url> [--profile hearts2hearts] # scan + refresh the extension's bundled lists
 python scan.py <youtube url> [--profile ...]     # scan only -> skiplists/<profile>/<videoId>.json
+python sync_skiplists.py                         # refresh the extension's bundled copies
+python publish_skiplists.py [<videoId>]          # commit + push only that video's skip lists
 python eval_test.py --detail                     # compare against tests/labels_*.json
 ```
 
@@ -103,32 +118,46 @@ What it does on youtube.com/watch pages:
   fetched from
   `https://raw.githubusercontent.com/greatgreatasset/kpop-content-member-skipper/master/skiplists/<profile>/<videoId>.json`
   by default, and the copy bundled in the extension is used when a video has
-  no list online. A missing list just means no skips.
+  no list online. A missing list just means no skips; "not scanned" answers
+  are only cached for a minute, so newly published lists show up quickly.
 
-### Loading it in Firefox
+### Installing it permanently (and sharing it)
+
+Normal Firefox only keeps add-ons that Mozilla has signed. Signing is free and
+"unlisted": the add-on is not shown in Mozilla's add-on store.
+
+1. Once: sign in at https://addons.mozilla.org/developers/ → **Tools** →
+   **Manage API Keys** → generate a key. You get a *JWT issuer* (the key) and
+   a *JWT secret*. Keep the secret private, like a password.
+2. Double-click **sign.bat**, paste the key, then the secret (typing is
+   hidden). It sends the extension to Mozilla for signing (a few minutes), puts
+   the signed `.xpi` in `dist\` (not uploaded to git), publishes it as a
+   GitHub release, and adds it to `updates.json`. The key and secret are not
+   saved anywhere.
+3. Drag the `.xpi` onto a Firefox window (or **File → Open File**) and click
+   **Add**. Remove the temporary copy in `about:debugging`.
+
+Friends: open https://github.com/greatgreatasset/kpop-content-member-skipper/releases/latest
+in Firefox and click the `.xpi`. Installed copies check `updates.json` (the
+manifest's `update_url`) about once a day and update themselves. To ship a
+change, raise `"version"` in `extension/manifest.json` (Mozilla signs each
+version once) and run **sign.bat** again. Skip lists don't need a new version;
+they are fetched from GitHub.
+
+### Loading it temporarily (development)
 
 1. Open `about:debugging` → **This Firefox** → **Load Temporary Add-on…**
 2. Pick `extension\manifest.json`.
 3. Open a scanned video, e.g. https://www.youtube.com/watch?v=oVMQTIUI_2c
 
-Temporary add-ons are removed when Firefox restarts, so repeat this after a
-restart (after `scan.bat`, just click **Reload** on the same page).
-Alternatively, `cd extension` and run `npx web-ext run` to launch a separate
-Firefox profile with it installed.
-
-### Permanent install for friends
-
-Release Firefox only installs signed add-ons. To share it, sign it as a
-self-distributed (unlisted) add-on: create an API key at
-addons.mozilla.org → Developer Hub → Manage API Keys, then
-`npx web-ext sign --channel=unlisted --api-key=... --api-secret=...` in
-`extension/`. That produces a signed `.xpi` friends can install by opening it
-in Firefox. (Not done yet; nothing has been signed or uploaded.)
+Temporary add-ons are removed when Firefox restarts. Alternatively,
+`cd extension` and run `npx web-ext run` to launch a separate Firefox profile
+with it installed.
 
 ### Checks
 
 ```
-cd extension && npx web-ext lint                 # manifest/code lint
+cd extension && npx web-ext lint --self-hosted   # manifest/code lint (self-distributed add-on)
 .venv\Scripts\python tests\browser_test.py       # end-to-end in headless Firefox
 ```
 

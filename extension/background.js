@@ -67,7 +67,10 @@ async function getList(id) {
   };
   if (s.baseUrl) {
     const c = (await browser.storage.local.get(key))[key];
-    if (c && c.baseUrl === s.baseUrl && Date.now() - c.at < s.cacheMinutes * 60000) {
+    // a cached "not scanned" expires after a minute, so a newly published
+    // skip list shows up on the next page load
+    const ttl = c && c.data ? s.cacheMinutes * 60000 : Math.min(60000, s.cacheMinutes * 60000);
+    if (c && c.baseUrl === s.baseUrl && Date.now() - c.at < ttl) {
       return c.data ? { data: c.data, source: "online (cached)", profile } : bundled();
     }
     try {

@@ -452,6 +452,9 @@ def scan(url, p, rescan=False, profile=DEFAULT_PROFILE):
     (prof.skiplists / f"{vid}.json").write_text(json.dumps(out, ensure_ascii=False, indent=1),
                                                 encoding="utf-8")
     update_index(prof.skiplists, prof)
+    # lets scan.bat / publish_skiplists.py know which list was just written
+    (CACHE / "last_scan.json").write_text(json.dumps({"videoId": vid, "profile": prof.id}),
+                                          encoding="utf-8")
     return out, T, st, diag, (times, rows, emb, refs, dbg)
 
 
