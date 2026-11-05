@@ -1,7 +1,12 @@
 {
  "addons": {
   "kpop-content-member-skipper@kirk.local": {
-   "updates": []
+   "updates": [
+    {
+     "version": "0.4.0",
+     "update_link": "https://github.com/greatgreatasset/kpop-content-member-skipper/releases/download/v0.4.0/kpop-content-member-skipper-0.4.0.xpi"
+    }
+   ]
   }
  }
 }
