@@ -1,5 +1,5 @@
-// Content script for youtube.com: skips the ranges of the selected profile's
-// skip list, draws progress-bar markers, "Skipped" toast with Undo, and a
+// Content script for youtube.com: skips the ranges of the video's skip list
+// (one per video, for whichever groups are in it), draws progress-bar markers, "Skipped" toast with Undo, and a
 // "next highlight" button / shortcut for the highlighted member(s), the
 // "Ian: 25% · Skipped: 17%" line under the video title, and progress of
 // "Filter this video" scans (run by the background script on Kirk's PC).
@@ -11,7 +11,6 @@
     videoId: null,
     list: null,          // normalized skip list for videoId, or null
     source: "none",
-    profile: null,
     loading: false,
     suppressed: new Set(), // skip indexes undone by the user (until next video)
     settings: { enabled: true, highlights: true },
@@ -40,17 +39,25 @@
     return new URLSearchParams(location.search).get("v");
   }
 
-  // Accepts format 2 ({highlights:[{member,name,ranges}]}) and the older
-  // format 1 ({ian:[...]}).
+  // Accepts format 3 (one list per video: groups, skipMembers [{name, group}],
+  // highlights [{member, name, group, ranges}]), format 2 (one group per list,
+  // skipMembers as names) and format 1 ({ian: [...]}). Highlighted members with
+  // no parts in the video are dropped.
   function normalize(d) {
     if (!d || typeof d !== "object") return null;
     let hl = Array.isArray(d.highlights) ? d.highlights : [];
     if (!hl.length && Array.isArray(d.ian)) hl = [{ member: "ian", name: "Ian", ranges: d.ian }];
     hl = hl
-      .filter((h) => h && Array.isArray(h.ranges))
+      .filter((h) => h && Array.isArray(h.ranges) && h.ranges.length)
       .map((h, i) => ({ member: String(h.member || i), name: String(h.name || h.member || "Highlight"),
+                        group: h.group ? String(h.group) : d.group ? String(d.group) : "",
                         ranges: h.ranges, color: HL_COLORS[i % HL_COLORS.length] }));
-    return { ...d, skips: Array.isArray(d.skips) ? d.skips : [], highlights: hl };
+    const skipMembers = (Array.isArray(d.skipMembers) ? d.skipMembers : [])
+      .map((m) => (typeof m === "string" ? { name: m, group: d.group || "" }
+                   : { name: String(m?.name || m?.member || "?"), group: String(m?.group || "") }));
+    const groups = Array.isArray(d.groups) ? d.groups.map((g) => String(g?.name || g))
+      : d.group ? [String(d.group)] : [];
+    return { ...d, skips: Array.isArray(d.skips) ? d.skips : [], highlights: hl, skipMembers, groups };
   }
 
   const hlNames = () => (st.list?.highlights || []).filter((h) => h.ranges.length).map((h) => h.name);
@@ -80,7 +87,6 @@
       const list = normalize(r && r.data);
       st.list = list && list.videoId === id ? list : null;
       st.source = r ? r.source : "none";
-      st.profile = r ? r.profile : null;
     } catch (e) {
       console.warn("[kms] could not load skip list", e);
     } finally {
@@ -164,7 +170,9 @@
     const pct = (ranges) => Math.round((100 * ranges.reduce((a, r) => a + Math.max(0, r.end - r.start), 0)) / d);
     const parts = [];
     if (st.settings.highlights) {
-      for (const h of l.highlights) parts.push({ label: `${h.name}:`, pct: pct(h.ranges), color: h.color });
+      for (const h of l.highlights) {
+        if (h.ranges.length) parts.push({ label: `${h.name}:`, pct: pct(h.ranges), color: h.color });
+      }
     }
     if (st.settings.enabled) parts.push({ label: "Skipped:", pct: pct(l.skips) });
     return parts;
@@ -267,7 +275,7 @@
   }
 
   async function reload() {
-    st.videoId = null; // force a fresh load (profile or source changed)
+    st.videoId = null; // force a fresh load (source changed)
     await onNavigate();
   }
 
@@ -451,7 +459,7 @@
   browser.storage.onChanged.addListener((ch, area) => {
     if (area !== "local") return;
     for (const k of ["enabled", "highlights"]) if (k in ch) st.settings[k] = ch[k].newValue;
-    if ("profile" in ch || "baseUrl" in ch) {
+    if ("baseUrl" in ch) {
       reload();
       return;
     }
@@ -468,8 +476,8 @@
         loading: st.loading,
         scanned: !!st.list,
         source: st.source,
-        profile: st.profile,
-        group: st.list?.group || null,
+        groups: st.list?.groups || [],
+        skipMembers: st.list?.skipMembers || [],
         skips: st.list?.skips.length || 0,
         skipSeconds: Math.round((st.list?.skips || []).reduce((a, r) => a + r.end - r.start, 0)),
         highlights: (st.list?.highlights || []).map((h) => ({ name: h.name, count: h.ranges.length })),

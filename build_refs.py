@@ -1,6 +1,7 @@
 """Build the reference face-embedding set from the member photo folders.
 
     python build_refs.py [--profile hearts2hearts] [--photos DIR] [--per-member N] [--all MEMBER ...]
+    python build_refs.py --joint      only redo step 5 (all profiles' refs.npz -> data/gallery.json)
 
 Members, photo folder and sampling come from profiles/<profile>.json.
 Phases (embeddings are cached per member in data/<profile>/emb_<member>.npz, so reruns
@@ -10,6 +11,9 @@ only redo the cheap clean/validate steps):
   3. validate- hold out ~10% grouped by shoot date, nearest-centroid vs kNN,
                confusion matrix, impostor scores -> "unknown" threshold
   4. save    - data/<profile>/refs.npz
+  5. joint   - the same holdout check on all profiles together (scan.py classifies
+               against every member of every group), most similar members across
+               groups, joint "unknown" threshold -> data/gallery.json
 """
 import argparse
 import random
@@ -21,7 +25,9 @@ from pathlib import Path
 
 import numpy as np
 
-from common import DEFAULT_PROFILE, Profile, imread, l2n, load_face_app
+import json
+
+from common import DATA, DEFAULT_PROFILE, GALLERY_INFO, Profile, all_profiles, imread, l2n, load_face_app
 
 IMG_EXT = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 MIN_FACE = 48          # px, short side of face box in the (<=1280px) image
@@ -159,13 +165,52 @@ def validate(emb, lab, groups, members, rng_seed=0):
     return res
 
 
+def joint():
+    """Validate all profiles' reference sets as one gallery; save the joint threshold."""
+    ids = [pid for pid in all_profiles() if (DATA / pid / "refs.npz").exists()]
+    embs, labs, grps, names, keys = [], [], [], [], []
+    for pid in ids:
+        z = np.load(DATA / pid / "refs.npz")
+        embs.append(z["emb"].astype(np.float32))
+        labs.append(z["labels"].astype(int) + len(keys))
+        grps += [f"{pid}:{p.split('/')[0]}:{shoot_key(p.split('/', 1)[1])}" for p in z["paths"]]
+        names += list(z["members"])
+        keys += [f"{pid}:{m}" for m in z["members"]]
+    emb, lab, grp = np.concatenate(embs), np.concatenate(labs), np.array(grps)
+    prof_of = np.array([k.split(":")[0] for k in keys])
+    print(f"\n== joint gallery: {', '.join(ids)} ({len(keys)} members, {len(emb)} embeddings)")
+    cents = np.stack([l2n(emb[lab == c].mean(0)) for c in range(len(keys))])
+    sim = cents @ cents.T
+    pairs = sorted(((sim[a, b], keys[a], keys[b]) for a in range(len(keys)) for b in range(a + 1, len(keys))
+                    if prof_of[a] != prof_of[b]), reverse=True)
+    print("most similar members across groups (centroid cosine):")
+    for v, a, b in pairs[:8]:
+        print(f"  {v:.3f}  {a} ~ {b}")
+    res = validate(emb, lab, grp, names)
+    # how often a held-out face is given a member of another group
+    if len(ids) > 1:
+        info = {"profiles": ids, "thr_knn": res["knn"]["t99"], "thr_centroid": res["centroid"]["t99"],
+                "accuracy_knn": res["knn"]["acc"]}
+        cm = res["knn"]["cm"]
+        cross = sum(cm[a, b] for a in range(len(keys)) for b in range(len(keys)) if prof_of[a] != prof_of[b])
+        print(f"\nknn: {cross}/{cm.sum()} held-out faces matched to a member of another group "
+              f"({100 * cross / cm.sum():.2f}%)")
+        GALLERY_INFO.write_text(json.dumps(info, indent=1) + "\n", encoding="utf-8")
+        print(f"saved {GALLERY_INFO}: joint knn threshold {info['thr_knn']:.3f}")
+    return res
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--profile", default=DEFAULT_PROFILE)
+    ap.add_argument("--joint", action="store_true", help="only validate all profiles together")
     ap.add_argument("--photos", help="photo folder (default: the profile's photosDir)")
     ap.add_argument("--per-member", type=int, help="photos sampled per member")
     ap.add_argument("--all", nargs="*", help="members to use every photo of")
     args = ap.parse_args()
+    if args.joint:
+        joint()
+        return
     prof = Profile(args.profile)
     MEMBERS = prof.members
     photos = Path(args.photos) if args.photos else prof.photos_dir

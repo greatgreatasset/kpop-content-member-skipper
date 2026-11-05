@@ -3,21 +3,25 @@
 const $ = (id) => document.getElementById(id);
 const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
 
+// [{name, group}] -> "Carmen & Ye-on (Hearts2Hearts), Yunah (ILLIT)"
+function byGroup(members) {
+  const groups = new Map();
+  for (const m of members) {
+    if (!groups.has(m.group)) groups.set(m.group, []);
+    groups.get(m.group).push(m.name);
+  }
+  return [...groups].map(([g, names]) => `${names.join(" & ")}${g ? ` (${g})` : ""}`).join(", ");
+}
+
 async function init() {
   const defaults = await browser.runtime.sendMessage({ type: "defaults" });
-  const s = { ...defaults, ...(await browser.storage.local.get(["enabled", "highlights", "profile"])) };
+  const s = { ...defaults, ...(await browser.storage.local.get(["enabled", "highlights"])) };
   for (const k of ["enabled", "highlights"]) {
     $(k).checked = s[k];
     $(k).addEventListener("change", () => browser.storage.local.set({ [k]: $(k).checked }));
   }
   const profiles = await browser.runtime.sendMessage({ type: "profiles" });
-  const prof = profiles.find((p) => p.id === s.profile);
-  if (prof) {
-    $("profile").textContent = `${prof.group}: skipping ${prof.skip.join(" & ")}`;
-    if (prof.highlight.length) $("hlLabel").textContent = `${prof.highlight.join(" & ")} highlights`;
-  } else {
-    $("profile").textContent = `Profile: ${s.profile}`;
-  }
+  const all = (kind) => profiles.flatMap((p) => p[kind].map((name) => ({ name, group: p.group })));
   $("options").addEventListener("click", (e) => {
     e.preventDefault();
     browser.runtime.openOptionsPage();
@@ -33,8 +37,19 @@ async function init() {
   }
   // tests open popup.html in a tab of its own and name the video with ?video=
   const q = new URLSearchParams(location.search);
-  if (q.get("video")) status = { videoId: q.get("video"), scanned: q.get("rescan") === "1", loading: false };
+  if (q.get("video")) status = await testStatus(q.get("video"), q.get("rescan") === "1");
   if (status && status.videoId) initScan(status.videoId, status.scanned);
+  // what is skipped: this video's groups once it is scanned, else every group's
+  const scanned = status && status.videoId && status.scanned;
+  const skipping = scanned ? status.skipMembers || [] : all("skip");
+  const hl = scanned ? status.highlights.filter((h) => h.count) : all("highlight");
+  if (scanned && !skipping.length) {
+    $("profile").textContent = "No known group in this video, nothing to skip.";
+  } else {
+    $("profile").textContent = `${scanned ? "Skipping" : "Skips"} ${byGroup(skipping)}`;
+  }
+  $("hlLabel").textContent = hl.length ? `${[...new Set(hl.map((h) => h.name))].join(" & ")} highlights`
+    : "Highlights";
   const el = $("status");
   if (!status || !status.videoId) {
     el.textContent = "Open a YouTube video to see its skip list.";
@@ -59,6 +74,20 @@ ${status.stats}`;
       });
     }
   }
+}
+
+// popup.html?video=<id> (tests): the status the content script would report
+async function testStatus(videoId, rescan) {
+  const r = await browser.runtime.sendMessage({ type: "getList", id: videoId });
+  const d = r && r.data;
+  if (!d || rescan) return { videoId, scanned: rescan, loading: false };
+  const hl = (d.highlights || []).filter((h) => h.ranges && h.ranges.length);
+  const members = (d.skipMembers || []).map((m) => (typeof m === "string" ? { name: m, group: d.group } : m));
+  return {
+    videoId, scanned: true, loading: false, source: r.source, skipMembers: members,
+    skips: d.skips.length, skipSeconds: Math.round(d.skips.reduce((a, s) => a + s.end - s.start, 0)),
+    highlights: hl.map((h) => ({ name: h.name, count: h.ranges.length })),
+  };
 }
 
 const fmtTime = (t) => {

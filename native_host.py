@@ -8,7 +8,7 @@ Firefox starts native_host.bat (which runs this file with the project venv) and
 talks to it over stdin/stdout: 4-byte little-endian length + UTF-8 JSON.
 
 Extension -> host (one request per connection):
-    {"type": "scan", "videoId": "...", "profile": "hearts2hearts", "rescan": false}
+    {"type": "scan", "videoId": "...", "rescan": false}      (optional "profile": limit to groups)
     {"type": "attach", "videoId": "..."}       follow a running scan, else "idle"
 Host -> extension:
     {"type": "hello", "version": ...}
@@ -146,6 +146,8 @@ class JobProgress:
 
 
 def worker(vid, profile, rescan):
+    """profile: None/"" = every group (the default), else comma-separated profile ids."""
+    profile = profile or None
     import scan
     import scan_cli
 
@@ -165,7 +167,7 @@ def worker(vid, profile, rescan):
         return 4
     prog.flush(force=True, stage="upload", percent=W_DL + W_SCAN, eta=UPLOAD_ETA)
     no_push = os.environ.get("KMS_NO_PUSH") == "1"
-    rc, out = scan_cli.publish(res["videoId"], profile, no_push, capture=True)
+    rc, out = scan_cli.publish(res["videoId"], no_push, capture=True)
     print(out, flush=True)
     if rc == 5:
         note = "Scanned, but the extension's bundled copies could not be refreshed."
@@ -182,7 +184,7 @@ def worker(vid, profile, rescan):
 
 def start_worker(vid, profile, rescan):
     log = open(JOBS / f"{vid}.log", "w", encoding="utf-8")
-    cmd = [sys.executable, str(Path(__file__).resolve()), "--worker", vid, profile]
+    cmd = [sys.executable, str(Path(__file__).resolve()), "--worker", vid, profile or ""]
     if rescan:
         cmd.append("--rescan")
     kw = dict(cwd=ROOT, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
@@ -259,15 +261,16 @@ def handle(out, msg):
     if running(job):  # already scanning this video: just follow it
         follow(out, vid)
         return
-    profile = str(msg.get("profile") or "hearts2hearts")
-    if not PROFILE_RE.match(profile) or not (ROOT / "profiles" / f"{profile}.json").exists():
-        send(out, {"type": "error", "videoId": vid, "message": f"Unknown profile: {profile}"})
-        return
+    profile = str(msg.get("profile") or "")  # optional: limit the scan to these groups
+    for pid in filter(None, profile.split(",")):
+        if not PROFILE_RE.match(pid) or not (ROOT / "profiles" / f"{pid}.json").exists():
+            send(out, {"type": "error", "videoId": vid, "message": f"Unknown profile: {pid}"})
+            return
     JOBS.mkdir(parents=True, exist_ok=True)
     proc = start_worker(vid, profile, bool(msg.get("rescan")))
     # the worker overwrites this with its own pid (the venv python.exe launcher
     # keeps running until its child exits, so either pid works for liveness)
-    write_job(vid, dict(state="starting", pid=proc.pid, videoId=vid, profile=profile,
+    write_job(vid, dict(state="starting", pid=proc.pid, videoId=vid, profile=profile or None,
                         stage="starting", percent=0, eta=None, started=time.time(),
                         updated=time.time()))
     follow(out, vid)
@@ -327,7 +330,8 @@ def main():
     if args[:1] == ["--worker"]:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
         os.chdir(ROOT)
-        return worker(args[1], args[2], "--rescan" in args)
+        return worker(args[1], args[2] if len(args) > 2 and args[2] != "--rescan" else "",
+                      "--rescan" in args)
     return serve()  # started by Firefox (args: manifest path, extension id)
 
 

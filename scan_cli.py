@@ -1,7 +1,9 @@
 """What scan.bat runs: ask for / take a link, scan it with progress, upload the skip list.
 
     scan.bat                         (double-click) asks for the link, waits for a key at the end
-    scan.bat <link> [--profile hearts2hearts] [--no-push] [scan.py options]
+    scan.bat <link> [--no-push] [--profile illit] [scan.py options]
+
+Every group is looked for; --profile only limits the scan to some groups.
 
 All the logic lives here rather than in scan.bat: cmd.exe re-reads a running .bat
 file from disk, so editing a long batch file while a scan is running breaks it,
@@ -155,14 +157,14 @@ def run(argv, interactive, out):
     print(f"    {res['videoId']}: {summary(res)}  [{T['total']:.0f} s total]")
 
     print("3/3 Uploading skip list...", flush=True)
-    rc, _ = publish(res["videoId"], a.profile, a.no_push or os.environ.get("KMS_NO_PUSH") == "1")
+    rc, _ = publish(res["videoId"], a.no_push or os.environ.get("KMS_NO_PUSH") == "1")
     return rc
 
 
 # ---- shared with native_host.py (the extension's "Filter this video" button)
 
 def scan_video(vid, p, rescan, profile, debug, progress):
-    """Download + scan one video, writing skiplists/<profile>/<vid>.json.
+    """Download + scan one video, writing skiplists/<vid>.json (profile: None = all groups).
     Returns (skip list dict, timings). Raises scan.DownloadFailed or other errors."""
     import scan
 
@@ -178,10 +180,11 @@ def summary(res):
         return f"{k} {word}{'' if k == 1 else 's'}"
     secs = round(sum(s["end"] - s["start"] for s in res["skips"]))
     hl = ", ".join(n(len(h["ranges"]), f"{h['name']} part") for h in res["highlights"])
-    return f"{n(len(res['skips']), 'skip')} ({secs} s)" + (f", {hl}" if hl else "")
+    groups = " + ".join(g["name"] for g in res.get("groups", [])) or "no known group"
+    return f"{groups}: {n(len(res['skips']), 'skip')} ({secs} s)" + (f", {hl}" if hl else "")
 
 
-def publish(vid, profile, no_push, capture=False):
+def publish(vid, no_push, capture=False):
     """Refresh the bundled copies, then commit (+ push) only this video's skip list.
     Returns (exit code, output if capture). 0 = uploaded/unchanged, 2 = committed
     but the push failed, 5 = bundled copies could not be refreshed."""
@@ -193,7 +196,7 @@ def publish(vid, profile, no_push, capture=False):
         if not capture:
             print("!! " + msg)
         return 5, msg + (f"\n{r.stderr}" if capture else "")
-    cmd = [py, "publish_skiplists.py", vid, "--profile", profile]
+    cmd = [py, "publish_skiplists.py", vid]
     if no_push:
         cmd.append("--no-push")
     r = subprocess.run(cmd, cwd=ROOT, capture_output=capture, text=True, encoding="utf-8",

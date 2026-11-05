@@ -12,7 +12,7 @@ from pathlib import Path
 import numpy as np
 
 import scan
-from common import CACHE, DEFAULT_PROFILE, ROOT, Profile
+from common import CACHE, ROOT
 
 
 def per_second(segs, n):
@@ -50,16 +50,15 @@ def mmss(s):
     return f"{int(s // 60)}:{int(s % 60):02d}"
 
 
-def evaluate(labels, p, detail=False, quiet=False):
+def evaluate(labels, p, detail=False, quiet=False, profile=None):
     vid = labels["videoId"]
     z = np.load(CACHE / f"{vid}.faces.npz")
     times, rows, emb = z["times"], z["rows"], z["emb"]
     kps = z["kps"] if "kps" in z else None
     fsize = tuple(int(x) for x in z["frame_size"]) if "frame_size" in z else None
-    prof = Profile(labels.get("profile", DEFAULT_PROFILE))
-    MEMBERS = prof.members
-    refs = scan.load_refs(prof)
-    skips, highlights, dbg, diag = scan.build_segments(times, rows, emb, refs, p, kps, fsize)
+    gal = scan.load_gallery(profile)  # default: every group, as scan.py does
+    MEMBERS = gal.members
+    skips, highlights, dbg, diag = scan.build_segments(times, rows, emb, gal, p, kps, fsize)
     # the hand labels have approximate ranges for the (first) highlighted member
     hl = highlights[0] if highlights else {"name": "-", "ranges": []}
     ians = hl["ranges"]
@@ -80,7 +79,9 @@ def evaluate(labels, p, detail=False, quiet=False):
     )
     if quiet:
         return r, skips, ians, dbg, diag
-    print(f"thr={diag['thr']:.3f}  faces={diag['faces']} small={diag['faces_small']} "
+    print(f"gallery: {', '.join(gal.ids)}; groups found: "
+          f"{', '.join(g['name'] for g in dbg['groups'])}; confident faces per group: {diag['groups']}")
+    print(f"thr={diag['thr']:.3f} ({diag['thr_source']})  faces={diag['faces']} small={diag['faces_small']} "
           f"unknown={diag['faces_unknown']}")
     print("faces by member:", diag["faces_by_member"])
     print(f"frames with >=1 unknown face: {diag['frames_with_unknown']}/{len(times)}; "
@@ -130,10 +131,11 @@ def main():
     for k, v in scan.DEFAULTS.items():
         ap.add_argument(f"--{k.replace('_', '-')}", type=type(v) if v is not None else float, default=v)
     ap.add_argument("--detail", action="store_true")
+    ap.add_argument("--profile", help="only these groups (comma-separated), e.g. to compare with one group")
     a = ap.parse_args()
     p = {k: getattr(a, k) for k in scan.DEFAULTS}
     labels = json.loads(Path(a.labels).read_text(encoding="utf-8"))
-    _, skips, ians, _, _ = evaluate(labels, p, a.detail)
+    _, skips, ians, _, _ = evaluate(labels, p, a.detail, profile=a.profile)
     n = labels["labeledUntil"]
     print(f"\nafter {mmss(n)} (unlabeled):")
     print("  skips:", ", ".join(f"{mmss(s['start'])}-{mmss(s['end'])}" for s in skips if s["end"] > n))

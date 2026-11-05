@@ -1,10 +1,12 @@
 # kpop-content-member-skipper
 
-Personal tool: pre-scan YouTube videos of a K-pop group and find the time
+Personal tool: pre-scan YouTube videos of K-pop groups and find the time
 ranges where only the members you want to skip are on screen, so a Firefox
 extension can jump over them. Members you want to see more of are recorded as
-highlights. Each group is a **profile**; the first one is Hearts2Hearts
-(skip Carmen and Ye-on, highlight Ian).
+highlights. Each group is a **profile**: Hearts2Hearts (skip Carmen and Ye-on,
+highlight Ian) and ILLIT (skip Yunah). Nobody picks a group: every video is
+checked against all members of all groups, and its skip list says which groups
+are in it.
 
 ## Setup (Windows, NVIDIA GPU)
 
@@ -30,14 +32,33 @@ also drags in the CPU `onnxruntime` package, which shadows the GPU build;
  "usePhotosOf": ["ye-on"], "photosPerMember": 2000}
 ```
 
-`photosDir` holds one subfolder of photos per member (folder name = member id).
-To point it somewhere else on your machine without committing the path, put
-`{"photosDir": "D:/photos/h2h"}` in the gitignored `profiles/<id>.local.json`,
-or set `KMS_PHOTOS_<ID>` (e.g. `KMS_PHOTOS_HEARTS2HEARTS`).
+`photosDir` holds one subfolder of photos per member (folder name = member id;
+other folders, e.g. group photos, are ignored). To point it somewhere else on
+your machine without committing the path, put `{"photosDir": "D:/photos/h2h"}`
+in the gitignored `profiles/<id>.local.json`, or set `KMS_PHOTOS_<ID>` (e.g.
+`KMS_PHOTOS_HEARTS2HEARTS`). `highlight` may be empty (ILLIT has none).
 
-**Adding a group:** copy the profile, change the members/skip/highlight lists,
-collect photos per member, run `build_refs.py --profile <id>`, then scan videos
-with `--profile <id>`. Run `sync_skiplists.py` so the extension lists it.
+### Adding a group
+
+1. **Photos:** one folder per member, named by member id, e.g.
+   `~/Pictures/ILLIT/yunah`, `.../minju`, ... (a couple of thousand photos each
+   is plenty; 2000 per member are sampled).
+2. **Profile:** copy `profiles/illit.json` to `profiles/<id>.json` and set `id`,
+   `group`, `photosDir`, `members` (the folder names), `names`, `skip` and
+   `highlight`.
+3. **References:** `.venv\Scripts\python build_refs.py --profile <id>` (about
+   4 minutes for 5 members). It prints the holdout accuracy and confusion
+   matrix of the group, then checks all groups together (most similar members
+   across groups, cross-group mistakes) and saves the joint "unknown" threshold
+   to `data/gallery.json`. Re-run `build_refs.py --joint` alone after deleting a
+   group.
+4. **Extension:** `.venv\Scripts\python sync_skiplists.py` (updates the groups the
+   popup and settings page list), commit the profile, raise the extension
+   version and run **sign.bat**.
+
+From then on every scan also looks for the new group; nothing else changes.
+Videos scanned earlier don't know about it until they are scanned again (fast:
+detections are cached).
 
 ## Scanning a video
 
@@ -52,7 +73,7 @@ them to GitHub. Each stage shows one updating line:
 3/3 Uploading skip list...
 ```
 
-and it ends with e.g. `Done: 10 skips (176 s), 22 Ian parts.` and "Press any
+and it ends with e.g. `Done: Hearts2Hearts: 10 skips (176 s), 22 Ian parts.` and "Press any
 key to close" (one video per run; a video scanned before skips stage 2's work:
 "using earlier scan of this video").
 Refresh the YouTube tab; the extension checks GitHub first, so no add-on reload
@@ -67,8 +88,11 @@ scan.bat https://www.youtube.com/watch?v=oVMQTIUI_2c
 scan.bat https://youtu.be/gNUMxMuxH20
 scan.bat gNUMxMuxH20
 scan.bat "https://www.youtube.com/watch?v=oVMQTIUI_2c&t=30s"   (quotes needed: link has &)
-scan.bat <link> --profile hearts2hearts [scan.py options]
+scan.bat <link> [--profile illit] [scan.py options]
 ```
+
+No group needs to be named: every group is looked for. `--profile` (one id or
+several, comma-separated) only limits the scan to those groups.
 
 Any common link form works (youtube.com/watch?v=, m./music. hosts, youtu.be,
 shorts/live/embed, extra `&t=`/`&list=` parts) as does the bare 11-character
@@ -107,40 +131,62 @@ over native messaging; it starts a separate worker process for the scan (using
 ## Usage (individual steps)
 
 ```
-python build_refs.py [--profile hearts2hearts]   # photos -> data/<profile>/refs.npz (~7 min)
-python scan.py <link or video id> [--profile ...] # scan only -> skiplists/<profile>/<videoId>.json
+python build_refs.py [--profile illit]           # photos -> data/<profile>/refs.npz (~4 min) + joint check
+python build_refs.py --joint                     # only the joint check of all groups -> data/gallery.json
+python scan.py <link or video id> [--profile ...] # scan only -> skiplists/<videoId>.json
 python sync_skiplists.py                         # refresh the extension's bundled copies
-python publish_skiplists.py [<videoId>]          # commit + push only that video's skip lists
-python eval_test.py --detail                     # compare against tests/labels_*.json
+python publish_skiplists.py [<videoId>]          # commit + push only that video's skip list
+python eval_test.py --detail [--profile ...]     # compare against tests/labels_*.json
+python debug_frames.py <videoId> 1:46 2:18 ...   # annotated frames -> cache/debug/
 ```
 
 Photos, embeddings, videos and caches live in the gitignored `data/` and
 `cache/` folders; only code, profiles and `skiplists/` are committed. Face
-detections are cached per video (`cache/<id>.faces.npz`) and shared by all
-profiles, so re-scanning a video for another profile or with new rules takes
-seconds.
+detections are cached per video (`cache/<id>.faces.npz`), so re-scanning a
+video after adding a group or changing the rules takes seconds.
 
-## Skip list format (`skiplists/<profile>/<videoId>.json`)
+## Skip list format (`skiplists/<videoId>.json`)
+
+One list per video, for whichever groups are in it:
 
 ```json
-{"format": 2, "videoId": "oVMQTIUI_2c", "profile": "hearts2hearts", "group": "Hearts2Hearts",
- "title": "...", "duration": 1672, "scannedAt": "...", "scannerVersion": "0.3.0",
- "skipMembers": ["Carmen", "Ye-on"],
+{"format": 3, "videoId": "oVMQTIUI_2c", "title": "...", "duration": 1672,
+ "scannedAt": "...", "scannerVersion": "0.4.0",
+ "groups": [{"id": "hearts2hearts", "name": "Hearts2Hearts", "faces": 7453}],
+ "skipMembers": [{"member": "carmen", "name": "Carmen", "group": "Hearts2Hearts", "profile": "hearts2hearts"}, ...],
  "skips": [{"start": 4.5, "end": 23.17}],
- "highlights": [{"member": "ian", "name": "Ian", "ranges": [{"start": 23.67, "end": 28.0}]}]}
+ "highlights": [{"member": "ian", "name": "Ian", "group": "Hearts2Hearts", "profile": "hearts2hearts",
+                 "ranges": [{"start": 23.67, "end": 28.0}]}]}
 ```
 
-`skiplists/<profile>/index.json` lists the scanned videos of each profile.
+`groups` are the groups found in the video (with the number of confidently
+recognized faces), `highlights` only lists highlighted members who have parts
+in it. `skiplists/index.json` lists every scanned video with its groups.
+The per-group folder `skiplists/hearts2hearts/` holds the format-2 lists from
+before 0.5.0; add-on versions before 0.5.0 still read them, and 0.5.0 reads
+them only when a video has no list of its own. It can be deleted once
+everyone is on 0.5.0.
 
 ## How a frame is labelled
 
-Each detected face (short side >= `--min-face` px) is matched to a member by
-mean similarity to its k nearest reference photos; below the threshold it is
-"unknown". Face tracking fills in faces that are unknown on their own (e.g.
-turned away for a moment) from the same face in neighbouring frames.
+Each detected face (short side >= `--min-face` px) is compared with every
+member of every group (one joint gallery of all `data/<profile>/refs.npz`) by
+mean similarity to her k nearest reference photos.
 
-A frame is SKIP when at least one skip-member is recognized and no other member
-is. These don't block a skip:
+1. **Which groups are in the video:** a group counts when at least 20 faces,
+   and 5% of all confidently recognized faces, match its members (the group
+   with the most always counts). This uses the joint "unknown" threshold
+   (`data/gallery.json`, the 99th percentile of impostor scores over all groups).
+2. Each face is then matched only among the members of those groups, with the
+   threshold of just those groups (one group: that group's own threshold from
+   build_refs, so adding a group doesn't change how a Hearts2Hearts video is
+   labelled). Below the threshold a face is "unknown".
+
+Face tracking fills in faces that are unknown on their own (e.g. turned away
+for a moment) from the same face in neighbouring frames.
+
+A frame is SKIP when at least one skip-member (of any group) is recognized and
+every other recognized member is a skip-member too. These don't block a skip:
 - unknown faces (backup dancers, crew)
 - faces much smaller than the frame's main face (members in the background)
 - members whose face is cut off by the frame edge (only partly in the scene)
@@ -160,19 +206,23 @@ What it does on youtube.com/watch pages:
   range alone until you open another video
 - markers on the progress bar for the highlighted member's parts (pink for the
   first highlighted member), muted striped markers for skipped ranges
-- a button in the player controls (**Ian ⏭** for Hearts2Hearts) and
-  **Alt+Shift+H** jump to the next highlighted part (rebind under
-  about:addons → ⚙ → Manage Extension Shortcuts)
-- under the video title: e.g. "**Ian: 25%** · Skipped: 17%" (share of the
+- when the video has a highlighted member's parts: a button in the player
+  controls (**Ian ⏭** for Hearts2Hearts) and **Alt+Shift+H** jump to the next
+  one (rebind under about:addons → ⚙ → Manage Extension Shortcuts). Videos
+  without highlights (e.g. ILLIT) have no button.
+- under the video title, only the parts that apply: e.g. "**Ian: 29%** ·
+  Skipped: 27%" for Hearts2Hearts, "Skipped: 12%" for ILLIT (share of the
   video's length; follows the on/off switches), or "Not filtered yet"
-- toolbar popup: skipping on/off, highlights on/off, and e.g.
-  "10 skips (… s) · 22 Ian parts" for the current video (or "not scanned yet")
-- settings page: profile (group), skip list base URL and cache time. Lists are
-  fetched from
-  `https://raw.githubusercontent.com/greatgreatasset/kpop-content-member-skipper/master/skiplists/<profile>/<videoId>.json`
-  by default, and the copy bundled in the extension is used when a video has
-  no list online. A missing list just means no skips; "not scanned" answers
-  are only cached for a minute, so newly published lists show up quickly.
+- toolbar popup: who is skipped, e.g. "Skipping Yunah (ILLIT)" (without a
+  scanned video: every group's skip-members), skipping on/off, highlights
+  on/off, and e.g. "10 skips (… s) · 22 Ian parts" for the current video
+- settings page: the groups it knows, skip list base URL and cache time.
+  There is no group to pick. Lists are fetched from
+  `https://raw.githubusercontent.com/greatgreatasset/kpop-content-member-skipper/master/skiplists/<videoId>.json`
+  by default (falling back to the pre-0.5.0 `skiplists/hearts2hearts/<videoId>.json`),
+  and the copy bundled in the extension is used when a video has no list
+  online. A missing list just means no skips; "not scanned" answers are only
+  cached for a minute, so newly published lists show up quickly.
 
 ### Installing it permanently (and sharing it)
 

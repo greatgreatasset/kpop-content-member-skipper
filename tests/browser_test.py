@@ -1,13 +1,16 @@
 """End-to-end check of the extension in real (headless) Firefox via Selenium.
 
-    python tests/browser_test.py [--headed] [--video oVMQTIUI_2c]
+    python tests/browser_test.py [--headed] [--video oVMQTIUI_2c] [--other Vk5-c_v4gMU]
     python tests/browser_test.py --scan-video tPNGxVu5d68 [--rescan]
 
 Installs extension/ as a temporary add-on in a fresh profile, opens the video,
 waits out ads, and checks: progress-bar markers, skip at the first skip range,
 toast + Undo, the Next Ian button, the "Ian: 25% · Skipped: 17%" line under the
-title, the on/off toggle (via the popup page) and in-page navigation to another
-video. With --scan-video it instead runs "Filter this video" for real (needs
+title, the popup ("Skipping Carmen & Ye-on (Hearts2Hearts)"), the settings page
+(groups listed, no group selector), the on/off toggle (via the popup page) and
+in-page navigation to another video. Then a video of another group with no
+highlighted member (--other, an ILLIT video): "Skipped: N%" only, no Next
+button, popup "Skipping Yunah (ILLIT)". With --scan-video it instead runs "Filter this video" for real (needs
 install_native_host.bat; commits and pushes the skip list like scan.bat):
 button -> progress banner -> skips applied. Screenshots go to cache/debug/.
 """
@@ -70,10 +73,22 @@ def wait_no_ad(d, timeout=120, min_len=600):
                isFinite(v.duration) && v.duration > arguments[0];""", min_len), timeout)
 
 
+def load_list(vid):
+    return json.loads((ROOT / "skiplists" / f"{vid}.json").read_text(encoding="utf-8"))
+
+
+def by_group(members):
+    """[{name, group}] -> 'Carmen & Ye-on (Hearts2Hearts), Yunah (ILLIT)', as the popup writes it."""
+    groups = {}
+    for m in members:
+        groups.setdefault(m["group"], []).append(m["name"])
+    return ", ".join(f"{' & '.join(n)} ({g})" for g, n in groups.items())
+
+
 def expected_stats(sl, enabled=True, highlights=True):
     def pct(rs):
         return round(100 * sum(max(0, r["end"] - r["start"]) for r in rs) / sl["duration"])
-    parts = [f"{h['name']}: {pct(h['ranges'])}%" for h in sl["highlights"]] if highlights else []
+    parts = [f"{h['name']}: {pct(h['ranges'])}%" for h in sl["highlights"] if h["ranges"]] if highlights else []
     if enabled:
         parts.append(f"Skipped: {pct(sl['skips'])}%")
     return " · ".join(parts)
@@ -153,7 +168,7 @@ def scan_flow(d, a, ext_uuid):
     d.save_screenshot(str(OUT / "ext_scan_done.png"))
     if not done:
         return
-    sl = json.loads((ROOT / "skiplists" / a.profile / f"{vid}.json").read_text(encoding="utf-8"))
+    sl = load_list(vid)
     nexp = len(sl["skips"]) + sum(len(h["ranges"]) for h in sl["highlights"])
     n = wait(d, lambda: js(d, """const b=document.querySelector('.cys-markers');
         return b && b.querySelectorAll('.cys-skip, .cys-hl').length"""), 10)
@@ -182,16 +197,65 @@ def scan_flow(d, a, ext_uuid):
         check("new skip list skips", t, f"currentTime={t}")
 
 
+def other_group(d, a, ext_uuid):
+    """A video of another group with no highlighted member: only "Skipped: N%",
+    no Next button, popup "Skipping Yunah (ILLIT)"."""
+    sl = load_list(a.other)
+    groups = " + ".join(g["name"] for g in sl["groups"])
+    # the toggle test above switched skipping off; switch it back on
+    yt0 = d.current_window_handle
+    open_ext_page(d, ext_uuid, "popup.html")
+    cb = d.find_element(By.ID, "enabled")
+    if not cb.is_selected():
+        cb.click()
+        time.sleep(0.5)
+    d.close()
+    d.switch_to.window(yt0)
+    d.get(f"https://www.youtube.com/watch?v={a.other}")
+    ok = wait_no_ad(d, min_len=30)
+    check(f"{groups} video loaded, no ad", ok)
+    if not ok:
+        return
+    want = expected_stats(sl)
+    got = wait(d, lambda: (lambda t: t if t == want else None)(stats_text(d)), 15)
+    check(f"{groups}: stats line has no highlight part", got == want and want.startswith("Skipped:"),
+          f"{stats_text(d)!r}, expected {want!r}")
+    n = wait(d, lambda: js(d, """const b=document.querySelector('.cys-markers');
+        return b && [b.querySelectorAll('.cys-skip').length, b.querySelectorAll('.cys-hl').length];"""), 15)
+    check(f"{groups}: skip markers, no highlight markers", n == [len(sl["skips"]), 0], repr(n))
+    js(d, "document.querySelector('#movie_player').dispatchEvent(new MouseEvent('mousemove',{bubbles:true}))")
+    time.sleep(1.5)  # ensure() runs every second
+    check(f"{groups}: no Next button", not d.find_elements(By.CSS_SELECTOR, ".cys-next-btn"))
+    if sl["skips"]:
+        s0 = sl["skips"][0]
+        js(d, "const v=document.querySelector('#movie_player video'); v.muted=true; v.currentTime=arguments[0]; v.play();",
+           s0["start"] + 0.3)
+        t = wait(d, lambda: (lambda x: x if x >= s0["end"] - 0.5 else None)(js(d, (
+            "const p=document.querySelector('#movie_player');"
+            "return p.classList.contains('ad-showing') ? 0 : p.querySelector('video').currentTime"))), 10, 0.25)
+        check(f"{groups}: skips {s0['start']}->{s0['end']}", t, f"currentTime={t}")
+    d.save_screenshot(str(OUT / "ext_other_group.png"))
+    yt = d.current_window_handle
+    open_ext_page(d, ext_uuid, f"popup.html?video={a.other}")
+    txt = d.find_element(By.ID, "profile").text
+    check(f"{groups}: popup names who is skipped", txt == f"Skipping {by_group(sl['skipMembers'])}", repr(txt))
+    check(f"{groups}: popup has no next-highlight button", not d.find_element(By.ID, "nextHl").is_displayed())
+    hl_label = d.find_element(By.ID, "hlLabel").text
+    check(f"{groups}: popup highlight label", hl_label == "Highlights", repr(hl_label))
+    d.close()
+    d.switch_to.window(yt)
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
     ap.add_argument("--headed", action="store_true")
     ap.add_argument("--video", default="oVMQTIUI_2c")
-    ap.add_argument("--profile", default="hearts2hearts")
+    ap.add_argument("--other", default="Vk5-c_v4gMU", help="a video of another group, without highlights")
     ap.add_argument("--scan-video", help="run 'Filter this video' on this video (real scan + push)")
     ap.add_argument("--rescan", action="store_true", help="with --scan-video: rescan an already scanned video")
     a = ap.parse_args()
-    sl = json.loads((ROOT / "skiplists" / a.profile / f"{a.video}.json").read_text(encoding="utf-8"))
+    sl = load_list(a.video)
     hl = sl["highlights"][0]
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -290,7 +354,8 @@ def main():
         cb = d.find_element(By.ID, "enabled")
         check("popup loads, skipping on", cb.is_selected(), f"status={d.find_element(By.ID, 'status').text!r}")
         prof_txt = d.find_element(By.ID, "profile").text
-        check("popup shows profile", "Hearts2Hearts" in prof_txt and "Carmen" in prof_txt, repr(prof_txt))
+        check("popup without a video: every group's skips",
+              prof_txt == "Skips Carmen & Ye-on (Hearts2Hearts), Yunah (ILLIT)", repr(prof_txt))
         check("popup highlight label", d.find_element(By.ID, "hlLabel").text == f"{hl['name']} highlights",
               repr(d.find_element(By.ID, "hlLabel").text))
         cb.click()
@@ -298,17 +363,20 @@ def main():
         d.close()
         d.switch_to.window(yt)
         open_ext_page(d, ext_uuid, "options.html")
-        info = d.find_element(By.ID, "profileInfo").text
-        check("settings: profile selector", d.find_element(By.ID, "profile").get_attribute("value") == a.profile
-              and "video(s) bundled" in info, repr(info))
+        groups = [e.text for e in d.find_elements(By.CSS_SELECTOR, "#groups li")]
+        check("settings: groups listed, no group selector",
+              groups == ["Hearts2Hearts: skips Carmen, Ye-on; highlights Ian", "ILLIT: skips Yunah"]
+              and not d.find_elements(By.CSS_SELECTOR, "select"), repr(groups))
         base = d.find_element(By.ID, "baseUrl").get_attribute("value")
         check("settings: default skip list URL", "kpop-content-member-skipper" in base, base)
         # ask the background script (from this extension page) where the list comes from
         src = d.execute_async_script("""const done = arguments[arguments.length - 1];
             browser.runtime.sendMessage({type: 'getList', id: arguments[0]})
-              .then(r => done(r.source + ' ' + (r.data ? r.data.skips.length : 0)), e => done('error ' + e));""",
+              .then(r => done(r.source + ' format ' + (r.data && r.data.format) + ' ' +
+                              (r.data ? r.data.skips.length : 0)), e => done('error ' + e));""",
                                      a.video)
-        print(f"       skip list source: {src} (online = fetched from the base URL, bundled = fallback)")
+        print(f"       skip list source: {src} (online = fetched from the base URL, bundled = fallback;"
+              f" format 2 = read from the pre-0.5.0 per-group path)")
         check("skip list loaded", src.split()[-1] == str(len(sl["skips"])), src)
         d.close()
         d.switch_to.window(yt)
@@ -329,10 +397,12 @@ def main():
         moved = wait(d, lambda: a.video not in d.current_url and "watch" in d.current_url, 20)
         if moved:
             time.sleep(3)
-            n = js(d, "return document.querySelectorAll('.cys-markers').length")
-            check("SPA navigation clears markers", n == 0, f"url={d.current_url} markers={n}")
             other = d.current_url.split("v=")[1][:11]
-            if not (ROOT / "skiplists" / a.profile / f"{other}.json").exists():
+            # markers of the old video are gone (the next video may be scanned too)
+            n = js(d, "return [...document.querySelectorAll('.cys-markers')].filter(b => b.dataset.videoId === arguments[0]).length",
+                   a.video)
+            check("SPA navigation clears markers", n == 0, f"url={d.current_url} old-video markers={n}")
+            if not (ROOT / "skiplists" / f"{other}.json").exists():
                 line = wait(d, lambda: (lambda t: t if t and "Not filtered" in t else None)(stats_text(d)), 10)
                 has_btn = bool(js(d, "return document.querySelector('.cys-stats .cys-filter')"))
                 check("unscanned video: 'Not filtered yet'", line, repr(stats_text(d)))
@@ -344,6 +414,14 @@ def main():
             check("back navigation restores markers", n == len(hl["ranges"]), f"{n} highlight markers")
         else:
             check("SPA navigation", False, "could not find/click another video link")
+
+        # the popup for this video (popup.html?video= stands in for the active tab)
+        open_ext_page(d, ext_uuid, f"popup.html?video={a.video}")
+        txt = d.find_element(By.ID, "profile").text
+        check("popup: who this video skips", txt == f"Skipping {by_group(sl['skipMembers'])}", repr(txt))
+        d.close()
+        d.switch_to.window(yt)
+        other_group(d, a, ext_uuid)
     finally:
         d.quit()
         passed = sum(ok for _, ok, _ in results)

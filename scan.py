@@ -1,6 +1,6 @@
-"""Scan a YouTube video and write skiplists/<profile>/<videoId>.json.
+"""Scan a YouTube video and write skiplists/<videoId>.json.
 
-    python scan.py <youtube url or id> [--profile hearts2hearts] [--fps 3] [--min-face 40] ...
+    python scan.py <youtube url or id> [--profile illit[,hearts2hearts]] [--fps 3] [--min-face 40] ...
 
 Any common link form works (youtube.com/watch?v=, m./music. hosts, youtu.be,
 /shorts/, /live/, /embed/, extra &t= / &list= params) as does a bare 11-char
@@ -9,7 +9,8 @@ Download problems print one short line; --debug shows the full traceback.
 
 Pipeline: yt-dlp download (video only) -> ffmpeg decode at --fps -> InsightFace
 detection + ArcFace embedding on GPU -> per-face member/unknown classification
-against data/<profile>/refs.npz -> per-frame SKIP/KEEP/NONE -> gap fill + smoothing ->
+against every member of every profile (data/*/refs.npz; --profile limits it) ->
+which groups are in the video -> per-frame SKIP/KEEP/NONE -> gap fill + smoothing ->
 segments.
 
 Raw detections (time, bbox, embedding) are cached in cache/<id>.faces.npz so
@@ -28,13 +29,13 @@ from datetime import datetime, timezone
 
 import numpy as np
 
-from common import CACHE, DEFAULT_PROFILE, Profile, update_index
+from common import CACHE, SKIPLISTS, Gallery, update_index
 
 # harmless deprecation notice from insightface's use of scikit-image
 warnings.filterwarnings("ignore", category=FutureWarning, message=".*estimate.*deprecated")
 
-SCANNER_VERSION = "0.3.0"
-SKIPLIST_FORMAT = 2
+SCANNER_VERSION = "0.4.0"
+SKIPLIST_FORMAT = 3
 CACHE_FORMAT = "2"  # bump when the cached detection arrays change
 
 DEFAULTS = dict(
@@ -64,6 +65,11 @@ DEFAULTS = dict(
     full_yaw=99.0,        # max |nose offset from eye midpoint| / eye distance (99 = off)
     edge_trim=0.5,        # s: trim each skip range inward at both ends ...
     min_trimmed=1.5,      # s: ... and drop it if it is then shorter than this
+    # A group is "in the video" when enough faces are confidently matched to its
+    # members; faces matched to a group that isn't are re-matched among the
+    # groups that are (a stray look-alike match never turns into a skip).
+    group_min=20,         # faces: a group needs at least this many ...
+    group_frac=0.05,      # ... and this share of all confidently matched faces
 )
 
 
@@ -224,49 +230,78 @@ def detect_all(path, fps, height, det_size, on_frame=None):
 
 
 # ---------------------------------------------------------------- classify
-def load_refs(prof):
-    z = np.load(prof.data / "refs.npz")
-    assert list(z["members"]) == prof.members, "refs.npz members differ from the profile; rerun build_refs.py"
-    return dict(prof=prof, members=prof.members,
-                emb=z["emb"].astype(np.float32), labels=z["labels"].astype(int),
-                centroids=z["centroids"], thr_knn=float(z["unknown_thr_knn"]),
-                thr_centroid=float(z["unknown_thr_centroid"]))
+def load_gallery(profiles=None):
+    """profiles: None (every group) or a list / comma-separated string of profile ids."""
+    if isinstance(profiles, str):
+        profiles = [x.strip() for x in profiles.split(",") if x.strip()]
+    return Gallery(profiles or None)
 
 
-def class_scores(emb, refs, method, k):
+def class_scores(emb, gal, method, k):
     if len(emb) == 0:
-        return np.zeros((0, len(refs["members"])), np.float32)
+        return np.zeros((0, len(gal.keys)), np.float32)
     if method == "centroid":
-        return emb @ refs["centroids"].T
-    out = np.empty((len(emb), len(refs["members"])), np.float32)
+        return emb @ gal.centroids.T
+    out = np.empty((len(emb), len(gal.keys)), np.float32)
+    cols = [np.where(gal.labels == c)[0] for c in range(len(gal.keys))]
     for s in range(0, len(emb), 4096):
-        sims = emb[s:s + 4096] @ refs["emb"].T
-        for c in range(len(refs["members"])):
-            sc = sims[:, refs["labels"] == c]
+        sims = emb[s:s + 4096] @ gal.emb.T
+        for c, idx in enumerate(cols):
+            sc = sims[:, idx]
             kk = min(k, sc.shape[1])
             out[s:s + 4096, c] = np.partition(-sc, kk - 1, axis=1)[:, :kk].mean(1) * -1
     return out
 
 
-def classify(rows, emb, refs, p):
-    """Returns per-face label index (-1 unknown, -2 too small) and best score."""
-    thr = p["thr"] if p["thr"] is not None else refs[f"thr_{p['method']}"]
-    S = class_scores(emb, refs, p["method"], p["knn_k"])
-    best = S.argmax(1) if len(S) else np.zeros(0, int)
-    score = S.max(1) if len(S) else np.zeros(0)
-    lab = np.where(score >= thr, best, -1)
+def detect_groups(S, ok, gal, thr, p):
+    """Profile indexes of the groups in the video, from the faces (`ok`: big
+    enough to count) confidently matched to their members. The group with the
+    most is always in."""
+    best, score = S.argmax(1), S.max(1)
+    conf = ok & (score >= thr)
+    counts = np.bincount(gal.cls_prof[best[conf]], minlength=len(gal.profiles))
+    total = counts.sum()
+    found = [g for g in range(len(gal.profiles))
+             if counts[g] and (counts[g] == counts.max()
+                               or (counts[g] >= p["group_min"] and counts[g] >= p["group_frac"] * total))]
+    return found, counts
+
+
+def classify(rows, emb, gal, p):
+    """Returns per-face class index (-1 unknown, -2 too small / background),
+    best score, (threshold, its source) and (groups found, confident faces per group).
+
+    Pass 1 finds the groups with the joint threshold (all members of all groups);
+    pass 2 matches each face only among the members of those groups, with the
+    threshold for just those groups."""
+    thr = p["thr"] if p["thr"] is not None else getattr(gal, f"thr_{p['method']}")
+    S = class_scores(emb, gal, p["method"], p["knn_k"])
     w = rows[:, 3] - rows[:, 1]
     h = rows[:, 4] - rows[:, 2]
     size = np.minimum(w, h)
-    lab = np.where(size >= p["min_face"], lab, -2)
+    big = size >= p["min_face"]
     if p["rel_size"] > 0 and len(rows):
         fi = rows[:, 0].astype(int)
         biggest = np.zeros(fi.max() + 1)
         np.maximum.at(biggest, fi, size)
-        lab = np.where(size >= p["rel_size"] * biggest[fi], lab, -2)
+        big &= size >= p["rel_size"] * biggest[fi]
+    if len(S):
+        groups, counts = detect_groups(S, big, gal, thr, p)
+    else:
+        groups, counts = [], np.zeros(len(gal.profiles), int)
+    if groups and len(groups) < len(gal.profiles):
+        S = S.copy()
+        S[:, ~np.isin(gal.cls_prof, groups)] = -1.0  # members of groups not in the video
+    src = "--thr"
+    if p["thr"] is None:
+        thr, src = gal.thr_for(groups, p["method"])
+    best = S.argmax(1) if len(S) else np.zeros(0, int)
+    score = S.max(1) if len(S) else np.zeros(0)
+    lab = np.where(score >= thr, best, -1)
+    lab = np.where(big, lab, -2)
     if p["track"]:
         lab = track_relabel(rows, emb, lab, S, p)
-    return lab, score, thr
+    return lab, score, (thr, src), (groups, counts)
 
 
 def iou(a, b):
@@ -448,12 +483,13 @@ def to_segments(mask, times, dt, merge_gap, min_len, trim=0.0, min_trimmed=0.0):
 PARTIAL = -3  # recognized member who is not fully shown: does not block a skip
 
 
-def build_segments(times, rows, emb, refs, p, kps=None, frame_size=None):
+def build_segments(times, rows, emb, gal, p, kps=None, frame_size=None):
+    """SKIP frames: at least one skip-member (of any group) is recognized and
+    every recognized, fully shown foreground member is a skip-member."""
     dt = 1.0 / p["fps"]
-    prof = refs["prof"]
-    lab, score, thr = classify(rows, emb, refs, p)       # identity (after tracking)
+    lab, score, (thr, thr_src), (groups, counts) = classify(rows, emb, gal, p)  # identity (after tracking)
     full = full_face_mask(rows, kps, frame_size, p)
-    skip_ids = prof.idx(prof.skip)
+    skip_ids = gal.classes("skip")
     eff = lab.copy()
     eff[(lab >= 0) & ~np.isin(lab, skip_ids) & ~full] = PARTIAL
     state, unknown, recog = frame_states(len(times), rows, eff, skip_ids)
@@ -463,36 +499,43 @@ def build_segments(times, rows, emb, refs, p, kps=None, frame_size=None):
     skips = to_segments(skip, times, dt, p["merge_gap"], p["min_skip"],
                         p["edge_trim"], p["min_trimmed"])
     highlights, hl_masks = [], {}
-    for m in prof.highlight:
-        c = prof.members.index(m)
+    for c in gal.classes("highlight"):
+        if gal.cls_prof[c] not in groups:
+            continue
         mask = np.array([c in r for r in recog_any], bool)
         mask = median_filter(mask, 3) if p["median"] > 1 else mask
-        hl_masks[m] = mask
+        hl_masks[gal.keys[c]] = mask
         # highlights never overlap a skip (they would be jumped over anyway)
         rng = subtract(to_segments(mask, times, dt, p["hl_merge_gap"], p["hl_min"]), skips)
-        highlights.append({"member": m, "name": prof.names[m],
-                           "ranges": [s for s in rng if s["end"] - s["start"] >= p["hl_min"]]})
+        rng = [s for s in rng if s["end"] - s["start"] >= p["hl_min"]]
+        if rng:  # only members who are actually in the video
+            highlights.append({**gal.member_info(c), "ranges": rng})
+    found = [{"id": gal.profiles[g].id, "name": gal.profiles[g].group, "faces": int(counts[g])}
+             for g in sorted(groups, key=lambda g: -counts[g])]
+    skip_members = [gal.member_info(c) for c in skip_ids if gal.cls_prof[c] in groups]
     diag = dict(
-        thr=thr,
+        thr=thr, thr_source=thr_src,
+        groups={gal.profiles[g].id: int(counts[g]) for g in range(len(gal.profiles))},
         faces=int(len(lab)),
         faces_small=int((lab == -2).sum()),
         faces_unknown=int((lab == -1).sum()),
         faces_partial_nonblocking=int((eff == PARTIAL).sum()),
-        faces_by_member={m: int((lab == c).sum()) for c, m in enumerate(prof.members)},
+        faces_by_member={gal.members[c]: int((lab == c).sum()) for c in range(len(gal.keys))},
         frames_with_unknown=int((unknown > 0).sum()),
         frames_skip_with_unknown=int(((state == SKIP) & (unknown > 0)).sum()),
         frames_no_member=int((state == NONE).sum()),
     )
     return skips, highlights, dict(lab=lab, eff=eff, full=full, score=score, state=state,
                                    filled=filled, skip=skip, highlight=hl_masks, recog=recog,
-                                   unknown=unknown), diag
+                                   unknown=unknown, groups=found, skip_members=skip_members), diag
 
 
 # ---------------------------------------------------------------- main
-def scan(url, p, rescan=False, profile=DEFAULT_PROFILE, debug=False, progress=None):
-    """progress: optional object with download_hook(d), detect_start(duration),
+def scan(url, p, rescan=False, profile=None, debug=False, progress=None):
+    """profile: None = every group, else profile id(s) to limit the scan to.
+    progress: optional object with download_hook(d), detect_start(duration),
     frame(t), cached() (see scan_cli.py)."""
-    prof = Profile(profile)
+    gal = load_gallery(profile)
     vid = video_id(url)
     if vid:
         url = watch_url(vid)
@@ -520,27 +563,27 @@ def scan(url, p, rescan=False, profile=DEFAULT_PROFILE, debug=False, progress=No
                  frame_size=np.array(frame_size), key=key)
     T.update({k: v for k, v in st.items() if k.endswith(("wall", "busy"))})
     tc = time.perf_counter()
-    refs = load_refs(prof)
-    skips, highlights, dbg, diag = build_segments(times, rows, emb, refs, p, kps, frame_size)
+    skips, highlights, dbg, diag = build_segments(times, rows, emb, gal, p, kps, frame_size)
     T["classify_smooth"] = time.perf_counter() - tc
     T["total"] = time.perf_counter() - t0
 
     out = dict(
-        format=SKIPLIST_FORMAT, videoId=vid, profile=prof.id, group=prof.group,
+        format=SKIPLIST_FORMAT, videoId=vid,
         title=info.get("title"), duration=info.get("duration"),
         scannedAt=datetime.now(timezone.utc).isoformat(timespec="seconds"),
         scannerVersion=SCANNER_VERSION,
-        skipMembers=[prof.names[m] for m in prof.skip],
+        groups=dbg["groups"], skipMembers=dbg["skip_members"],
         skips=skips, highlights=highlights,
     )
-    prof.skiplists.mkdir(parents=True, exist_ok=True)
-    (prof.skiplists / f"{vid}.json").write_text(json.dumps(out, ensure_ascii=False, indent=1),
-                                                encoding="utf-8")
-    update_index(prof.skiplists, prof)
+    if profile:
+        out["onlyProfiles"] = gal.ids
+    SKIPLISTS.mkdir(parents=True, exist_ok=True)
+    (SKIPLISTS / f"{vid}.json").write_text(json.dumps(out, ensure_ascii=False, indent=1),
+                                           encoding="utf-8")
+    update_index(SKIPLISTS)
     # lets scan.bat / publish_skiplists.py know which list was just written
-    (CACHE / "last_scan.json").write_text(json.dumps({"videoId": vid, "profile": prof.id}),
-                                          encoding="utf-8")
-    return out, T, st, diag, (times, rows, emb, refs, dbg)
+    (CACHE / "last_scan.json").write_text(json.dumps({"videoId": vid}), encoding="utf-8")
+    return out, T, st, diag, (times, rows, emb, gal, dbg)
 
 
 def fmt(t):
@@ -552,7 +595,8 @@ def build_parser(prog=None):
     # nargs="+": a link split by the shell (e.g. cmd.exe breaks unquoted links at "=")
     # arrives as several pieces and is joined back together.
     ap.add_argument("url", nargs="+", help="YouTube link (any common form) or 11-char video ID")
-    ap.add_argument("--profile", default=DEFAULT_PROFILE)
+    ap.add_argument("--profile", default=None,
+                    help="only these groups (comma-separated profile ids); default: all groups")
     ap.add_argument("--debug", action="store_true", help="show full tracebacks")
     for k, v in DEFAULTS.items():
         ap.add_argument(f"--{k.replace('_', '-')}", type=type(v) if v is not None else float, default=v)
@@ -584,6 +628,7 @@ def main():
     print("timing (s):", {k: round(v, 1) for k, v in T.items()},
           "frames:", st.get("frames"), "size:", st.get("frame_size"))
     print("diagnostics:", json.dumps(diag))
+    print("groups:", ", ".join(f"{g['name']} ({g['faces']} faces)" for g in out["groups"]) or "none")
     print("skips:", ", ".join(f"{fmt(s['start'])}-{fmt(s['end'])}" for s in out["skips"]))
     for h in out["highlights"]:
         print(f"{h['name']}:", ", ".join(f"{fmt(s['start'])}-{fmt(s['end'])}" for s in h["ranges"]))

@@ -6,12 +6,12 @@
 </head>
 <body class="options">
   <h1>K-pop Content Member Skipper settings</h1>
-  <label for="profile">Profile</label>
-  <select id="profile"></select>
-  <p class="hint" id="profileInfo"></p>
+  <label>Groups</label>
+  <ul id="groups" class="hint"></ul>
+  <p class="hint">Every video is checked for all of these groups; its skip list says which are in it.</p>
   <label for="baseUrl">Skip list base URL</label>
   <input type="url" id="baseUrl">
-  <p class="hint">The <code>skiplists/</code> folder that holds <code>&lt;profile&gt;/&lt;videoId&gt;.json</code>.
+  <p class="hint">The <code>skiplists/</code> folder that holds <code>&lt;videoId&gt;.json</code>.
     Leave empty to use only the skip lists bundled with the extension. If a video has no list online,
     the bundled copy is used. <a href="#" id="reset">Reset to default</a></p>
   <label for="cacheMinutes">Cache fetched lists for (minutes)</label>

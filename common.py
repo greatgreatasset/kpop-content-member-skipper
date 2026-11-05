@@ -40,7 +40,6 @@ class Profile:
         self.use_all = set(cfg.get("usePhotosOf", []))
         self.per_member = int(cfg.get("photosPerMember", 2000))
         self.data = DATA / pid
-        self.skiplists = SKIPLISTS / pid
 
     def idx(self, members):
         return [self.members.index(m) for m in members]
@@ -56,8 +55,91 @@ def all_profiles():
     return sorted(p.stem for p in PROFILES.glob("*.json") if not p.stem.endswith(".local"))
 
 
-def update_index(folder, prof):
-    """Rewrite <folder>/index.json from the skip lists in it."""
+GALLERY_INFO = DATA / "gallery.json"  # joint "unknown" threshold, written by build_refs.py
+
+
+class Gallery:
+    """All members of all profiles (that have data/<id>/refs.npz) as one set of
+    classes, so a video is classified without picking a group first.
+
+    Class c is member members[c] of profiles[cls_prof[c]]; keys[c] = "<profile>:<member>".
+    `only` restricts it to some profiles (scan.py --profile). The "unknown"
+    threshold is the joint one from data/gallery.json when it was computed for
+    exactly these profiles, the profile's own one for a single profile, else the
+    highest per-profile one."""
+
+    def __init__(self, only=None):
+        ids = list(only) if only else all_profiles()
+        self.profiles = [Profile(pid) for pid in ids if (DATA / pid / "refs.npz").exists() or only]
+        if not self.profiles:
+            raise FileNotFoundError("no data/<profile>/refs.npz found; run build_refs.py first")
+        embs, labs, self.keys, self.members, self.cls_prof = [], [], [], [], []
+        own_thr = []
+        for pi, prof in enumerate(self.profiles):
+            f = prof.data / "refs.npz"
+            if not f.exists():
+                raise FileNotFoundError(f"{f} is missing; run build_refs.py --profile {prof.id}")
+            z = np.load(f)
+            assert list(z["members"]) == prof.members,                 f"{f} members differ from the profile; rerun build_refs.py --profile {prof.id}"
+            embs.append(z["emb"].astype(np.float32))
+            labs.append(z["labels"].astype(int) + len(self.keys))
+            for m in prof.members:
+                self.keys.append(f"{prof.id}:{m}")
+                self.members.append(m)
+                self.cls_prof.append(pi)
+            own_thr.append((float(z["unknown_thr_knn"]), float(z["unknown_thr_centroid"])))
+        self.emb = np.concatenate(embs)
+        self.labels = np.concatenate(labs)
+        self.cls_prof = np.array(self.cls_prof)
+        self.centroids = np.stack([l2n(self.emb[self.labels == c].mean(0)) for c in range(len(self.keys))])
+        self.own_thr = own_thr
+        self.thr_source = "joint"
+        info = json.loads(GALLERY_INFO.read_text(encoding="utf-8")) if GALLERY_INFO.exists() else {}
+        if len(self.profiles) == 1:
+            self.thr_knn, self.thr_centroid = own_thr[0]
+            self.thr_source = "profile"
+        elif sorted(info.get("profiles", [])) == sorted(self.ids):
+            self.thr_knn, self.thr_centroid = info["thr_knn"], info["thr_centroid"]
+        else:
+            self.thr_knn = max(t[0] for t in own_thr)
+            self.thr_centroid = max(t[1] for t in own_thr)
+            self.thr_source = "max of profiles (run build_refs.py --joint)"
+
+    def thr_for(self, groups, method):
+        """("unknown" threshold, where it comes from) once the faces are matched
+        only against the members of `groups` (profile indexes): one group -> its
+        own threshold from build_refs, all groups -> the joint one, else the
+        highest of theirs."""
+        groups = sorted(set(groups))
+        k = 0 if method == "knn" else 1
+        if len(groups) == 1:
+            return self.own_thr[groups[0]][k], f"{self.profiles[groups[0]].id}"
+        if not groups or len(groups) == len(self.profiles):
+            return getattr(self, f"thr_{method}"), self.thr_source
+        return max(self.own_thr[g][k] for g in groups), "max of " + "+".join(self.profiles[g].id for g in groups)
+
+    @property
+    def ids(self):
+        return [p.id for p in self.profiles]
+
+    def prof(self, c):
+        return self.profiles[self.cls_prof[c]]
+
+    def name(self, c):
+        return self.prof(c).names[self.members[c]]
+
+    def classes(self, kind):
+        """Class indexes of every profile's skip ("skip") or highlight ("highlight") members."""
+        return [c for c in range(len(self.keys)) if self.members[c] in getattr(self.prof(c), kind)]
+
+    def member_info(self, c):
+        p = self.prof(c)
+        return {"member": self.members[c], "name": p.names[self.members[c]],
+                "group": p.group, "profile": p.id}
+
+
+def update_index(folder):
+    """Rewrite <folder>/index.json from the per-video skip lists in it."""
     ID_LEN = 11
     videos = {}
     for f in sorted(Path(folder).glob("*.json")):
@@ -65,9 +147,10 @@ def update_index(folder, prof):
             continue
         d = json.loads(f.read_text(encoding="utf-8"))
         videos[f.stem] = {"title": d.get("title"), "duration": d.get("duration"),
+                          "groups": [g["name"] for g in d.get("groups", [])],
                           "scannedAt": d.get("scannedAt"), "scannerVersion": d.get("scannerVersion"),
                           "skips": len(d.get("skips", []))}
-    idx = {**prof.summary(), "videos": videos}
+    idx = {"format": 3, "videos": videos}
     (Path(folder) / "index.json").write_text(json.dumps(idx, ensure_ascii=False, indent=1) + "\n",
                                              encoding="utf-8")
     return idx

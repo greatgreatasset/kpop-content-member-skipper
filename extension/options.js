@@ -4,32 +4,17 @@ const $ = (id) => document.getElementById(id);
 
 async function init() {
   const defaults = await browser.runtime.sendMessage({ type: "defaults" });
-  const s = { ...defaults, ...(await browser.storage.local.get(["profile", "baseUrl", "cacheMinutes"])) };
+  const s = { ...defaults, ...(await browser.storage.local.get(["baseUrl", "cacheMinutes"])) };
   const profiles = await browser.runtime.sendMessage({ type: "profiles" });
 
-  const sel = $("profile");
+  // every group is recognized in every video; nothing to pick
+  const list = $("groups");
   for (const p of profiles) {
-    const o = document.createElement("option");
-    o.value = p.id;
-    o.textContent = p.group;
-    sel.appendChild(o);
+    const li = document.createElement("li");
+    li.textContent = `${p.group}: skips ${p.skip.join(", ") || "nobody"}` +
+      (p.highlight.length ? `; highlights ${p.highlight.join(", ")}` : "");
+    list.appendChild(li);
   }
-  if (!profiles.some((p) => p.id === s.profile)) {
-    const o = document.createElement("option");
-    o.value = s.profile;
-    o.textContent = s.profile;
-    sel.appendChild(o);
-  }
-  sel.value = s.profile;
-  const showInfo = () => {
-    const p = profiles.find((x) => x.id === sel.value);
-    $("profileInfo").textContent = p
-      ? `Skips: ${p.skip.join(", ")}. Highlights: ${p.highlight.join(", ") || "none"}. ` +
-        `${p.bundled} video(s) bundled.`
-      : "";
-  };
-  sel.addEventListener("change", showInfo);
-  showInfo();
 
   $("baseUrl").value = s.baseUrl;
   $("cacheMinutes").value = s.cacheMinutes;
@@ -58,7 +43,7 @@ async function init() {
         }
       }
     }
-    await browser.storage.local.set({ profile: sel.value, baseUrl, cacheMinutes });
+    await browser.storage.local.set({ baseUrl, cacheMinutes });
     await browser.runtime.sendMessage({ type: "clearCache" });
     $("msg").textContent = "Saved.";
   });

@@ -1,7 +1,9 @@
-// Loads skip lists for the selected profile (remote base URL first, then the
-// bundled copy), caches them, relays the "next highlight" command, and runs
-// "Filter this video" scans through the native host (only on the PC where
-// install_native_host.bat was run).
+// Loads skip lists (remote base URL first, then the bundled copy), caches
+// them, relays the "next highlight" command, and runs "Filter this video" scans
+// through the native host (only on the PC where install_native_host.bat was run).
+// One skip list per video, for whichever groups are in it: <base>/<videoId>.json.
+// Lists published before 0.5.0 live at <base>/<profile>/<videoId>.json and are
+// still read as a fallback.
 "use strict";
 
 const DEFAULT_BASE =
@@ -9,13 +11,13 @@ const DEFAULT_BASE =
 const DEFAULTS = {
   enabled: true,
   highlights: true,
-  profile: "hearts2hearts",
   baseUrl: DEFAULT_BASE,
   cacheMinutes: 30,
 };
 const ID_RE = /^[A-Za-z0-9_-]{11}$/;
 const PROFILE_RE = /^[a-z0-9][a-z0-9_-]*$/;
-const bundledIndex = new Map(); // profile -> Set(videoIds)
+const LEGACY_PROFILES = ["hearts2hearts"]; // groups that had per-group folders before 0.5.0
+let bundledIndex = null; // Set(videoIds)
 let bundledProfiles = null;
 
 async function getSettings() {
@@ -36,47 +38,52 @@ async function getProfiles() {
   return bundledProfiles;
 }
 
-async function getBundledIndex(profile) {
-  if (!bundledIndex.has(profile)) {
-    const idx = await getJson(`skiplists/${profile}/index.json`);
-    bundledIndex.set(profile, new Set(Object.keys((idx && idx.videos) || {})));
+async function loadBundled(id) {
+  if (!bundledIndex) {
+    const idx = await getJson("skiplists/index.json");
+    bundledIndex = new Set(Object.keys((idx && idx.videos) || {}));
   }
-  return bundledIndex.get(profile);
-}
-
-async function loadBundled(profile, id) {
-  if (!(await getBundledIndex(profile)).has(id)) return null;
-  return getJson(`skiplists/${profile}/${id}.json`);
+  return bundledIndex.has(id) ? getJson(`skiplists/${id}.json`) : null;
 }
 
 // -> {status: "ok", data} | {status: "missing"}; throws on network/server errors
-async function loadRemote(baseUrl, profile, id) {
-  const url = baseUrl.replace(/\/*$/, "/") + `${profile}/${encodeURIComponent(id)}.json`;
+async function fetchList(url) {
   const r = await fetch(url, { cache: "no-cache" });
   if (r.status === 404) return { status: "missing" };
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   return { status: "ok", data: await r.json() };
 }
 
+async function loadRemote(baseUrl, id) {
+  const base = baseUrl.replace(/\/*$/, "/");
+  const r = await fetchList(base + `${encodeURIComponent(id)}.json`);
+  if (r.status === "ok") return r;
+  // fallback: the per-group path used before 0.5.0
+  for (const pid of LEGACY_PROFILES) {
+    const old = await fetchList(base + `${pid}/${encodeURIComponent(id)}.json`);
+    if (old.status === "ok") return old;
+  }
+  return r;
+}
+
 async function getList(id) {
   const r = await getListOnline(id);
-  const key = `scanned:${r.profile}:${id}`;
+  const key = `scanned:${id}`;
   const mine = ID_RE.test(id) ? (await browser.storage.local.get(key))[key] : null;
   // a list just scanned on this PC wins until GitHub serves the same or a newer one
   if (mine && (!r.data || String(r.data.scannedAt || "") < String(mine.scannedAt || ""))) {
-    return { data: mine, source: "scanned on this PC", profile: r.profile };
+    return { data: mine, source: "scanned on this PC" };
   }
   return r;
 }
 
 async function getListOnline(id) {
   const s = await getSettings();
-  const profile = PROFILE_RE.test(s.profile) ? s.profile : DEFAULTS.profile;
-  if (!ID_RE.test(id)) return { data: null, source: "none", profile };
-  const key = `cache:${profile}:${id}`;
+  if (!ID_RE.test(id)) return { data: null, source: "none" };
+  const key = `cache:${id}`;
   const bundled = async () => {
-    const b = await loadBundled(profile, id);
-    return { data: b, source: b ? "bundled" : "none", profile };
+    const b = await loadBundled(id);
+    return { data: b, source: b ? "bundled" : "none" };
   };
   if (s.baseUrl) {
     const c = (await browser.storage.local.get(key))[key];
@@ -84,13 +91,13 @@ async function getListOnline(id) {
     // skip list shows up on the next page load
     const ttl = c && c.data ? s.cacheMinutes * 60000 : Math.min(60000, s.cacheMinutes * 60000);
     if (c && c.baseUrl === s.baseUrl && Date.now() - c.at < ttl) {
-      return c.data ? { data: c.data, source: "online (cached)", profile } : bundled();
+      return c.data ? { data: c.data, source: "online (cached)" } : bundled();
     }
     try {
-      const r = await loadRemote(s.baseUrl, profile, id);
+      const r = await loadRemote(s.baseUrl, id);
       const data = r.status === "ok" ? r.data : null;
       await browser.storage.local.set({ [key]: { at: Date.now(), baseUrl: s.baseUrl, data } });
-      if (data) return { data, source: "online", profile };
+      if (data) return { data, source: "online" };
     } catch (e) {
       console.warn("[kms] online skip list failed, using bundled copy:", e);
     }
@@ -120,10 +127,9 @@ function broadcast(job) {
 async function finishJob(job, msg) {
   const list = msg.list;
   if (list && list.videoId === job.videoId) {
-    const p = list.profile || job.profile;
     await browser.storage.local.set({
-      [`scanned:${p}:${list.videoId}`]: list,
-      [`cache:${p}:${list.videoId}`]: { at: Date.now(), baseUrl: (await getSettings()).baseUrl, data: list },
+      [`scanned:${list.videoId}`]: list,
+      [`cache:${list.videoId}`]: { at: Date.now(), baseUrl: (await getSettings()).baseUrl, data: list },
     });
   }
   Object.assign(job, { state: "done", stage: "done", percent: 100, eta: 0, note: msg.note || "",
@@ -225,17 +231,19 @@ async function scanState(id) {
   return { available: await hostAvailable(), job: publicJob(job) };
 }
 
-async function startScan(id, rescan) {
+async function startScan(id, rescan, only) {
   if (!ID_RE.test(id)) return { available: false, job: null };
   const cur = jobs.get(id);
   if (cur && cur.state === "running") return { available: true, job: publicJob(cur) };
-  const s = await getSettings();
-  const profile = PROFILE_RE.test(s.profile) ? s.profile : DEFAULTS.profile;
+  // every group is looked for; "profile" only limits a scan (not used by the UI)
+  const profile = PROFILE_RE.test(String(only || "")) ? only : null;
   const job = { videoId: id, profile, state: "running", stage: "starting", percent: 0, eta: null,
                 startedAt: Date.now() };
   jobs.set(id, job);
   broadcast(job);
-  const first = await ask({ type: "scan", videoId: id, profile, rescan: !!rescan });
+  const request = { type: "scan", videoId: id, rescan: !!rescan };
+  if (profile) request.profile = profile;
+  const first = await ask(request);
   if (!first && !hostOk) {
     jobs.delete(id);
     return { available: false, job: null };
@@ -247,7 +255,7 @@ browser.runtime.onMessage.addListener((msg) => {
   if (!msg) return undefined;
   if (msg.type === "getList") return getList(msg.id);
   if (msg.type === "scanState") return scanState(msg.id);
-  if (msg.type === "startScan") return startScan(msg.id, msg.rescan);
+  if (msg.type === "startScan") return startScan(msg.id, msg.rescan, msg.profile);
   if (msg.type === "clearCache") return clearCache();
   if (msg.type === "profiles") return getProfiles();
   if (msg.type === "defaults") return Promise.resolve(DEFAULTS);

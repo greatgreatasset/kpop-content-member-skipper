@@ -1,0 +1,10 @@
+{
+ "id": "illit",
+ "group": "ILLIT",
+ "photosDir": "~/Pictures/ILLIT",
+ "members": ["yunah", "minju", "moka", "wonhee", "iroha"],
+ "names": {"yunah": "Yunah", "minju": "Minju", "moka": "Moka", "wonhee": "Wonhee", "iroha": "Iroha"},
+ "skip": ["yunah"],
+ "highlight": [],
+ "photosPerMember": 2000
+}
