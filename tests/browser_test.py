@@ -182,6 +182,13 @@ def main():
               and "1 video" in info, repr(info))
         base = d.find_element(By.ID, "baseUrl").get_attribute("value")
         check("settings: default skip list URL", "kpop-content-member-skipper" in base, base)
+        # ask the background script (from this extension page) where the list comes from
+        src = d.execute_async_script("""const done = arguments[arguments.length - 1];
+            browser.runtime.sendMessage({type: 'getList', id: arguments[0]})
+              .then(r => done(r.source + ' ' + (r.data ? r.data.skips.length : 0)), e => done('error ' + e));""",
+                                     a.video)
+        print(f"       skip list source: {src} (online = fetched from the base URL, bundled = fallback)")
+        check("skip list loaded", src.split()[-1] == str(len(sl["skips"])), src)
         d.close()
         d.switch_to.window(yt)
         s2 = sl["skips"][2]
