@@ -2,6 +2,11 @@
 
     python scan.py <youtube url or id> [--profile hearts2hearts] [--fps 3] [--min-face 40] ...
 
+Any common link form works (youtube.com/watch?v=, m./music. hosts, youtu.be,
+/shorts/, /live/, /embed/, extra &t= / &list= params) as does a bare 11-char
+video ID; the link is always normalized to https://www.youtube.com/watch?v=<ID>.
+Download problems print one short line; --debug shows the full traceback.
+
 Pipeline: yt-dlp download (video only) -> ffmpeg decode at --fps -> InsightFace
 detection + ArcFace embedding on GPU -> per-face member/unknown classification
 against data/<profile>/refs.npz -> per-frame SKIP/KEEP/NONE -> gap fill + smoothing ->
@@ -14,14 +19,19 @@ classification/smoothing can be re-tuned without re-running the GPU pass
 import argparse
 import json
 import queue
+import re
 import subprocess
 import threading
 import time
+import warnings
 from datetime import datetime, timezone
 
 import numpy as np
 
 from common import CACHE, DEFAULT_PROFILE, Profile, update_index
+
+# harmless deprecation notice from insightface's use of scikit-image
+warnings.filterwarnings("ignore", category=FutureWarning, message=".*estimate.*deprecated")
 
 SCANNER_VERSION = "0.3.0"
 SKIPLIST_FORMAT = 2
@@ -58,7 +68,61 @@ DEFAULTS = dict(
 
 
 # ---------------------------------------------------------------- download
-def download(url, height):
+_ID = r"([A-Za-z0-9_-]{11})(?![A-Za-z0-9_-])"
+_ID_PATTERNS = [
+    re.compile(r"[?&#](?:v|vi)=" + _ID),                                   # watch?v=, &v=
+    re.compile(r"youtu\.be/" + _ID, re.I),                                # youtu.be/<id>
+    re.compile(r"youtube(?:-nocookie)?\.com/(?:shorts|live|embed|v|e)/" + _ID, re.I),
+    re.compile(r"^" + _ID + r"$"),                                         # bare id
+]
+
+
+def video_id(text):
+    """11-character video ID from a YouTube link (any common form) or a bare ID, else None."""
+    t = text.strip().strip("\"'<>").strip()
+    for pat in _ID_PATTERNS:
+        m = pat.search(t)
+        if m:
+            return m.group(1)
+    return None
+
+
+def watch_url(vid):
+    return f"https://www.youtube.com/watch?v={vid}"
+
+
+class DownloadFailed(Exception):
+    pass
+
+
+class _YdlLogger:
+    """Keeps yt-dlp quiet; its error text ends up in DownloadFailed instead."""
+    def __init__(self, debug):
+        self.debug_mode = debug
+
+    def debug(self, msg):
+        if self.debug_mode:
+            print(msg)
+
+    info = debug
+
+    def warning(self, msg):
+        if self.debug_mode:
+            print(msg)
+
+    def error(self, msg):
+        if self.debug_mode:
+            print(msg)
+
+
+def _one_line(err):
+    msg = re.sub(r"\x1b\[[0-9;]*m", "", str(err)).strip()
+    msg = msg.splitlines()[0] if msg else type(err).__name__
+    msg = re.sub(r"^ERROR:\s*", "", msg)
+    return msg if len(msg) <= 200 else msg[:197] + "..."
+
+
+def download(url, height, debug=False, hook=None):
     import yt_dlp
 
     CACHE.mkdir(exist_ok=True)
@@ -68,10 +132,19 @@ def download(url, height):
         "outtmpl": str(CACHE / "%(id)s.%(ext)s"),
         "quiet": True,
         "noprogress": True,
+        "no_warnings": not debug,
+        "logger": _YdlLogger(debug),
     }
-    with yt_dlp.YoutubeDL(opts) as ydl:
-        info = ydl.extract_info(url, download=True)
-        path = ydl.prepare_filename(info)
+    if hook:
+        opts["progress_hooks"] = [hook]
+    try:
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            info = ydl.extract_info(url, download=True)
+            path = ydl.prepare_filename(info)
+    except Exception as e:
+        if debug:
+            raise
+        raise DownloadFailed(_one_line(e)) from e
     return info, path
 
 
@@ -113,7 +186,7 @@ def decode_frames(path, fps, height, q, stats):
     stats["frame_size"] = (w, h)
 
 
-def detect_all(path, fps, height, det_size):
+def detect_all(path, fps, height, det_size, on_frame=None):
     from common import load_face_app
 
     app = load_face_app(det_size=det_size, det_thresh=0.5)
@@ -138,6 +211,8 @@ def detect_all(path, fps, height, det_size):
             rows.append([fi, *f.bbox.tolist(), float(f.det_score)])
             embs.append(f.normed_embedding.astype(np.float32))
             kps.append(np.asarray(f.kps, np.float32).reshape(5, 2))
+        if on_frame:
+            on_frame(t)
     th.join()
     stats["detect_busy"] = det_busy
     stats["pipeline_wall"] = time.perf_counter() - t0
@@ -414,11 +489,16 @@ def build_segments(times, rows, emb, refs, p, kps=None, frame_size=None):
 
 
 # ---------------------------------------------------------------- main
-def scan(url, p, rescan=False, profile=DEFAULT_PROFILE):
+def scan(url, p, rescan=False, profile=DEFAULT_PROFILE, debug=False, progress=None):
+    """progress: optional object with download_hook(d), detect_start(duration),
+    frame(t), cached() (see scan_cli.py)."""
     prof = Profile(profile)
+    vid = video_id(url)
+    if vid:
+        url = watch_url(vid)
     T = {}
     t0 = time.perf_counter()
-    info, path = download(url, p["height"])
+    info, path = download(url, p["height"], debug, progress and progress.download_hook)
     T["download"] = time.perf_counter() - t0
     vid = info["id"]
     cache = CACHE / f"{vid}.faces.npz"
@@ -428,8 +508,13 @@ def scan(url, p, rescan=False, profile=DEFAULT_PROFILE):
         times, rows, emb, kps = z["times"], z["rows"], z["emb"], z["kps"]
         frame_size = tuple(int(x) for x in z["frame_size"])
         st = {"cached": True}
+        if progress:
+            progress.cached()
     else:
-        times, rows, emb, kps, st = detect_all(path, p["fps"], p["height"], p["det_size"])
+        if progress:
+            progress.detect_start(info.get("duration"))
+        times, rows, emb, kps, st = detect_all(path, p["fps"], p["height"], p["det_size"],
+                                               progress and progress.frame)
         frame_size = st["frame_size"]
         np.savez(cache, times=times, rows=rows, emb=emb, kps=kps,
                  frame_size=np.array(frame_size), key=key)
@@ -462,18 +547,39 @@ def fmt(t):
     return f"{int(t // 60)}:{t % 60:04.1f}"
 
 
-def main():
-    import sys
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    ap = argparse.ArgumentParser()
-    ap.add_argument("url")
+def build_parser(prog=None):
+    ap = argparse.ArgumentParser(prog=prog)
+    # nargs="+": a link split by the shell (e.g. cmd.exe breaks unquoted links at "=")
+    # arrives as several pieces and is joined back together.
+    ap.add_argument("url", nargs="+", help="YouTube link (any common form) or 11-char video ID")
     ap.add_argument("--profile", default=DEFAULT_PROFILE)
+    ap.add_argument("--debug", action="store_true", help="show full tracebacks")
     for k, v in DEFAULTS.items():
         ap.add_argument(f"--{k.replace('_', '-')}", type=type(v) if v is not None else float, default=v)
     ap.add_argument("--rescan", action="store_true")
-    a = ap.parse_args()
+    return ap
+
+
+def parse_link(pieces):
+    """Video ID from link pieces (rejoined), or None."""
+    raw = " ".join(pieces)
+    return video_id(raw) or video_id(raw.replace(" ", "="))
+
+
+def main():
+    import sys
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    a = build_parser().parse_args()
     p = {k: getattr(a, k) for k in DEFAULTS}
-    out, T, st, diag, _ = scan(a.url, p, a.rescan, a.profile)
+    vid = parse_link(a.url)
+    if not vid:
+        print(f"Couldn't find a YouTube video ID in: {' '.join(a.url)}")
+        sys.exit(2)
+    try:
+        out, T, st, diag, _ = scan(watch_url(vid), p, a.rescan, a.profile, a.debug)
+    except DownloadFailed as e:
+        print(f"Couldn't download the video: {e}. Check the link and your internet.")
+        sys.exit(3)
     print(f"{out['videoId']}  {out['title']}  ({out['duration']} s)")
     print("timing (s):", {k: round(v, 1) for k, v in T.items()},
           "frames:", st.get("frames"), "size:", st.get("frame_size"))

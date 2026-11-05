@@ -1,51 +1,8 @@
 @echo off
-rem Scan a YouTube video and publish its skip list.
-rem
-rem   Double-click scan.bat     -> asks for the link
-rem   scan.bat "<youtube link>" [--profile hearts2hearts] [scan.py options]
-rem
-rem Accepts youtube.com/watch, youtu.be and shorts links. Writes
-rem skiplists\<profile>\<id>.json, refreshes the extension's bundled copy, then
-rem commits ONLY those skip-list files and pushes them to GitHub, where the
-rem extension looks first.
-setlocal
+rem Scan a YouTube video and upload its skip list. Double-click it, or:
+rem   scan.bat <youtube link> [--profile hearts2hearts] [--no-push] [scan.py options]
+rem Kept tiny on purpose: all logic is in scan_cli.py (cmd.exe re-reads a running
+rem .bat file from disk, so a long one breaks if it is edited mid-scan).
 cd /d "%~dp0"
-set "INTERACTIVE="
-set "URL="
-if "%~1"=="" (
-  set "INTERACTIVE=1"
-  set /p "URL=Paste the YouTube link: "
-) else (
-  set "URL=%~1"
-  shift
-)
-if not defined URL (
-  echo No link given.
-  goto :end
-)
-set "REST="
-:collect
-if "%~1"=="" goto :run
-set REST=%REST% %1
-shift
-goto :collect
-
-:run
-if exist "cache\last_scan.json" del "cache\last_scan.json"
-".venv\Scripts\python.exe" scan.py "%URL%" %REST%
-if errorlevel 1 (
-  echo.
-  echo !! Scan failed - see the message above. Nothing was uploaded.
-  goto :end
-)
-".venv\Scripts\python.exe" sync_skiplists.py >nul || (
-  echo !! Could not refresh the bundled skip lists.
-  goto :end
-)
-rem set KMS_NO_PUSH=1 to commit locally without uploading (used for testing)
-set "PUBARGS="
-if "%KMS_NO_PUSH%"=="1" set "PUBARGS=--no-push"
-".venv\Scripts\python.exe" publish_skiplists.py %PUBARGS%
-
-:end
-if defined INTERACTIVE pause
+if not exist ".venv\Scripts\python.exe" (echo Run setup.bat first.& pause & exit /b 1)
+".venv\Scripts\python.exe" scan_cli.py %*

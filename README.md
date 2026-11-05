@@ -44,20 +44,46 @@ with `--profile <id>`. Run `sync_skiplists.py` so the extension lists it.
 Double-click **scan.bat**, paste the YouTube link (youtube.com/watch, youtu.be
 or shorts) and press Enter. It scans the video (about 1.5 minutes for a
 30-minute video), then commits **only** that video's skip-list files and pushes
-them to GitHub, and ends with e.g. `Done: 10 skips (176 s), 22 Ian parts.`
+them to GitHub. Each stage shows one updating line:
+
+```
+1/3 Downloading video...  45%  (12.3 MB/s)
+2/3 Scanning faces...  [######----]  62%  1:58 / 3:13  ETA 0:04
+3/3 Uploading skip list...
+```
+
+and it ends with e.g. `Done: 10 skips (176 s), 22 Ian parts.` and "Press any
+key to close" (one video per run; a video scanned before skips stage 2's work:
+"using earlier scan of this video").
 Refresh the YouTube tab; the extension checks GitHub first, so no add-on reload
 is needed (GitHub can take a minute or two to serve a new file). If the upload
 fails, the window says so; the list is still committed locally, so
 `git push origin master` later, or reload the add-on to use the bundled copy.
 
-From a terminal: `scan.bat "<link>" [--profile hearts2hearts] [scan.py options]`
-(quote links that contain `&`).
+From a terminal (cmd.exe, in this folder):
+
+```
+scan.bat https://www.youtube.com/watch?v=oVMQTIUI_2c
+scan.bat https://youtu.be/gNUMxMuxH20
+scan.bat gNUMxMuxH20
+scan.bat "https://www.youtube.com/watch?v=oVMQTIUI_2c&t=30s"   (quotes needed: link has &)
+scan.bat <link> --profile hearts2hearts [scan.py options]
+```
+
+Any common link form works (youtube.com/watch?v=, m./music. hosts, youtu.be,
+shorts/live/embed, extra `&t=`/`&list=` parts) as does the bare 11-character
+video ID. Links containing `&` must be quoted on the command line, because
+cmd.exe splits the line at `&` before scan.bat runs; the double-click paste
+prompt takes them as they are. A failed download prints one short line
+(`Couldn't download the video: ...`); add `--debug` for the full traceback.
+`--no-push` (or `set KMS_NO_PUSH=1`) commits the skip list without uploading.
+scan.bat itself only starts `scan_cli.py`, which holds all the logic.
 
 ## Usage (individual steps)
 
 ```
 python build_refs.py [--profile hearts2hearts]   # photos -> data/<profile>/refs.npz (~7 min)
-python scan.py <youtube url> [--profile ...]     # scan only -> skiplists/<profile>/<videoId>.json
+python scan.py <link or video id> [--profile ...] # scan only -> skiplists/<profile>/<videoId>.json
 python sync_skiplists.py                         # refresh the extension's bundled copies
 python publish_skiplists.py [<videoId>]          # commit + push only that video's skip lists
 python eval_test.py --detail                     # compare against tests/labels_*.json
