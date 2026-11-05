@@ -1,0 +1,14 @@
+[
+ {
+  "id": "hearts2hearts",
+  "group": "Hearts2Hearts",
+  "skip": [
+   "Carmen",
+   "Ye-on"
+  ],
+  "highlight": [
+   "Ian"
+  ],
+  "bundled": 1
+ }
+]

@@ -1,0 +1,12 @@
+{
+ "id": "hearts2hearts",
+ "group": "Hearts2Hearts",
+ "photosDir": "~/Pictures/Hearts2Hearts",
+ "members": ["jiwoo", "carmen", "yuha", "stella", "juun", "a-na", "ian", "ye-on"],
+ "names": {"jiwoo": "Jiwoo", "carmen": "Carmen", "yuha": "Yuha", "stella": "Stella",
+           "juun": "Juun", "a-na": "A-na", "ian": "Ian", "ye-on": "Ye-on"},
+ "skip": ["carmen", "ye-on"],
+ "highlight": ["ian"],
+ "usePhotosOf": ["ye-on"],
+ "photosPerMember": 2000
+}

@@ -1,0 +1,152 @@
+{
+ "format": 2,
+ "videoId": "oVMQTIUI_2c",
+ "profile": "hearts2hearts",
+ "group": "Hearts2Hearts",
+ "title": "저는 해삐 했습니다아앙 (๑´^᎑^)~♡ | Hearts2Hearts 하츠투하츠 ‘15-LOVE’ Music Show BH2ND",
+ "duration": 1672,
+ "scannedAt": "2026-11-05T06:03:05+00:00",
+ "scannerVersion": "0.3.0",
+ "skipMembers": [
+  "Carmen",
+  "Ye-on"
+ ],
+ "skips": [
+  {
+   "start": 4.5,
+   "end": 23.17
+  },
+  {
+   "start": 69.17,
+   "end": 85.17
+  },
+  {
+   "start": 105.83,
+   "end": 113.83
+  },
+  {
+   "start": 125.83,
+   "end": 163.83
+  },
+  {
+   "start": 305.83,
+   "end": 346.5
+  },
+  {
+   "start": 403.17,
+   "end": 423.17
+  },
+  {
+   "start": 446.5,
+   "end": 459.83
+  },
+  {
+   "start": 483.5,
+   "end": 553.83
+  },
+  {
+   "start": 924.17,
+   "end": 1132.5
+  },
+  {
+   "start": 1259.5,
+   "end": 1277.83
+  }
+ ],
+ "highlights": [
+  {
+   "member": "ian",
+   "name": "Ian",
+   "ranges": [
+    {
+     "start": 23.67,
+     "end": 28.0
+    },
+    {
+     "start": 32.0,
+     "end": 48.67
+    },
+    {
+     "start": 52.33,
+     "end": 57.67
+    },
+    {
+     "start": 59.67,
+     "end": 68.0
+    },
+    {
+     "start": 104.0,
+     "end": 105.83
+    },
+    {
+     "start": 114.33,
+     "end": 125.83
+    },
+    {
+     "start": 178.33,
+     "end": 186.33
+    },
+    {
+     "start": 203.33,
+     "end": 209.67
+    },
+    {
+     "start": 280.0,
+     "end": 281.67
+    },
+    {
+     "start": 289.67,
+     "end": 291.0
+    },
+    {
+     "start": 426.0,
+     "end": 431.0
+    },
+    {
+     "start": 467.33,
+     "end": 472.67
+    },
+    {
+     "start": 597.67,
+     "end": 600.0
+    },
+    {
+     "start": 655.0,
+     "end": 656.33
+    },
+    {
+     "start": 742.0,
+     "end": 861.33
+    },
+    {
+     "start": 863.33,
+     "end": 923.67
+    },
+    {
+     "start": 1166.33,
+     "end": 1259.0
+    },
+    {
+     "start": 1291.0,
+     "end": 1333.0
+    },
+    {
+     "start": 1530.33,
+     "end": 1554.33
+    },
+    {
+     "start": 1558.67,
+     "end": 1602.0
+    },
+    {
+     "start": 1604.33,
+     "end": 1607.33
+    },
+    {
+     "start": 1613.0,
+     "end": 1639.33
+    }
+   ]
+  }
+ ]
+}

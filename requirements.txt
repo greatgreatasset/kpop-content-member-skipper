@@ -1,0 +1,6 @@
+insightface==2.1
+onnxruntime-gpu[cuda,cudnn]==1.31.1
+opencv-python==5.0.0.93
+numpy==2.5.4
+pillow
+yt-dlp

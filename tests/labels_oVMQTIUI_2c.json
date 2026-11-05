@@ -1,0 +1,27 @@
+{
+ "videoId": "oVMQTIUI_2c",
+ "profile": "hearts2hearts",
+ "labeledUntil": 422,
+ "note": "Kirk's hand labels; left/right = viewer's side. Seconds. Everything in [0, labeledUntil) not in skip is keep.",
+ "skip": [[4, 22], [69, 85], [109, 114], [126, 164], [306, 346], [402, 422]],
+ "ian_approx": [[23, 69], [104, 108], [114, 126], [171, 185], [202, 208]],
+ "notes": [
+  "0:04-0:22 Carmen solo = SKIP",
+  "0:23-1:09 Ian = keep",
+  "1:09-1:25 Ye-on solo = SKIP",
+  "1:26-1:43 Yuha = keep",
+  "1:44-1:48 Carmen with Ian on left, Ye-on approaching from right = keep",
+  "1:49-1:54 Carmen+Ye-on = SKIP",
+  "1:54-2:06 Ian joins = keep",
+  "2:06-2:44 Carmen+Ye-on only = SKIP",
+  "2:44-2:51 Yuha = keep",
+  "2:51-3:05 Stella, Ian joins on left = keep",
+  "3:06-3:22 Jiwoo = keep",
+  "3:22-3:28 Ian+Yuha in mirror = keep",
+  "3:30-4:55 Juun center, Ye-on left, Jiwoo joins right = keep",
+  "~4:55-5:06 group replay = keep",
+  "5:06-5:46 Ye-on solo = SKIP",
+  "5:47-6:42 A-na left, Yuha right = keep",
+  "6:42-7:02 Carmen left, Ye-on right = SKIP"
+ ]
+}

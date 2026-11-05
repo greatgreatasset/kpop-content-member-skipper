@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "K-pop Content Member Skipper",
+  "version": "0.2.0",
+  "description": "Skips the parts of pre-scanned YouTube videos where only the members you choose are on screen, and highlights the members you want to see.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "kpop-content-member-skipper@kirk.local",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://raw.githubusercontent.com/*"],
+  "optional_host_permissions": ["https://*/*", "http://*/*"],
+  "background": { "scripts": ["background.js"] },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": { "default_popup": "popup.html", "default_title": "K-pop Content Member Skipper", "default_icon": "icon.svg" },
+  "icons": { "48": "icon.svg", "96": "icon.svg" },
+  "options_ui": { "page": "options.html" },
+  "commands": {
+    "next-highlight": {
+      "suggested_key": { "default": "Alt+Shift+H" },
+      "description": "Jump to the next highlighted member's part"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+:root {
+  color-scheme: light dark;
+  --fg: #1d1d1f;
+  --muted: #666;
+  --bg: #fff;
+  --accent: #d6307f;
+  --line: #ddd;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --fg: #eee; --muted: #aaa; --bg: #23222b; --accent: #ff6fb3; --line: #444; }
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.4 system-ui, sans-serif;
+}
+body.popup { width: 270px; padding: 12px 14px; }
+body.options { max-width: 560px; padding: 16px; }
+h1 { font-size: 15px; margin: 0 0 10px; }
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; }
+.status { color: var(--muted); margin: 10px 0; }
+.foot { color: var(--muted); font-size: 12px; margin: 8px 0 0; }
+a { color: var(--accent); }
+button {
+  font: inherit;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+.popup button { width: 100%; }
+#clear { background: none; color: var(--accent); }
+.options label { display: block; margin: 14px 0 4px; font-weight: 600; }
+.options input[type="url"], .options input[type="number"], .options select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  font: inherit;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.options input[type="number"] { width: 120px; }
+.hint { color: var(--muted); font-size: 12px; margin: 4px 0; }
+.buttons { display: flex; gap: 8px; margin-top: 16px; }
