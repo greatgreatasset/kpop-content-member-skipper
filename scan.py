@@ -34,7 +34,7 @@ from common import CACHE, SKIPLISTS, Gallery, update_index
 # harmless deprecation notice from insightface's use of scikit-image
 warnings.filterwarnings("ignore", category=FutureWarning, message=".*estimate.*deprecated")
 
-SCANNER_VERSION = "0.4.0"
+SCANNER_VERSION = "0.4.1"
 SKIPLIST_FORMAT = 3
 CACHE_FORMAT = "2"  # bump when the cached detection arrays change
 
@@ -65,6 +65,7 @@ DEFAULTS = dict(
     full_yaw=99.0,        # max |nose offset from eye midpoint| / eye distance (99 = off)
     edge_trim=0.5,        # s: trim each skip range inward at both ends ...
     min_trimmed=1.5,      # s: ... and drop it if it is then shorter than this
+    wide_keep=1,          # 1: frames whose faces are all tiny (wide group shot) are KEEP, not inherited
     # A group is "in the video" when enough faces are confidently matched to its
     # members; faces matched to a group that isn't are re-matched among the
     # groups that are (a stray look-alike match never turns into a skip).
@@ -365,21 +366,33 @@ def track_relabel(rows, emb, lab, S, p):
 SKIP, KEEP, NONE = 1, 0, -1
 
 
-def frame_states(n_frames, rows, lab, skip_ids):
+def frame_states(n_frames, rows, lab, skip_ids, wide_keep=True):
     """Per frame: SKIP if only skip-members are recognized, KEEP if anyone else
-    is, NONE if nobody is. Also returns the recognized member set per frame."""
+    is, NONE if nobody is. Also returns the recognized member set per frame.
+
+    wide_keep: a frame whose faces are all too small (-2; since the biggest face
+    is never "relatively" small, that means all under --min-face) is a wide
+    group shot, not a solo: KEEP, so it doesn't inherit SKIP from neighbours.
+    Frames without any face stay NONE and still inherit."""
     skip_ids = set(skip_ids)
     recog = [set() for _ in range(n_frames)]
     unknown = np.zeros(n_frames, int)
+    faces = np.zeros(n_frames, int)
+    small = np.zeros(n_frames, int)
     for fi, l in zip(rows[:, 0].astype(int), lab):
+        faces[fi] += 1
         if l >= 0:
             recog[fi].add(int(l))
         elif l == -1:
             unknown[fi] += 1
+        elif l == -2:
+            small[fi] += 1
     state = np.full(n_frames, NONE)
     for i, r in enumerate(recog):
         if r:
             state[i] = SKIP if (r <= skip_ids) else KEEP
+        elif wide_keep and faces[i] and small[i] == faces[i]:
+            state[i] = KEEP
     return state, unknown, recog
 
 
@@ -492,7 +505,7 @@ def build_segments(times, rows, emb, gal, p, kps=None, frame_size=None):
     skip_ids = gal.classes("skip")
     eff = lab.copy()
     eff[(lab >= 0) & ~np.isin(lab, skip_ids) & ~full] = PARTIAL
-    state, unknown, recog = frame_states(len(times), rows, eff, skip_ids)
+    state, unknown, recog = frame_states(len(times), rows, eff, skip_ids, bool(p["wide_keep"]))
     _, _, recog_any = frame_states(len(times), rows, lab, skip_ids)  # highlights: any face
     filled = fill_gaps(state, int(round(p["fill_gap"] * p["fps"])))
     skip = median_filter(filled == SKIP, p["median"])

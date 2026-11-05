@@ -191,8 +191,10 @@ every other recognized member is a skip-member too. These don't block a skip:
 - faces much smaller than the frame's main face (members in the background)
 - members whose face is cut off by the frame edge (only partly in the scene)
 
-Frames with no recognized member inherit from their neighbours across short
-gaps. Then a median filter, gap merge (< 1 s) and minimum length (2 s) are
+A frame whose faces are all below `--min-face` (a wide group shot with tiny
+faces) is KEEP: it is a group shot, not a solo. Other frames with no recognized
+member (no face at all, or only unknown faces) inherit from their neighbours
+across short gaps. Then a median filter, gap merge (< 1 s) and minimum length (2 s) are
 applied, and each skip is trimmed 0.5 s inward at both ends (dropped if under
 1.5 s) so it never cuts into someone else's part. Highlights are the ranges
 where a highlighted member is on screen, minus the skipped ranges.
