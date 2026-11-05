@@ -21,7 +21,11 @@ async function init() {
     $(k).addEventListener("change", () => browser.storage.local.set({ [k]: $(k).checked }));
   }
   const profiles = await browser.runtime.sendMessage({ type: "profiles" });
-  const all = (kind) => profiles.flatMap((p) => p[kind].map((name) => ({ name, group: p.group })));
+  const choices = (await browser.storage.local.get("choices")).choices || {};
+  // every group's members with this user's choice (settings page), else the default
+  const all = (kind) => profiles.flatMap((p) => (p.members || [])
+    .filter((m) => (choices[KmsRules.keyOf(p.id, m.id)] || m.default) === kind)
+    .map((m) => ({ name: m.name, group: p.group })));
   $("options").addEventListener("click", (e) => {
     e.preventDefault();
     browser.runtime.openOptionsPage();
@@ -37,14 +41,16 @@ async function init() {
   }
   // tests open popup.html in a tab of its own and name the video with ?video=
   const q = new URLSearchParams(location.search);
-  if (q.get("video")) status = await testStatus(q.get("video"), q.get("rescan") === "1");
+  if (q.get("video")) status = await testStatus(q.get("video"), q.get("rescan") === "1", profiles, choices);
   if (status && status.videoId) initScan(status.videoId, status.scanned);
   // what is skipped: this video's groups once it is scanned, else every group's
   const scanned = status && status.videoId && status.scanned;
   const skipping = scanned ? status.skipMembers || [] : all("skip");
   const hl = scanned ? status.highlights.filter((h) => h.count) : all("highlight");
-  if (scanned && !skipping.length) {
+  if (scanned && !(status.groups || []).length && !skipping.length) {
     $("profile").textContent = "No known group in this video, nothing to skip.";
+  } else if (!skipping.length) {
+    $("profile").textContent = scanned ? "Nobody in this video is skipped." : "Nobody is skipped.";
   } else {
     $("profile").textContent = `${scanned ? "Skipping" : "Skips"} ${byGroup(skipping)}`;
   }
@@ -77,14 +83,17 @@ ${status.stats}`;
 }
 
 // popup.html?video=<id> (tests): the status the content script would report
-async function testStatus(videoId, rescan) {
+async function testStatus(videoId, rescan, profiles, choices) {
   const r = await browser.runtime.sendMessage({ type: "getList", id: videoId });
-  const d = r && r.data;
+  let d = r && r.data;
   if (!d || rescan) return { videoId, scanned: rescan, loading: false };
+  const v = KmsRules.forList(d, profiles, choices); // this user's choices, as the content script does
+  if (v) d = { ...d, ...v };
   const hl = (d.highlights || []).filter((h) => h.ranges && h.ranges.length);
   const members = (d.skipMembers || []).map((m) => (typeof m === "string" ? { name: m, group: d.group } : m));
   return {
     videoId, scanned: true, loading: false, source: r.source, skipMembers: members,
+    groups: (d.groups || []).map((g) => (g && g.name) || g),
     skips: d.skips.length, skipSeconds: Math.round(d.skips.reduce((a, s) => a + s.end - s.start, 0)),
     highlights: hl.map((h) => ({ name: h.name, count: h.ranges.length })),
   };

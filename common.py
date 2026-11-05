@@ -48,7 +48,12 @@ class Profile:
         """Public, machine-independent description (for skip-list indexes / the extension)."""
         return {"id": self.id, "group": self.group,
                 "skip": [self.names[m] for m in self.skip],
-                "highlight": [self.names[m] for m in self.highlight]}
+                "highlight": [self.names[m] for m in self.highlight],
+                # every member with the profile's choice, the default for each add-on user
+                "members": [{"id": m, "name": self.names[m], "default": self.choice(m)} for m in self.members]}
+
+    def choice(self, m):
+        return "skip" if m in self.skip else "highlight" if m in self.highlight else "normal"
 
 
 def all_profiles():

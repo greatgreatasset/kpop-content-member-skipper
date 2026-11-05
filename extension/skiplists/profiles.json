@@ -8,6 +8,48 @@
   ],
   "highlight": [
    "Ian"
+  ],
+  "members": [
+   {
+    "id": "jiwoo",
+    "name": "Jiwoo",
+    "default": "normal"
+   },
+   {
+    "id": "carmen",
+    "name": "Carmen",
+    "default": "skip"
+   },
+   {
+    "id": "yuha",
+    "name": "Yuha",
+    "default": "normal"
+   },
+   {
+    "id": "stella",
+    "name": "Stella",
+    "default": "normal"
+   },
+   {
+    "id": "juun",
+    "name": "Juun",
+    "default": "normal"
+   },
+   {
+    "id": "a-na",
+    "name": "A-na",
+    "default": "normal"
+   },
+   {
+    "id": "ian",
+    "name": "Ian",
+    "default": "highlight"
+   },
+   {
+    "id": "ye-on",
+    "name": "Ye-on",
+    "default": "skip"
+   }
   ]
  },
  {
@@ -16,6 +58,68 @@
   "skip": [
    "Yunah"
   ],
-  "highlight": []
+  "highlight": [],
+  "members": [
+   {
+    "id": "yunah",
+    "name": "Yunah",
+    "default": "skip"
+   },
+   {
+    "id": "minju",
+    "name": "Minju",
+    "default": "normal"
+   },
+   {
+    "id": "moka",
+    "name": "Moka",
+    "default": "normal"
+   },
+   {
+    "id": "wonhee",
+    "name": "Wonhee",
+    "default": "normal"
+   },
+   {
+    "id": "iroha",
+    "name": "Iroha",
+    "default": "normal"
+   }
+  ]
+ },
+ {
+  "id": "kiiikiii",
+  "group": "KiiiKiii",
+  "skip": [],
+  "highlight": [
+   "Kya"
+  ],
+  "members": [
+   {
+    "id": "jiyu",
+    "name": "Jiyu",
+    "default": "normal"
+   },
+   {
+    "id": "leesol",
+    "name": "Leesol",
+    "default": "normal"
+   },
+   {
+    "id": "sui",
+    "name": "Sui",
+    "default": "normal"
+   },
+   {
+    "id": "haum",
+    "name": "Haum",
+    "default": "normal"
+   },
+   {
+    "id": "kya",
+    "name": "Kya",
+    "default": "highlight"
+   }
+  ]
  }
 ]

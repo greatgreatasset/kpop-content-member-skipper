@@ -1,0 +1,10 @@
+{
+ "id": "kiiikiii",
+ "group": "KiiiKiii",
+ "photosDir": "~/Pictures/KiiiKiii",
+ "members": ["jiyu", "leesol", "sui", "haum", "kya"],
+ "names": {"jiyu": "Jiyu", "leesol": "Leesol", "sui": "Sui", "haum": "Haum", "kya": "Kya"},
+ "skip": [],
+ "highlight": ["kya"],
+ "photosPerMember": 2000
+}

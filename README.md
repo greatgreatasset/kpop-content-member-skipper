@@ -1,12 +1,15 @@
 # kpop-content-member-skipper
 
-Personal tool: pre-scan YouTube videos of K-pop groups and find the time
-ranges where only the members you want to skip are on screen, so a Firefox
-extension can jump over them. Members you want to see more of are recorded as
-highlights. Each group is a **profile**: Hearts2Hearts (skip Carmen and Ye-on,
-highlight Ian) and ILLIT (skip Yunah). Nobody picks a group: every video is
-checked against all members of all groups, and its skip list says which groups
-are in it.
+Personal tool: pre-scan YouTube videos of K-pop groups and record who is on
+screen when, so a Firefox extension can jump over the parts where only the
+members you want to skip are on screen, and mark the parts of the members you
+want to see more of (highlights). Each group is a **profile**: Hearts2Hearts
+(skip Carmen and Ye-on, highlight Ian), ILLIT (skip Yunah) and KiiiKiii
+(highlight Kya). Those are the defaults; every add-on user can set each member
+to Skip, Normal or Highlight on the settings page (see
+[Customizing members](#customizing-members)). Nobody picks a group: every
+video is checked against all members of all groups, and its skip list says
+which groups are in it.
 
 ## Setup (Windows, NVIDIA GPU)
 
@@ -36,29 +39,35 @@ also drags in the CPU `onnxruntime` package, which shadows the GPU build;
 other folders, e.g. group photos, are ignored). To point it somewhere else on
 your machine without committing the path, put `{"photosDir": "D:/photos/h2h"}`
 in the gitignored `profiles/<id>.local.json`, or set `KMS_PHOTOS_<ID>` (e.g.
-`KMS_PHOTOS_HEARTS2HEARTS`). `highlight` may be empty (ILLIT has none).
+`KMS_PHOTOS_HEARTS2HEARTS`). `skip` and `highlight` may be empty (ILLIT
+highlights nobody, KiiiKiii skips nobody). They are the **defaults** for
+everyone using the add-on; each user can change them for themselves.
 
 ### Adding a group
 
 1. **Photos:** one folder per member, named by member id, e.g.
    `~/Pictures/ILLIT/yunah`, `.../minju`, ... (a couple of thousand photos each
    is plenty; 2000 per member are sampled).
-2. **Profile:** copy `profiles/illit.json` to `profiles/<id>.json` and set `id`,
+2. **Profile:** copy `profiles/kiiikiii.json` to `profiles/<id>.json` and set `id`,
    `group`, `photosDir`, `members` (the folder names), `names`, `skip` and
-   `highlight`.
+   `highlight` (the default choices; either may be `[]`).
 3. **References:** `.venv\Scripts\python build_refs.py --profile <id>` (about
    4 minutes for 5 members). It prints the holdout accuracy and confusion
    matrix of the group, then checks all groups together (most similar members
    across groups, cross-group mistakes) and saves the joint "unknown" threshold
    to `data/gallery.json`. Re-run `build_refs.py --joint` alone after deleting a
-   group.
-4. **Extension:** `.venv\Scripts\python sync_skiplists.py` (updates the groups the
-   popup and settings page list), commit the profile, raise the extension
-   version and run **sign.bat**.
+   group. Check that the held-out faces matched to a member of another group
+   stay at (about) 0.
+4. **Earlier videos:** `.venv\Scripts\python rescan_cached.py` rebuilds every skip
+   list from the cached detections (seconds, nothing is downloaded), so videos
+   scanned before also know about the new group.
+5. **Extension:** `.venv\Scripts\python sync_skiplists.py` (updates the groups and
+   members the popup and settings page list, with their defaults), commit the
+   profile and the lists, raise the extension version and run **sign.bat**.
+   The settings page then shows the new group's members with your defaults
+   selected.
 
 From then on every scan also looks for the new group; nothing else changes.
-Videos scanned earlier don't know about it until they are scanned again (fast:
-detections are cached).
 
 ## Scanning a video
 
@@ -134,6 +143,7 @@ over native messaging; it starts a separate worker process for the scan (using
 python build_refs.py [--profile illit]           # photos -> data/<profile>/refs.npz (~4 min) + joint check
 python build_refs.py --joint                     # only the joint check of all groups -> data/gallery.json
 python scan.py <link or video id> [--profile ...] # scan only -> skiplists/<videoId>.json
+python rescan_cached.py [<videoId> ...]          # rebuild lists from cached detections (no download)
 python sync_skiplists.py                         # refresh the extension's bundled copies
 python publish_skiplists.py [<videoId>]          # commit + push only that video's skip list
 python eval_test.py --detail [--profile ...]     # compare against tests/labels_*.json
@@ -147,27 +157,49 @@ video after adding a group or changing the rules takes seconds.
 
 ## Skip list format (`skiplists/<videoId>.json`)
 
-One list per video, for whichever groups are in it:
+One list per video, for whichever groups are in it (format 4, scanner 0.5.0):
 
 ```json
-{"format": 3, "videoId": "oVMQTIUI_2c", "title": "...", "duration": 1672,
- "scannedAt": "...", "scannerVersion": "0.4.0",
- "groups": [{"id": "hearts2hearts", "name": "Hearts2Hearts", "faces": 7453}],
+{"format": 4, "videoId": "oVMQTIUI_2c", "title": "...", "duration": 1672,
+ "scannedAt": "...", "scannerVersion": "0.5.0",
+ "groups": [{"id": "hearts2hearts", "name": "Hearts2Hearts", "faces": 7476}],
  "skipMembers": [{"member": "carmen", "name": "Carmen", "group": "Hearts2Hearts", "profile": "hearts2hearts"}, ...],
  "skips": [{"start": 4.5, "end": 23.17}],
  "highlights": [{"member": "ian", "name": "Ian", "group": "Hearts2Hearts", "profile": "hearts2hearts",
-                 "ranges": [{"start": 23.67, "end": 28.0}]}]}
+                 "ranges": [{"start": 23.67, "end": 28.0}]}],
+ "timeline": {
+   "fps": 3, "frames": 5015,
+   "members": [{"key": "hearts2hearts:carmen", "member": "carmen", "name": "Carmen",
+                "group": "Hearts2Hearts", "profile": "hearts2hearts", "default": "skip"}, ...],
+   "rules": {"fillGap": 3.0, "median": 5, "mergeGap": 1.0, "minSkip": 2.0, "edgeTrim": 0.5,
+             "minTrimmed": 1.5, "hlMedian": 3, "hlMergeGap": 2.0, "hlMin": 1.0},
+   "segments": [
+    {"start":0.0,"end":4.0,"state":"none"},
+    {"start":4.0,"end":8.67,"partial":["hearts2hearts:carmen"]},
+    {"start":8.67,"end":12.33,"members":["hearts2hearts:carmen"]}, ...]}}
 ```
 
 `groups` are the groups found in the video (with the number of confidently
-recognized faces), `highlights` only lists highlighted members who have parts
-in it. `skiplists/index.json` lists every scanned video with its groups.
+recognized faces). The **timeline** says who is on screen when: back-to-back
+segments covering every frame, with `members` (recognized foreground members
+whose face is fully shown), `partial` (recognized, but cut off by the frame
+edge), or, when nobody is recognized, a `state`: `wide` (all faces tiny: a
+wide group shot, never skipped), `unknown` (only non-members, e.g. backup
+dancers) or `none` (no face). The add-on works out each user's own skips and
+highlights from it with the rules below (`rules.js`, the same as the scanner's
+`rules.py`). `skips`, `highlights` and `skipMembers` are the results for the
+profiles' default choices: add-on 0.5.0 reads only those, and they are the
+check that the add-on's rules match the scanner's. `skiplists/index.json` lists every scanned video with its groups.
 The per-group folder `skiplists/hearts2hearts/` holds the format-2 lists from
 before 0.5.0; add-on versions before 0.5.0 still read them, and 0.5.0 reads
 them only when a video has no list of its own. It can be deleted once
 everyone is on 0.5.0.
 
 ## How a frame is labelled
+
+(The skip rules are in `rules.py` and, for the add-on, `extension/rules.js`;
+the two must stay identical, which `tests/rules_test.js` and
+`tests/rules_crosscheck.py` check.)
 
 Each detected face (short side >= `--min-face` px) is compared with every
 member of every group (one joint gallery of all `data/<profile>/refs.npz`) by
@@ -186,7 +218,8 @@ Face tracking fills in faces that are unknown on their own (e.g. turned away
 for a moment) from the same face in neighbouring frames.
 
 A frame is SKIP when at least one skip-member (of any group) is recognized and
-every other recognized member is a skip-member too. These don't block a skip:
+every other recognized member is a skip-member too ("skip-members" are each
+user's choice; the scanner uses the profiles' defaults). These don't block a skip:
 - unknown faces (backup dancers, crew)
 - faces much smaller than the frame's main face (members in the background)
 - members whose face is cut off by the frame edge (only partly in the scene)
@@ -197,7 +230,8 @@ member (no face at all, or only unknown faces) inherit from their neighbours
 across short gaps. Then a median filter, gap merge (< 1 s) and minimum length (2 s) are
 applied, and each skip is trimmed 0.5 s inward at both ends (dropped if under
 1.5 s) so it never cuts into someone else's part. Highlights are the ranges
-where a highlighted member is on screen, minus the skipped ranges.
+where a highlighted member is on screen (median filter over 3 frames, gaps
+under 2 s merged, at least 1 s), minus the skipped ranges.
 
 ## Firefox extension (`extension/`)
 
@@ -206,25 +240,49 @@ What it does on youtube.com/watch pages:
 - jumps over the skip ranges (never while an ad is playing) and shows a
   "Skipped 0:04 → 0:23" toast with **Undo**; Undo jumps back and leaves that
   range alone until you open another video
-- markers on the progress bar for the highlighted member's parts (pink for the
-  first highlighted member), muted striped markers for skipped ranges
-- when the video has a highlighted member's parts: a button in the player
-  controls (**Ian ⏭** for Hearts2Hearts) and **Alt+Shift+H** jump to the next
-  one (rebind under about:addons → ⚙ → Manage Extension Shortcuts). Videos
-  without highlights (e.g. ILLIT) have no button.
-- under the video title, only the parts that apply: e.g. "**Ian: 29%** ·
-  Skipped: 27%" for Hearts2Hearts, "Skipped: 12%" for ILLIT (share of the
-  video's length; follows the on/off switches), or "Not filtered yet"
+- markers on the progress bar for the highlighted members' parts, one colour
+  per highlighted member (the first, e.g. Ian or Kya by default, is pink),
+  muted striped markers for skipped ranges
+- when the video has highlighted parts: a button in the player controls
+  (**Ian ⏭** for one highlighted member, **Next ⏭** for several: it goes
+  through all their parts in order) and **Alt+Shift+H** jump to the next one
+  (rebind under about:addons → ⚙ → Manage Extension Shortcuts). Videos without
+  highlights (e.g. ILLIT) have no button.
+- under the video title, only the parts that apply, each highlighted member in
+  her colour: e.g. "**Ian: 29%** · Skipped: 27%" for Hearts2Hearts, "**Kya: 4%** ·
+  Skipped: 0%" for KiiiKiii, "Ian: 29% · Carmen: 21% · Skipped: …" with two
+  highlighted members, "Skipped: 12%" for ILLIT (share of the video's length;
+  follows the on/off switches), or "Not filtered yet"
 - toolbar popup: who is skipped, e.g. "Skipping Yunah (ILLIT)" (without a
-  scanned video: every group's skip-members), skipping on/off, highlights
+  scanned video: every group's skipped members), skipping on/off, highlights
   on/off, and e.g. "10 skips (… s) · 22 Ian parts" for the current video
-- settings page: the groups it knows, skip list base URL and cache time.
-  There is no group to pick. Lists are fetched from
+- settings page: each group's members with Skip / Normal / Highlight (see
+  below), skip list base URL and cache time. There is no group to pick. Lists are fetched from
   `https://raw.githubusercontent.com/greatgreatasset/kpop-content-member-skipper/master/skiplists/<videoId>.json`
   by default (falling back to the pre-0.5.0 `skiplists/hearts2hearts/<videoId>.json`),
   and the copy bundled in the extension is used when a video has no list
   online. A missing list just means no skips; "not scanned" answers are only
   cached for a minute, so newly published lists show up quickly.
+
+### Customizing members
+
+Settings (popup → **Settings**, or about:addons → the add-on → Preferences)
+lists every group with a **Skip / Normal / Highlight** control for each member.
+The defaults are the profiles' choices (Carmen and Ye-on Skip, Ian Highlight,
+Yunah Skip, Kya Highlight, everyone else Normal) and are marked with a dot.
+
+- **Skip**: parts where only skipped members are on screen are jumped over
+  (with several skipped members, scenes with only them are skipped too).
+- **Highlight**: her parts get markers in her own colour, a share in the line
+  under the title, and the Next button.
+- **Normal**: neither.
+
+Changes are saved for this Firefox only (`storage.local`, nothing is sent
+anywhere) and apply right away, also to a video that is already open (no
+reload). **Reset to defaults** goes back to the profiles' choices. It works for
+every video scanned with scanner 0.5.0 or later (format 4, which has the
+timeline); for an older list the add-on can only use its default skips until
+the video is rescanned (`rescan_cached.py`, or scan it again).
 
 ### Installing it permanently (and sharing it)
 
@@ -263,13 +321,21 @@ with it installed.
 
 ```
 cd extension && npx web-ext lint --self-hosted   # manifest/code lint (self-distributed add-on)
+node tests\rules_test.js                         # add-on rules with default choices = scanner's skips, every list
+.venv\Scripts\python tests\rules_crosscheck.py  # rules.py = rules.js for random member choices
 .venv\Scripts\python tests\browser_test.py       # end-to-end in headless Firefox
+.venv\Scripts\python tests\browser_test.py --bundled   # the same with only the bundled lists (before pushing)
 .venv\Scripts\python tests\browser_test.py --scan-video <id> [--rescan]   # "Filter this video", real scan + upload
 ```
 
 `browser_test.py` (needs `pip install -r requirements-dev.txt`) installs the
 add-on into a fresh temporary Firefox profile, opens the test video, and checks
-markers, the skip, toast/Undo, the next-highlight button, the popup, the
-settings page, the line under the title and in-page navigation. `--scan-video`
+markers (at exactly the scanner's default skips/highlights), the skip,
+toast/Undo, the next-highlight button, the popup, the settings page, the line
+under the title and in-page navigation; then on the settings page Carmen →
+Highlight and Ian → Skip (the open video's skips, markers, line and button
+must follow, compared with `rules.py`), both Carmen and Ian highlighted
+(distinct colours, Ian pink, Next goes through both), Reset to defaults, and a
+KiiiKiii video with Kya's highlights. `--scan-video`
 needs install_native_host.bat and checks button → progress banner → skips
 applied (it commits and pushes the skip list like scan.bat).

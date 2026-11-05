@@ -3,13 +3,19 @@
 // "next highlight" button / shortcut for the highlighted member(s), the
 // "Ian: 25% · Skipped: 17%" line under the video title, and progress of
 // "Filter this video" scans (run by the background script on Kirk's PC).
+// Skips and highlights follow the user's Skip / Normal / Highlight choice per
+// member (settings page), worked out from the list's timeline by rules.js.
 "use strict";
 
 (() => {
-  const HL_COLORS = ["#ff4fa3", "#ffc83d", "#3dd6ff", "#9dff5c"];
+  // one colour per highlighted member of a video; the first (Ian by default) is pink
+  const HL_COLORS = ["#ff4fa3", "#ffc83d", "#3dd6ff", "#9dff5c", "#b28cff", "#ff8a3d", "#5cffc8", "#ff6b6b"];
   const st = {
     videoId: null,
-    list: null,          // normalized skip list for videoId, or null
+    raw: null,           // the skip list as loaded (normalized), or null
+    list: null,          // raw + this user's choices applied (skips, highlights, skipMembers)
+    profiles: [],        // groups and their members' default choices (profiles.json)
+    choices: {},         // this user's choices {"<profile>:<member>": "skip" | "normal" | "highlight"}
     source: "none",
     loading: false,
     suppressed: new Set(), // skip indexes undone by the user (until next video)
@@ -60,6 +66,26 @@
     return { ...d, skips: Array.isArray(d.skips) ? d.skips : [], highlights: hl, skipMembers, groups };
   }
 
+  // the list with this user's choices; lists without a timeline (format <= 3)
+  // keep their precomputed default skips and highlights
+  function view(raw) {
+    if (!raw) return null;
+    const v = globalThis.KmsRules ? globalThis.KmsRules.forList(raw, st.profiles, st.choices) : null;
+    if (!v) return raw;
+    const highlights = v.highlights.map((h, i) => ({ ...h, color: HL_COLORS[i % HL_COLORS.length] }));
+    return { ...raw, skips: v.skips, highlights, skipMembers: v.skipMembers, custom: true };
+  }
+
+  function applyChoices() {
+    const old = JSON.stringify(st.list ? [st.list.skips, st.list.highlights] : null);
+    st.list = view(st.raw);
+    if (JSON.stringify(st.list ? [st.list.skips, st.list.highlights] : null) === old) return;
+    st.suppressed = new Set(); // skip indexes changed
+    drawMarkers();
+    ensureNextButton();
+    renderStats();
+  }
+
   const hlNames = () => (st.list?.highlights || []).filter((h) => h.ranges.length).map((h) => h.name);
   const hlLabel = () => {
     const n = hlNames();
@@ -71,6 +97,7 @@
     const id = currentVideoId();
     if (id === st.videoId) return;
     st.videoId = id;
+    st.raw = null;
     st.list = null;
     st.source = "none";
     st.suppressed = new Set();
@@ -85,7 +112,8 @@
       const r = await browser.runtime.sendMessage({ type: "getList", id });
       if (st.videoId !== id) return; // navigated away meanwhile
       const list = normalize(r && r.data);
-      st.list = list && list.videoId === id ? list : null;
+      st.raw = list && list.videoId === id ? list : null;
+      st.list = view(st.raw);
       st.source = r ? r.source : "none";
     } catch (e) {
       console.warn("[kms] could not load skip list", e);
@@ -412,7 +440,7 @@
     const p = player();
     const want = st.settings.highlights && hlNames().length;
     const existing = p?.querySelector(".cys-next-btn");
-    const label = `${hlNames().length === 1 ? hlNames()[0] : "Next"} ⏭`;
+    const label = `${hlNames().length === 1 ? hlNames()[0] : "Next"} ⏭`; // several: cycles through all
     if (!want) {
       existing?.remove();
       return;
@@ -452,13 +480,23 @@
   }
 
   // ------------------------------------------------------------ wiring
-  browser.storage.local.get(["enabled", "highlights"]).then((s) => {
-    Object.assign(st.settings, s);
+  Promise.all([
+    browser.storage.local.get(["enabled", "highlights", "choices"]),
+    browser.runtime.sendMessage({ type: "profiles" }).catch(() => []),
+  ]).then(([s, profiles]) => {
+    for (const k of ["enabled", "highlights"]) if (k in s) st.settings[k] = s[k];
+    st.choices = s.choices || {};
+    st.profiles = profiles || [];
+    applyChoices();
     ensure();
   });
   browser.storage.onChanged.addListener((ch, area) => {
     if (area !== "local") return;
     for (const k of ["enabled", "highlights"]) if (k in ch) st.settings[k] = ch[k].newValue;
+    if ("choices" in ch) {
+      st.choices = ch.choices.newValue || {};
+      applyChoices(); // settings page changed who is skipped / highlighted: no reload
+    }
     if ("baseUrl" in ch) {
       reload();
       return;
@@ -480,7 +518,8 @@
         skipMembers: st.list?.skipMembers || [],
         skips: st.list?.skips.length || 0,
         skipSeconds: Math.round((st.list?.skips || []).reduce((a, r) => a + r.end - r.start, 0)),
-        highlights: (st.list?.highlights || []).map((h) => ({ name: h.name, count: h.ranges.length })),
+        highlights: (st.list?.highlights || []).map((h) => ({ name: h.name, count: h.ranges.length,
+                                                              color: h.color })),
         scannedAt: st.list?.scannedAt || null,
         stats: statsParts().map((p) => `${p.label} ${p.pct}%`).join(" · "),
       });

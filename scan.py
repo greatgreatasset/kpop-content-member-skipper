@@ -29,13 +29,14 @@ from datetime import datetime, timezone
 
 import numpy as np
 
+import rules
 from common import CACHE, SKIPLISTS, Gallery, update_index
 
 # harmless deprecation notice from insightface's use of scikit-image
 warnings.filterwarnings("ignore", category=FutureWarning, message=".*estimate.*deprecated")
 
-SCANNER_VERSION = "0.4.1"
-SKIPLIST_FORMAT = 3
+SCANNER_VERSION = "0.5.0"
+SKIPLIST_FORMAT = 4
 CACHE_FORMAT = "2"  # bump when the cached detection arrays change
 
 DEFAULTS = dict(
@@ -362,73 +363,10 @@ def track_relabel(rows, emb, lab, S, p):
     return out
 
 
-# ---------------------------------------------------------------- frames -> segments
-SKIP, KEEP, NONE = 1, 0, -1
-
-
-def frame_states(n_frames, rows, lab, skip_ids, wide_keep=True):
-    """Per frame: SKIP if only skip-members are recognized, KEEP if anyone else
-    is, NONE if nobody is. Also returns the recognized member set per frame.
-
-    wide_keep: a frame whose faces are all too small (-2; since the biggest face
-    is never "relatively" small, that means all under --min-face) is a wide
-    group shot, not a solo: KEEP, so it doesn't inherit SKIP from neighbours.
-    Frames without any face stay NONE and still inherit."""
-    skip_ids = set(skip_ids)
-    recog = [set() for _ in range(n_frames)]
-    unknown = np.zeros(n_frames, int)
-    faces = np.zeros(n_frames, int)
-    small = np.zeros(n_frames, int)
-    for fi, l in zip(rows[:, 0].astype(int), lab):
-        faces[fi] += 1
-        if l >= 0:
-            recog[fi].add(int(l))
-        elif l == -1:
-            unknown[fi] += 1
-        elif l == -2:
-            small[fi] += 1
-    state = np.full(n_frames, NONE)
-    for i, r in enumerate(recog):
-        if r:
-            state[i] = SKIP if (r <= skip_ids) else KEEP
-        elif wide_keep and faces[i] and small[i] == faces[i]:
-            state[i] = KEEP
-    return state, unknown, recog
-
-
-def fill_gaps(state, max_gap):
-    """NONE runs <= max_gap frames inherit neighbors (split at midpoint if they
-    disagree); longer runs, and runs at the ends, become KEEP."""
-    s = state.copy()
-    n = len(s)
-    i = 0
-    while i < n:
-        if s[i] != NONE:
-            i += 1
-            continue
-        j = i
-        while j < n and s[j] == NONE:
-            j += 1
-        left = state[i - 1] if i > 0 else NONE
-        right = state[j] if j < n else NONE
-        if (j - i) <= max_gap and left != NONE and right != NONE:
-            mid = (i + j) // 2
-            s[i:mid] = left
-            s[mid:j] = right
-        elif (j - i) <= max_gap and (left != NONE or right != NONE):
-            s[i:j] = left if left != NONE else right
-        else:
-            s[i:j] = KEEP
-        i = j
-    return s
-
-
-def median_filter(x, w):
-    if w <= 1:
-        return x
-    pad = w // 2
-    xp = np.pad(x.astype(float), pad, mode="edge")
-    return np.array([np.median(xp[i:i + w]) for i in range(len(x))]) >= 0.5
+# ---------------------------------------------------------------- frames -> timeline -> segments
+# The skip / highlight rules themselves are in rules.py (and extension/rules.js).
+SKIP, KEEP, NONE = rules.SKIP, rules.KEEP, rules.NONE
+PARTIAL = -3  # recognized member who is not fully shown (eval/debug display)
 
 
 def full_face_mask(rows, kps, frame_size, p):
@@ -449,80 +387,81 @@ def full_face_mask(rows, kps, frame_size, p):
     return (clip_frac <= p["full_clip"]) & kps_in & (rows[:, 5] >= p["full_det"]) & (yaw <= p["full_yaw"])
 
 
-def subtract(segs, cut):
-    """Remove the `cut` ranges from `segs`."""
-    out = []
-    for s in segs:
-        pieces = [(s["start"], s["end"])]
-        for c in cut:
-            nxt = []
-            for a, b in pieces:
-                if c["end"] <= a or c["start"] >= b:
-                    nxt.append((a, b))
-                    continue
-                if c["start"] > a:
-                    nxt.append((a, c["start"]))
-                if c["end"] < b:
-                    nxt.append((c["end"], b))
-            pieces = nxt
-        out += [{"start": round(a, 2), "end": round(b, 2)} for a, b in pieces if b - a >= 0.5]
-    return out
+def choice_of(gal, c):
+    prof = gal.prof(c)
+    m = gal.members[c]
+    return "skip" if m in prof.skip else "highlight" if m in prof.highlight else "normal"
 
 
-def to_segments(mask, times, dt, merge_gap, min_len, trim=0.0, min_trimmed=0.0):
-    segs = []
-    i, n = 0, len(mask)
-    while i < n:
-        if not mask[i]:
-            i += 1
-            continue
-        j = i
-        while j < n and mask[j]:
+def build_timeline(n_frames, rows, lab, full, gal, groups, p):
+    """Presence timeline of the members of the groups in the video: per frame,
+    who is recognized in the foreground with her face fully shown ("members")
+    or cut off by the frame edge ("partial"); frames with nobody recognized are
+    "wide" (all faces tiny), "unknown" (only non-members) or "none" (no face).
+    Run-length coded into segments (see rules.py)."""
+    fps = p["fps"]
+    full_set = [set() for _ in range(n_frames)]
+    part_set = [set() for _ in range(n_frames)]
+    faces = np.zeros(n_frames, int)
+    small = np.zeros(n_frames, int)
+    for i, (fi, l) in enumerate(zip(rows[:, 0].astype(int), lab)):
+        faces[fi] += 1
+        if l >= 0:
+            (full_set if full[i] else part_set)[fi].add(gal.keys[l])
+        elif l == -2:
+            small[fi] += 1
+    if p["wide_keep"]:
+        wide = (faces > 0) & (small == faces)
+    else:
+        wide = np.zeros(n_frames, bool)
+    tokens = []
+    for i in range(n_frames):
+        f, pp = sorted(full_set[i]), sorted(part_set[i] - full_set[i])
+        st = "" if (f or pp) else "wide" if wide[i] else "unknown" if faces[i] else "none"
+        tokens.append((tuple(f), tuple(pp), st))
+    segs, i = [], 0
+    while i < n_frames:
+        j = i + 1
+        while j < n_frames and tokens[j] == tokens[i]:
             j += 1
-        segs.append([float(times[i]), float(times[j - 1] + dt)])
+        f, pp, st = tokens[i]
+        s = {"start": round(i / fps, 2), "end": round(j / fps, 2)}
+        if f:
+            s["members"] = list(f)
+        if pp:
+            s["partial"] = list(pp)
+        if st:
+            s["state"] = st
+        segs.append(s)
         i = j
-    merged = []
-    for s in segs:
-        if merged and s[0] - merged[-1][1] < merge_gap:
-            merged[-1][1] = s[1]
-        else:
-            merged.append(s)
-    merged = [s for s in merged if s[1] - s[0] >= min_len]
-    if trim:
-        merged = [[a + trim, b - trim] for a, b in merged if (b - a) - 2 * trim >= min_trimmed]
-    return [{"start": round(a, 2), "end": round(b, 2)} for a, b in merged]
-
-
-PARTIAL = -3  # recognized member who is not fully shown: does not block a skip
+    members = [{"key": gal.keys[c], **gal.member_info(c), "default": choice_of(gal, c)}
+               for c in range(len(gal.keys)) if gal.cls_prof[c] in groups]
+    return {
+        "fps": fps, "frames": int(n_frames), "members": members,
+        "rules": {"fillGap": p["fill_gap"], "median": p["median"], "mergeGap": p["merge_gap"],
+                  "minSkip": p["min_skip"], "edgeTrim": p["edge_trim"], "minTrimmed": p["min_trimmed"],
+                  "hlMedian": 3 if p["median"] > 1 else 1, "hlMergeGap": p["hl_merge_gap"],
+                  "hlMin": p["hl_min"]},
+        "segments": segs,
+    }
 
 
 def build_segments(times, rows, emb, gal, p, kps=None, frame_size=None):
-    """SKIP frames: at least one skip-member (of any group) is recognized and
-    every recognized, fully shown foreground member is a skip-member."""
-    dt = 1.0 / p["fps"]
+    """Classify the faces, build the presence timeline and apply the default
+    choices of the profiles (rules.py) -> default skips and highlights."""
     lab, score, (thr, thr_src), (groups, counts) = classify(rows, emb, gal, p)  # identity (after tracking)
     full = full_face_mask(rows, kps, frame_size, p)
+    tl = build_timeline(len(times), rows, lab, full, gal, groups, p)
+    res = rules.apply(tl, debug=True)
+    skips = res["skips"]
+    cls = {k: c for c, k in enumerate(gal.keys)}
+    highlights = [{**gal.member_info(cls[h["key"]]), "ranges": h["ranges"]} for h in res["highlights"]]
     skip_ids = gal.classes("skip")
     eff = lab.copy()
     eff[(lab >= 0) & ~np.isin(lab, skip_ids) & ~full] = PARTIAL
-    state, unknown, recog = frame_states(len(times), rows, eff, skip_ids, bool(p["wide_keep"]))
-    _, _, recog_any = frame_states(len(times), rows, lab, skip_ids)  # highlights: any face
-    filled = fill_gaps(state, int(round(p["fill_gap"] * p["fps"])))
-    skip = median_filter(filled == SKIP, p["median"])
-    skips = to_segments(skip, times, dt, p["merge_gap"], p["min_skip"],
-                        p["edge_trim"], p["min_trimmed"])
-    highlights, hl_masks = [], {}
-    for c in gal.classes("highlight"):
-        if gal.cls_prof[c] not in groups:
-            continue
-        mask = np.array([c in r for r in recog_any], bool)
-        mask = median_filter(mask, 3) if p["median"] > 1 else mask
-        hl_masks[gal.keys[c]] = mask
-        # highlights never overlap a skip (they would be jumped over anyway)
-        rng = subtract(to_segments(mask, times, dt, p["hl_merge_gap"], p["hl_min"]), skips)
-        rng = [s for s in rng if s["end"] - s["start"] >= p["hl_min"]]
-        if rng:  # only members who are actually in the video
-            highlights.append({**gal.member_info(c), "ranges": rng})
+    unknown = np.bincount(rows[:, 0].astype(int)[lab == -1], minlength=len(times)) if len(rows) else \
+        np.zeros(len(times), int)
+    state = np.array(res["debug"]["state"])
     found = [{"id": gal.profiles[g].id, "name": gal.profiles[g].group, "faces": int(counts[g])}
              for g in sorted(groups, key=lambda g: -counts[g])]
     skip_members = [gal.member_info(c) for c in skip_ids if gal.cls_prof[c] in groups]
@@ -537,10 +476,57 @@ def build_segments(times, rows, emb, gal, p, kps=None, frame_size=None):
         frames_with_unknown=int((unknown > 0).sum()),
         frames_skip_with_unknown=int(((state == SKIP) & (unknown > 0)).sum()),
         frames_no_member=int((state == NONE).sum()),
+        timeline_segments=len(tl["segments"]),
     )
     return skips, highlights, dict(lab=lab, eff=eff, full=full, score=score, state=state,
-                                   filled=filled, skip=skip, highlight=hl_masks, recog=recog,
-                                   unknown=unknown, groups=found, skip_members=skip_members), diag
+                                   filled=np.array(res["debug"]["filled"]),
+                                   skip=np.array(res["debug"]["skip"]),
+                                   highlight=res["debug"]["highlight"], unknown=unknown,
+                                   groups=found, skip_members=skip_members, timeline=tl), diag
+
+
+# ---------------------------------------------------------------- skip list file
+def make_list(vid, title, duration, skips, highlights, dbg, only_profiles=None):
+    """Skip list (format 4): the presence timeline, from which the add-on works
+    out each user's own skips, plus the skips and highlights for the profiles'
+    default choices (read by add-on 0.5.0, and a check for the add-on's rules)."""
+    out = dict(
+        format=SKIPLIST_FORMAT, videoId=vid, title=title, duration=duration,
+        scannedAt=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        scannerVersion=SCANNER_VERSION,
+        groups=dbg["groups"], skipMembers=dbg["skip_members"],
+        skips=skips, highlights=highlights,
+        timeline=dbg["timeline"],
+    )
+    if only_profiles:
+        out["onlyProfiles"] = list(only_profiles)
+    return out
+
+
+def dump_list(out):
+    """JSON with one timeline segment per line (readable diffs, small files)."""
+    tl = out.get("timeline")
+    if not tl:
+        return json.dumps(out, ensure_ascii=False, indent=1)
+    marker = "__SEGMENTS__"
+    text = json.dumps({**out, "timeline": {**tl, "segments": marker}}, ensure_ascii=False, indent=1)
+    segs = ",\n".join("   " + json.dumps(s, ensure_ascii=False, separators=(",", ":")) for s in tl["segments"])
+    return text.replace(f'"{marker}"', "[\n" + segs + "\n  ]")
+
+
+def save_list(out):
+    SKIPLISTS.mkdir(parents=True, exist_ok=True)
+    (SKIPLISTS / f"{out['videoId']}.json").write_text(dump_list(out), encoding="utf-8")
+    update_index(SKIPLISTS)
+
+
+def load_cached(vid):
+    """Cached detections of a video: (times, rows, emb, kps, frame_size) or None."""
+    f = CACHE / f"{vid}.faces.npz"
+    if not f.exists():
+        return None
+    z = np.load(f)
+    return z["times"], z["rows"], z["emb"], z["kps"], tuple(int(x) for x in z["frame_size"])
 
 
 # ---------------------------------------------------------------- main
@@ -580,20 +566,9 @@ def scan(url, p, rescan=False, profile=None, debug=False, progress=None):
     T["classify_smooth"] = time.perf_counter() - tc
     T["total"] = time.perf_counter() - t0
 
-    out = dict(
-        format=SKIPLIST_FORMAT, videoId=vid,
-        title=info.get("title"), duration=info.get("duration"),
-        scannedAt=datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        scannerVersion=SCANNER_VERSION,
-        groups=dbg["groups"], skipMembers=dbg["skip_members"],
-        skips=skips, highlights=highlights,
-    )
-    if profile:
-        out["onlyProfiles"] = gal.ids
-    SKIPLISTS.mkdir(parents=True, exist_ok=True)
-    (SKIPLISTS / f"{vid}.json").write_text(json.dumps(out, ensure_ascii=False, indent=1),
-                                           encoding="utf-8")
-    update_index(SKIPLISTS)
+    out = make_list(vid, info.get("title"), info.get("duration"), skips, highlights, dbg,
+                    gal.ids if profile else None)
+    save_list(out)
     # lets scan.bat / publish_skiplists.py know which list was just written
     (CACHE / "last_scan.json").write_text(json.dumps({"videoId": vid}), encoding="utf-8")
     return out, T, st, diag, (times, rows, emb, gal, dbg)

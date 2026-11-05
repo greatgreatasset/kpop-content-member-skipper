@@ -6,8 +6,14 @@
 </head>
 <body class="options">
   <h1>K-pop Content Member Skipper settings</h1>
-  <label>Groups</label>
-  <ul id="groups" class="hint"></ul>
+  <label>Members</label>
+  <p class="hint">For each member: <b>Skip</b> jumps over the parts where only skipped members are on
+    screen, <b>Highlight</b> marks her parts on the progress bar and adds them to the Next button.
+    <span class="dot-default"></span> = default. Changes apply right away, also to videos that are open.</p>
+  <div id="groups"></div>
+  <div class="buttons">
+    <button id="resetChoices" class="secondary">Reset to defaults</button>
+  </div>
   <p class="hint">Every video is checked for all of these groups; its skip list says which are in it.</p>
   <label for="baseUrl">Skip list base URL</label>
   <input type="url" id="baseUrl">
@@ -18,9 +24,10 @@
   <input type="number" id="cacheMinutes" min="0" max="10080">
   <div class="buttons">
     <button id="save">Save</button>
-    <button id="clear">Clear cache</button>
+    <button id="clear" class="secondary">Clear cache</button>
   </div>
   <p id="msg" class="status"></p>
+  <script src="rules.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

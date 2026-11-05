@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "K-pop Content Member Skipper",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Skips the parts of pre-scanned YouTube videos where only the members you choose are on screen, and highlights the members you want to see.",
   "browser_specific_settings": {
     "gecko": {
@@ -18,7 +18,7 @@
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
-      "js": ["content.js"],
+      "js": ["rules.js", "content.js"],
       "css": ["content.css"],
       "run_at": "document_idle"
     }
