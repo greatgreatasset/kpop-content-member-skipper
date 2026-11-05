@@ -3,8 +3,8 @@
  "videoId": "bzzPb1RJQDk",
  "title": "갸루는 어떻게 웃는다? 갸루룩!(˶˃𐃷˂˶) 도쿄타워부터 이치란 라멘까지⋆˚࿔ | ギャルとギャル #2",
  "duration": 1144,
- "scannedAt": "2026-11-05T17:44:57+00:00",
- "scannerVersion": "0.4.0",
+ "scannedAt": "2026-11-05T18:02:54+00:00",
+ "scannerVersion": "0.4.1",
  "groups": [
   {
    "id": "hearts2hearts",
@@ -28,8 +28,8 @@
  ],
  "skips": [
   {
-   "start": 6.83,
-   "end": 12.83
+   "start": 7.5,
+   "end": 12.5
   },
   {
    "start": 47.5,

@@ -3,8 +3,8 @@
  "videoId": "BUUHUS4e1ZM",
  "title": "ILLIT (아일릿) 'SUPER ILLIT' EP.1 PART1 완벽한 예능짱이 되는 방법",
  "duration": 1418,
- "scannedAt": "2026-11-05T17:48:03+00:00",
- "scannerVersion": "0.4.0",
+ "scannedAt": "2026-11-05T18:02:15+00:00",
+ "scannerVersion": "0.4.1",
  "groups": [
   {
    "id": "illit",
@@ -23,27 +23,15 @@
  "skips": [
   {
    "start": 197.17,
-   "end": 199.17
+   "end": 200.5
   },
   {
    "start": 274.83,
    "end": 276.83
   },
   {
-   "start": 868.5,
-   "end": 870.83
-  },
-  {
-   "start": 1044.17,
-   "end": 1047.5
-  },
-  {
    "start": 1089.5,
    "end": 1091.5
-  },
-  {
-   "start": 1140.5,
-   "end": 1143.17
   },
   {
    "start": 1182.83,

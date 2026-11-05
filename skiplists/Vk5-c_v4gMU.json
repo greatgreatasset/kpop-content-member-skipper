@@ -3,8 +3,8 @@
  "videoId": "Vk5-c_v4gMU",
  "title": "ILLIT (아일릿) ‘Magnetic’ Official MV",
  "duration": 188,
- "scannedAt": "2026-11-05T17:45:26+00:00",
- "scannerVersion": "0.4.0",
+ "scannedAt": "2026-11-05T18:02:48+00:00",
+ "scannerVersion": "0.4.1",
  "groups": [
   {
    "id": "illit",
@@ -21,6 +21,10 @@
   }
  ],
  "skips": [
+  {
+   "start": 23.5,
+   "end": 25.17
+  },
   {
    "start": 132.17,
    "end": 135.17

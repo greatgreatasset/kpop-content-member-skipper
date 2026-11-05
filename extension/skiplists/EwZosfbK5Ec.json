@@ -3,8 +3,8 @@
  "videoId": "EwZosfbK5Ec",
  "title": "XOXO, GOS2IP GIRL",
  "duration": 2331,
- "scannedAt": "2026-11-05T17:45:23+00:00",
- "scannerVersion": "0.4.0",
+ "scannedAt": "2026-11-05T18:02:36+00:00",
+ "scannerVersion": "0.4.1",
  "groups": [
   {
    "id": "hearts2hearts",
@@ -28,11 +28,11 @@
  ],
  "skips": [
   {
-   "start": 29.83,
+   "start": 30.17,
    "end": 35.83
   },
   {
-   "start": 89.17,
+   "start": 88.83,
    "end": 93.5
   },
   {
