@@ -1,0 +1,65 @@
+{
+ "format": 3,
+ "videoId": "gNUMxMuxH20",
+ "title": "Hearts2Hearts 하츠투하츠 'Moonride' MV",
+ "duration": 193,
+ "scannedAt": "2026-11-05T17:45:03+00:00",
+ "scannerVersion": "0.4.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 207
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
+ ],
+ "skips": [
+  {
+   "start": 81.17,
+   "end": 85.5
+  }
+ ],
+ "highlights": [
+  {
+   "member": "ian",
+   "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
+   "ranges": [
+    {
+     "start": 16.0,
+     "end": 17.33
+    },
+    {
+     "start": 69.33,
+     "end": 75.0
+    },
+    {
+     "start": 114.67,
+     "end": 119.67
+    },
+    {
+     "start": 151.33,
+     "end": 156.0
+    },
+    {
+     "start": 188.0,
+     "end": 189.0
+    }
+   ]
+  }
+ ]
+}

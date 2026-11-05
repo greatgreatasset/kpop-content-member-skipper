@@ -1,15 +1,30 @@
 {
- "format": 2,
+ "format": 3,
  "videoId": "CjQkg-CQGKY",
- "profile": "hearts2hearts",
- "group": "Hearts2Hearts",
  "title": "나 이러면 다 먹어 진짜!!! 절제력 0 배신력 100 배고픈 신들의 처절한 의리 게임🍴하리스로마신화🏹 | 둘셋하투하 EP.7",
  "duration": 1529,
- "scannedAt": "2026-11-05T11:52:28+00:00",
- "scannerVersion": "0.3.0",
+ "scannedAt": "2026-11-05T17:45:11+00:00",
+ "scannerVersion": "0.4.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 3666
+  }
+ ],
  "skipMembers": [
-  "Carmen",
-  "Ye-on"
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
  ],
  "skips": [
   {
@@ -109,6 +124,8 @@
   {
    "member": "ian",
    "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
    "ranges": [
     {
      "start": 42.0,

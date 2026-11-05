@@ -1,15 +1,30 @@
 {
- "format": 2,
+ "format": 3,
  "videoId": "oVMQTIUI_2c",
- "profile": "hearts2hearts",
- "group": "Hearts2Hearts",
  "title": "저는 해삐 했습니다아앙 (๑´^᎑^)~♡ | Hearts2Hearts 하츠투하츠 ‘15-LOVE’ Music Show BH2ND",
  "duration": 1672,
- "scannedAt": "2026-11-05T09:49:15+00:00",
- "scannerVersion": "0.3.0",
+ "scannedAt": "2026-11-05T17:44:43+00:00",
+ "scannerVersion": "0.4.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 7453
+  }
+ ],
  "skipMembers": [
-  "Carmen",
-  "Ye-on"
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
  ],
  "skips": [
   {
@@ -57,6 +72,8 @@
   {
    "member": "ian",
    "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
    "ranges": [
     {
      "start": 23.67,

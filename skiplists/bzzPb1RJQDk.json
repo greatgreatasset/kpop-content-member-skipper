@@ -1,15 +1,30 @@
 {
- "format": 2,
+ "format": 3,
  "videoId": "bzzPb1RJQDk",
- "profile": "hearts2hearts",
- "group": "Hearts2Hearts",
  "title": "갸루는 어떻게 웃는다? 갸루룩!(˶˃𐃷˂˶) 도쿄타워부터 이치란 라멘까지⋆˚࿔ | ギャルとギャル #2",
  "duration": 1144,
- "scannedAt": "2026-11-05T10:36:48+00:00",
- "scannerVersion": "0.3.0",
+ "scannedAt": "2026-11-05T17:44:57+00:00",
+ "scannerVersion": "0.4.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 4563
+  }
+ ],
  "skipMembers": [
-  "Carmen",
-  "Ye-on"
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
  ],
  "skips": [
   {
@@ -85,6 +100,8 @@
   {
    "member": "ian",
    "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
    "ranges": [
     {
      "start": 0.0,

@@ -1,0 +1,249 @@
+{
+ "format": 3,
+ "videoId": "bzzPb1RJQDk",
+ "title": "갸루는 어떻게 웃는다? 갸루룩!(˶˃𐃷˂˶) 도쿄타워부터 이치란 라멘까지⋆˚࿔ | ギャルとギャル #2",
+ "duration": 1144,
+ "scannedAt": "2026-11-05T17:44:57+00:00",
+ "scannerVersion": "0.4.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 4563
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
+ ],
+ "skips": [
+  {
+   "start": 6.83,
+   "end": 12.83
+  },
+  {
+   "start": 47.5,
+   "end": 64.5
+  },
+  {
+   "start": 93.83,
+   "end": 103.5
+  },
+  {
+   "start": 123.17,
+   "end": 125.17
+  },
+  {
+   "start": 470.5,
+   "end": 472.83
+  },
+  {
+   "start": 560.17,
+   "end": 567.83
+  },
+  {
+   "start": 592.83,
+   "end": 596.17
+  },
+  {
+   "start": 664.83,
+   "end": 685.5
+  },
+  {
+   "start": 691.83,
+   "end": 706.17
+  },
+  {
+   "start": 716.5,
+   "end": 727.17
+  },
+  {
+   "start": 732.83,
+   "end": 734.5
+  },
+  {
+   "start": 738.17,
+   "end": 758.83
+  },
+  {
+   "start": 786.5,
+   "end": 809.83
+  },
+  {
+   "start": 874.83,
+   "end": 896.5
+  },
+  {
+   "start": 960.17,
+   "end": 994.17
+  },
+  {
+   "start": 1035.83,
+   "end": 1064.83
+  },
+  {
+   "start": 1094.17,
+   "end": 1106.17
+  }
+ ],
+ "highlights": [
+  {
+   "member": "ian",
+   "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
+   "ranges": [
+    {
+     "start": 0.0,
+     "end": 6.0
+    },
+    {
+     "start": 16.67,
+     "end": 21.0
+    },
+    {
+     "start": 25.0,
+     "end": 30.67
+    },
+    {
+     "start": 34.33,
+     "end": 47.0
+    },
+    {
+     "start": 69.33,
+     "end": 73.0
+    },
+    {
+     "start": 79.33,
+     "end": 86.33
+    },
+    {
+     "start": 89.67,
+     "end": 93.33
+    },
+    {
+     "start": 104.0,
+     "end": 122.0
+    },
+    {
+     "start": 126.33,
+     "end": 146.0
+    },
+    {
+     "start": 150.33,
+     "end": 215.0
+    },
+    {
+     "start": 217.67,
+     "end": 238.67
+    },
+    {
+     "start": 241.33,
+     "end": 288.33
+    },
+    {
+     "start": 290.33,
+     "end": 305.33
+    },
+    {
+     "start": 309.0,
+     "end": 470.5
+    },
+    {
+     "start": 473.33,
+     "end": 474.33
+    },
+    {
+     "start": 476.67,
+     "end": 493.0
+    },
+    {
+     "start": 496.67,
+     "end": 506.67
+    },
+    {
+     "start": 549.33,
+     "end": 555.0
+    },
+    {
+     "start": 581.33,
+     "end": 592.83
+    },
+    {
+     "start": 596.67,
+     "end": 605.33
+    },
+    {
+     "start": 607.33,
+     "end": 613.33
+    },
+    {
+     "start": 618.0,
+     "end": 626.0
+    },
+    {
+     "start": 686.0,
+     "end": 691.0
+    },
+    {
+     "start": 729.67,
+     "end": 732.33
+    },
+    {
+     "start": 735.0,
+     "end": 737.67
+    },
+    {
+     "start": 759.33,
+     "end": 762.67
+    },
+    {
+     "start": 765.67,
+     "end": 785.33
+    },
+    {
+     "start": 827.0,
+     "end": 834.0
+    },
+    {
+     "start": 847.67,
+     "end": 849.0
+    },
+    {
+     "start": 852.0,
+     "end": 855.67
+    },
+    {
+     "start": 860.67,
+     "end": 863.67
+    },
+    {
+     "start": 907.33,
+     "end": 917.67
+    },
+    {
+     "start": 924.0,
+     "end": 926.0
+    },
+    {
+     "start": 994.67,
+     "end": 1033.67
+    },
+    {
+     "start": 1106.67,
+     "end": 1131.67
+    }
+   ]
+  }
+ ]
+}

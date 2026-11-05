@@ -1,15 +1,30 @@
 {
- "format": 2,
+ "format": 3,
  "videoId": "FQmWuyL3vSk",
- "profile": "hearts2hearts",
- "group": "Hearts2Hearts",
  "title": "이안이를 보면 약간 엄마의 마음이 생겨(ᵔ ᵕ ᵔ)𑣲 | Hearts2Hearts 하츠투하츠 ‘ICONIC HEART’ Promotion Event in Japan BH2ND #1",
  "duration": 1507,
- "scannedAt": "2026-11-05T09:52:13+00:00",
- "scannerVersion": "0.3.0",
+ "scannedAt": "2026-11-05T17:44:51+00:00",
+ "scannerVersion": "0.4.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 6077
+  }
+ ],
  "skipMembers": [
-  "Carmen",
-  "Ye-on"
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
  ],
  "skips": [
   {
@@ -37,6 +52,8 @@
   {
    "member": "ian",
    "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
    "ranges": [
     {
      "start": 38.0,

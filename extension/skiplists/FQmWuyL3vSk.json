@@ -1,0 +1,173 @@
+{
+ "format": 3,
+ "videoId": "FQmWuyL3vSk",
+ "title": "이안이를 보면 약간 엄마의 마음이 생겨(ᵔ ᵕ ᵔ)𑣲 | Hearts2Hearts 하츠투하츠 ‘ICONIC HEART’ Promotion Event in Japan BH2ND #1",
+ "duration": 1507,
+ "scannedAt": "2026-11-05T17:44:51+00:00",
+ "scannerVersion": "0.4.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 6077
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
+ ],
+ "skips": [
+  {
+   "start": 124.83,
+   "end": 126.5
+  },
+  {
+   "start": 137.83,
+   "end": 163.5
+  },
+  {
+   "start": 721.17,
+   "end": 771.17
+  },
+  {
+   "start": 1081.83,
+   "end": 1083.5
+  },
+  {
+   "start": 1094.17,
+   "end": 1116.83
+  }
+ ],
+ "highlights": [
+  {
+   "member": "ian",
+   "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
+   "ranges": [
+    {
+     "start": 38.0,
+     "end": 40.33
+    },
+    {
+     "start": 50.33,
+     "end": 107.33
+    },
+    {
+     "start": 164.0,
+     "end": 289.33
+    },
+    {
+     "start": 292.67,
+     "end": 302.0
+    },
+    {
+     "start": 306.67,
+     "end": 330.33
+    },
+    {
+     "start": 332.33,
+     "end": 336.33
+    },
+    {
+     "start": 363.67,
+     "end": 397.67
+    },
+    {
+     "start": 400.0,
+     "end": 415.0
+    },
+    {
+     "start": 419.0,
+     "end": 431.0
+    },
+    {
+     "start": 434.33,
+     "end": 438.33
+    },
+    {
+     "start": 440.33,
+     "end": 464.67
+    },
+    {
+     "start": 467.0,
+     "end": 482.0
+    },
+    {
+     "start": 485.67,
+     "end": 497.33
+    },
+    {
+     "start": 506.0,
+     "end": 508.0
+    },
+    {
+     "start": 773.33,
+     "end": 779.0
+    },
+    {
+     "start": 785.0,
+     "end": 788.33
+    },
+    {
+     "start": 816.33,
+     "end": 822.67
+    },
+    {
+     "start": 836.0,
+     "end": 837.33
+    },
+    {
+     "start": 858.67,
+     "end": 861.33
+    },
+    {
+     "start": 868.0,
+     "end": 869.67
+    },
+    {
+     "start": 879.33,
+     "end": 886.33
+    },
+    {
+     "start": 897.0,
+     "end": 898.0
+    },
+    {
+     "start": 1170.0,
+     "end": 1266.33
+    },
+    {
+     "start": 1317.33,
+     "end": 1320.0
+    },
+    {
+     "start": 1331.0,
+     "end": 1333.0
+    },
+    {
+     "start": 1349.33,
+     "end": 1350.67
+    },
+    {
+     "start": 1355.67,
+     "end": 1357.33
+    },
+    {
+     "start": 1463.0,
+     "end": 1491.33
+    }
+   ]
+  }
+ ]
+}

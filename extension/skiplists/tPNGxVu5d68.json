@@ -1,0 +1,57 @@
+{
+ "format": 3,
+ "videoId": "tPNGxVu5d68",
+ "title": "Hearts2Hearts 하츠투하츠 'FOCUS' Trailer",
+ "duration": 94,
+ "scannedAt": "2026-11-05T17:45:00+00:00",
+ "scannerVersion": "0.4.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 133
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
+ ],
+ "skips": [
+  {
+   "start": 21.83,
+   "end": 23.83
+  }
+ ],
+ "highlights": [
+  {
+   "member": "ian",
+   "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
+   "ranges": [
+    {
+     "start": 6.0,
+     "end": 7.0
+    },
+    {
+     "start": 38.0,
+     "end": 39.0
+    },
+    {
+     "start": 42.0,
+     "end": 44.67
+    }
+   ]
+  }
+ ]
+}
