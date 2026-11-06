@@ -40,7 +40,20 @@ also drags in the CPU `onnxruntime` package, which shadows the GPU build;
 other folders, e.g. group photos, are ignored). To point it somewhere else on
 your machine without committing the path, put `{"photosDir": "D:/photos/h2h"}`
 in the gitignored `profiles/<id>.local.json`, or set `KMS_PHOTOS_<ID>` (e.g.
-`KMS_PHOTOS_HEARTS2HEARTS`). `skip` and `highlight` may be empty (ILLIT
+`KMS_PHOTOS_HEARTS2HEARTS`). A member's photos can also come from more
+folders: `"extraPhotoDirs": {"ella": ["E:/ig/Ella", "E:/ig/Ella/Posts"]}`
+(each folder non-recursive, usually in the `.local.json` since the paths are
+machine-specific). Their photos need a `YYYY-MM-DD` filename prefix or a
+downloader sidecar (`<shortcode>.json` with `created_at_iso` next to
+`<shortcode>_<n>.jpg`) for the shoot date; undated ones are skipped. Noisy
+sources (personal Instagram: filters, friends, selfies) are fine: only photos
+with one clear/dominant face are embedded and outliers are dropped. Photos
+from those folders that are copies of one already used (cosine >= 0.95, e.g.
+an Instagram post also saved as a repost) are dropped so the holdout check
+isn't fooled. `"photosSince": {"ella": "2022-01-01"}` leaves out a member's
+photos dated before that day (MEOVV uses Ella's full history: her
+2016-2023 photos didn't hurt any holdout or cross-group check).
+`skip` and `highlight` may be empty (ILLIT
 highlights nobody, KiiiKiii skips nobody).
 
 Members' looks change over time. With `"recentSince": "2025-11-01"` (and

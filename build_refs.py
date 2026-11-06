@@ -34,10 +34,69 @@ MIN_FACE = 48          # px, short side of face box in the (<=1280px) image
 MIN_DET = 0.6
 DOMINANCE = 2.0        # largest face area must be >= 2x the second largest
 KNN_K = 5
+DUP_SIM = 0.95         # same photo (re-encoded / resized) from two sources
 
 
 def list_images(folder):
-    return sorted(p for p in Path(folder).iterdir() if p.suffix.lower() in IMG_EXT)
+    return sorted(p for p in Path(folder).iterdir() if p.is_file() and p.suffix.lower() in IMG_EXT)
+
+
+DATE_RE = re.compile(r"\d{4}-?\d{2}-?\d{2}")
+NO_DATE = ("1969-12-31", "1970-01-01")  # epoch-zero timestamps: date unknown
+
+
+class Img:
+    """A reference photo. `name` identifies it (embedding cache, holdout grouping
+    by its YYYY-MM-DD prefix, recency sampling); `path` is the file."""
+    __slots__ = ("name", "path")
+
+    def __init__(self, name, path):
+        self.name, self.path = name, path
+
+    def __lt__(self, other):
+        return self.name < other.name
+
+
+def sidecar_date(p):
+    """Post date from a downloader sidecar: <shortcode>.json next to <shortcode>_<n>.jpg."""
+    j = p.with_name(p.stem.rsplit("_", 1)[0] + ".json")
+    try:
+        iso = str(json.loads(j.read_text(encoding="utf-8")).get("created_at_iso", ""))
+    except (OSError, ValueError, AttributeError):
+        return None
+    return iso[:10] if DATE_RE.match(iso) else None
+
+
+def member_images(folders, since=None):
+    """Photos of one member from its folders (the first is photosDir/<member>, the
+    rest are the profile's extraPhotoDirs, non-recursive). Names in the extra
+    folders get a date prefix (from the filename, else the post's sidecar) so they
+    group by shoot date like the main folder; undated ones are left out, and with
+    `since` ("YYYY-MM-DD") so are photos dated before it."""
+    cut = since.replace("-", "") if since else None
+    out, seen = [], set()
+    for i, folder in enumerate(folders):
+        folder = Path(folder)
+        if not folder.is_dir():
+            print(f"  (missing photo folder {folder})")
+            continue
+        for p in list_images(folder):
+            name = p.name
+            if i:
+                if not DATE_RE.match(name):
+                    d = sidecar_date(p)
+                    if not d:
+                        continue
+                    name = f"{d}_{name}"
+                if name.startswith(NO_DATE):
+                    continue
+                if name in seen:
+                    name = f"{name[:10]}_{i}_{name[10:]}"
+            if cut and shoot_key(name)[:8] < cut:
+                continue
+            seen.add(name)
+            out.append(Img(name, p))
+    return sorted(out)
 
 
 def sample_paths(paths, n, rng, recent_since=None, recent_share=0.6):
@@ -85,7 +144,7 @@ def embed_member(app, member, paths, outdir):
     embs, kept = [], []
     t0 = time.time()
     with ThreadPoolExecutor(12) as pool:
-        for i, (p, img) in enumerate(zip(paths, pool.map(imread, paths))):
+        for i, (p, img) in enumerate(zip(paths, pool.map(imread, [p.path for p in paths]))):
             if img is None:
                 stats["unreadable"] += 1
                 continue
@@ -100,6 +159,17 @@ def embed_member(app, member, paths, outdir):
     np.savez(out, emb=emb, paths=np.array(kept), sampled=np.array(names))
     print(f"  {member}: {len(paths)} sampled -> {dict(stats)}  ({time.time()-t0:.0f}s)")
     return emb, kept
+
+
+def drop_copies(emb, kept, extra, thr=DUP_SIM):
+    """Drop faces from extra folders that are copies (cosine >= thr) of a face
+    already kept, e.g. an Instagram post that is also in photosDir as a repost:
+    a copy would sit on both sides of the holdout split."""
+    ok = np.array([k not in extra for k in kept])
+    for i in np.where(~ok)[0]:
+        if not ok.any() or (emb[ok] @ emb[i]).max() < thr:
+            ok[i] = True
+    return ok
 
 
 def clean(emb, abs_min=0.30, n_mad=3.0, iters=3):
@@ -239,10 +309,16 @@ def main():
     all_emb, all_lab, all_grp, all_paths = [], [], [], []
     print("== embed")
     for c, m in enumerate(MEMBERS):
-        paths = list_images(photos / m)
+        paths = member_images([photos / m] + prof.extra_dirs.get(m, []), prof.since.get(m))
         if m not in use_all and len(paths) > per_member:
             paths = sample_paths(paths, per_member, random.Random(c), prof.recent_since, prof.recent_share)
         emb, kept = embed_member(app, m, paths, prof.data)
+        extra = {p.name for p in paths if p.path.parent != photos / m}
+        if extra:
+            ok = drop_copies(emb, kept, extra)
+            print(f"  {m}: {sum(k in extra for k in kept)} faces from extraPhotoDirs, "
+                  f"{(~ok).sum()} of them copies of other photos (dropped)")
+            emb, kept = emb[ok], [k for k, o in zip(kept, ok) if o]
 
         keep, thr, s = clean(emb)
         print(f"  {m}: clean thr={thr:.3f} kept {keep.sum()}/{len(keep)} "

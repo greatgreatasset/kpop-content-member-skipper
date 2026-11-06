@@ -37,6 +37,15 @@ class Profile:
         for m in self.skip + self.highlight:
             assert m in self.members, f"{m} is not a member of {pid}"
         self.photos_dir = Path(os.path.expanduser(cfg.get("photosDir", "")))
+        # optional: more photo folders per member, {"<member>": ["<folder>", ...]}
+        # (machine-specific ones belong in <id>.local.json)
+        self.extra_dirs = {m: [Path(os.path.expanduser(d)) for d in ds]
+                           for m, ds in cfg.get("extraPhotoDirs", {}).items()}
+        for m in self.extra_dirs:
+            assert m in self.members, f"{m} is not a member of {pid}"
+        # optional: {"<member>": "YYYY-MM-DD"}, leave out that member's older photos
+        # (e.g. childhood photos that no longer look like her)
+        self.since = dict(cfg.get("photosSince", {}))
         self.use_all = set(cfg.get("usePhotosOf", []))
         self.per_member = int(cfg.get("photosPerMember", 2000))
         # optional: sample this share of photosPerMember from photos dated (by the
