@@ -19,6 +19,7 @@ classification/smoothing can be re-tuned without re-running the GPU pass
 """
 import argparse
 import json
+import os
 import queue
 import re
 import subprocess
@@ -136,6 +137,34 @@ def _one_line(err):
     return msg if len(msg) <= 200 else msg[:197] + "..."
 
 
+def cookie_browser():
+    """Browser whose YouTube cookies yt-dlp uses (your own sign-in):
+    KMS_COOKIES = "firefox" (default), "firefox:<profile>", another browser yt-dlp
+    knows, or "0"/"off" for none (--no-cookies sets that). yt-dlp only reads them
+    into memory; nothing is copied, logged or saved."""
+    v = os.environ.get("KMS_COOKIES", "firefox").strip()
+    return None if v.lower() in ("", "0", "off", "no", "none", "false") else v
+
+
+def _ydl_with_cookies(yt_dlp, opts, hook=None):
+    """YoutubeDL with the browser's cookies, or without them (one line printed)
+    if they can't be read."""
+    browser = cookie_browser()
+    if browser:
+        name, _, profile = browser.partition(":")
+        ydl = None
+        try:
+            ydl = yt_dlp.YoutubeDL({**opts, "cookiesfrombrowser": (name.lower(), profile or None, None, None)})
+            ydl.cookiejar  # load now, so a failure falls back instead of failing the download
+            return ydl
+        except Exception as e:
+            if ydl is not None:
+                ydl.close()
+            print(("\n" if hook else "") + f"Couldn't read {name} cookies ({_one_line(e)}); "
+                  "downloading without them.", flush=True)
+    return yt_dlp.YoutubeDL(opts)
+
+
 def download(url, height, debug=False, hook=None):
     import yt_dlp
 
@@ -152,7 +181,7 @@ def download(url, height, debug=False, hook=None):
     if hook:
         opts["progress_hooks"] = [hook]
     try:
-        with yt_dlp.YoutubeDL(opts) as ydl:
+        with _ydl_with_cookies(yt_dlp, opts, hook) as ydl:
             info = ydl.extract_info(url, download=True)
             path = ydl.prepare_filename(info)
     except Exception as e:
@@ -626,6 +655,8 @@ def build_parser(prog=None):
     for k, v in DEFAULTS.items():
         ap.add_argument(f"--{k.replace('_', '-')}", type=type(v) if v is not None else float, default=v)
     ap.add_argument("--rescan", action="store_true")
+    ap.add_argument("--no-cookies", action="store_true",
+                    help="download without the browser's YouTube cookies (same as KMS_COOKIES=0)")
     return ap
 
 
@@ -639,6 +670,8 @@ def main():
     import sys
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     a = build_parser().parse_args()
+    if a.no_cookies:
+        os.environ["KMS_COOKIES"] = "0"
     p = {k: getattr(a, k) for k in DEFAULTS}
     vid = parse_link(a.url)
     if not vid:

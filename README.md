@@ -123,6 +123,13 @@ cmd.exe splits the line at `&` before scan.bat runs; the double-click paste
 prompt takes them as they are. A failed download prints one short line
 (`Couldn't download the video: ...`); add `--debug` for the full traceback.
 `--no-push` (or `set KMS_NO_PUSH=1`) commits the skip list without uploading.
+Downloads use your Firefox's YouTube cookies (yt-dlp `--cookies-from-browser
+firefox`; YouTube otherwise often asks to "confirm you're not a bot"). They are
+only read into memory, never copied, logged or committed. `--no-cookies` (or
+`set KMS_COOKIES=0`; `setx KMS_COOKIES 0` and restart Firefox for "Filter this
+video") turns that off; `KMS_COOKIES=firefox:<profile>` or another browser name
+picks other cookies. If they can't be read, the scan prints one line and
+downloads without them.
 scan.bat itself only starts `scan_cli.py`, which holds all the logic.
 
 ### From Firefox: "Filter this video"

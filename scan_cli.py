@@ -130,6 +130,8 @@ def run(argv, interactive, out):
         a = ap.parse_args(argv)
     except SystemExit as e:
         return e.code or 0
+    if a.no_cookies:
+        os.environ["KMS_COOKIES"] = "0"
     vid = scan.parse_link(a.url)
     if not vid:
         print(f"Couldn't find a YouTube video ID in: {' '.join(a.url)}")
