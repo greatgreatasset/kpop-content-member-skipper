@@ -4,8 +4,8 @@ Personal tool: pre-scan YouTube videos of K-pop groups and record who is on
 screen when, so a Firefox extension can jump over the parts where only the
 members you want to skip are on screen, and mark the parts of the members you
 want to see more of (highlights). Each group is a **profile**: Hearts2Hearts
-(skip Carmen and Ye-on, highlight Ian), ILLIT (skip Yunah) and KiiiKiii
-(highlight Kya). Those are the defaults; every add-on user can set each member
+(skip Carmen and Ye-on, highlight Ian), ILLIT (skip Yunah), KiiiKiii
+(highlight Kya) and BABYMONSTER (skip Pharita, highlight Chiquita). Those are the defaults; every add-on user can set each member
 to Skip, Normal or Highlight on the settings page (see
 [Customizing members](#customizing-members)). Nobody picks a group: every
 video is checked against all members of all groups, and its skip list says
@@ -40,7 +40,15 @@ other folders, e.g. group photos, are ignored). To point it somewhere else on
 your machine without committing the path, put `{"photosDir": "D:/photos/h2h"}`
 in the gitignored `profiles/<id>.local.json`, or set `KMS_PHOTOS_<ID>` (e.g.
 `KMS_PHOTOS_HEARTS2HEARTS`). `skip` and `highlight` may be empty (ILLIT
-highlights nobody, KiiiKiii skips nobody). They are the **defaults** for
+highlights nobody, KiiiKiii skips nobody).
+
+Members' looks change over time. With `"recentSince": "2025-11-01"` (and
+optionally `"recentShare": 0.6`, the default) build_refs takes that share of
+the `photosPerMember` sample from photos dated on/after that day (by the
+`YYYY-MM-DD` filename prefix the downloader writes) and the rest spread over
+the older ones (BABYMONSTER uses this). A member with no recent photos, e.g.
+an inactive one (BABYMONSTER's Rami), goes in `usePhotosOf` so all her photos
+are used. Profiles without `recentSince` sample uniformly as before. They are the **defaults** for
 everyone using the add-on; each user can change them for themselves.
 
 ### Adding a group
@@ -278,7 +286,7 @@ What it does on youtube.com/watch pages:
 Settings (popup → **Settings**, or about:addons → the add-on → Preferences)
 lists every group with a **Skip / Normal / Highlight** control for each member.
 The defaults are the profiles' choices (Carmen and Ye-on Skip, Ian Highlight,
-Yunah Skip, Kya Highlight, everyone else Normal) and are marked with a dot.
+Yunah Skip, Kya Highlight, Pharita Skip, Chiquita Highlight, everyone else Normal) and are marked with a dot.
 
 - **Skip**: parts where only skipped members are on screen are jumped over
   (with several skipped members, scenes with only them are skipped too).

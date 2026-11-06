@@ -39,6 +39,10 @@ class Profile:
         self.photos_dir = Path(os.path.expanduser(cfg.get("photosDir", "")))
         self.use_all = set(cfg.get("usePhotosOf", []))
         self.per_member = int(cfg.get("photosPerMember", 2000))
+        # optional: sample this share of photosPerMember from photos dated (by the
+        # YYYY-MM-DD filename prefix) on/after recentSince, the rest from older ones
+        self.recent_since = cfg.get("recentSince")
+        self.recent_share = float(cfg.get("recentShare", 0.6))
         self.data = DATA / pid
 
     def idx(self, members):

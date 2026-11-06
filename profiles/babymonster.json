@@ -1,0 +1,13 @@
+{
+ "id": "babymonster",
+ "group": "BABYMONSTER",
+ "photosDir": "~/Pictures/BABYMONSTER",
+ "members": ["ruka", "pharita", "asa", "ahyeon", "rami", "rora", "chiquita"],
+ "names": {"ruka": "Ruka", "pharita": "Pharita", "asa": "Asa", "ahyeon": "Ahyeon", "rami": "Rami", "rora": "Rora", "chiquita": "Chiquita"},
+ "skip": ["pharita"],
+ "highlight": ["chiquita"],
+ "usePhotosOf": ["rami"],
+ "photosPerMember": 2000,
+ "recentSince": "2025-11-01",
+ "recentShare": 0.6
+}

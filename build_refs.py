@@ -40,6 +40,22 @@ def list_images(folder):
     return sorted(p for p in Path(folder).iterdir() if p.suffix.lower() in IMG_EXT)
 
 
+def sample_paths(paths, n, rng, recent_since=None, recent_share=0.6):
+    """n of paths; with recent_since ("YYYY-MM-DD"), recent_share of them from
+    photos whose filename date is on/after it (looks change over time), the rest
+    spread over the older ones."""
+    if not recent_since:
+        return sorted(rng.sample(paths, n))
+    cut = recent_since.replace("-", "")
+    recent = [p for p in paths if shoot_key(p.name)[:8] >= cut and shoot_key(p.name)[:8].isdigit()]
+    rs = set(recent)
+    older = [p for p in paths if p not in rs]
+    n_rec = min(len(recent), round(n * recent_share))
+    n_old = min(len(older), n - n_rec)
+    n_rec = min(len(recent), n - n_old)
+    return sorted(rng.sample(recent, n_rec) + rng.sample(older, n_old))
+
+
 def pick_face(faces):
     """Return the single clear/dominant face, or None + reason."""
     if not faces:
@@ -225,7 +241,7 @@ def main():
     for c, m in enumerate(MEMBERS):
         paths = list_images(photos / m)
         if m not in use_all and len(paths) > per_member:
-            paths = sorted(random.Random(c).sample(paths, per_member))
+            paths = sample_paths(paths, per_member, random.Random(c), prof.recent_since, prof.recent_share)
         emb, kept = embed_member(app, m, paths, prof.data)
 
         keep, thr, s = clean(emb)
