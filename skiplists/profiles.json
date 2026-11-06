@@ -1,0 +1,172 @@
+[
+ {
+  "id": "babymonster",
+  "group": "BABYMONSTER",
+  "skip": [
+   "Pharita"
+  ],
+  "highlight": [
+   "Chiquita"
+  ],
+  "members": [
+   {
+    "id": "ruka",
+    "name": "Ruka",
+    "default": "normal"
+   },
+   {
+    "id": "pharita",
+    "name": "Pharita",
+    "default": "skip"
+   },
+   {
+    "id": "asa",
+    "name": "Asa",
+    "default": "normal"
+   },
+   {
+    "id": "ahyeon",
+    "name": "Ahyeon",
+    "default": "normal"
+   },
+   {
+    "id": "rami",
+    "name": "Rami",
+    "default": "normal"
+   },
+   {
+    "id": "rora",
+    "name": "Rora",
+    "default": "normal"
+   },
+   {
+    "id": "chiquita",
+    "name": "Chiquita",
+    "default": "highlight"
+   }
+  ]
+ },
+ {
+  "id": "hearts2hearts",
+  "group": "Hearts2Hearts",
+  "skip": [
+   "Carmen",
+   "Ye-on"
+  ],
+  "highlight": [
+   "Ian"
+  ],
+  "members": [
+   {
+    "id": "jiwoo",
+    "name": "Jiwoo",
+    "default": "normal"
+   },
+   {
+    "id": "carmen",
+    "name": "Carmen",
+    "default": "skip"
+   },
+   {
+    "id": "yuha",
+    "name": "Yuha",
+    "default": "normal"
+   },
+   {
+    "id": "stella",
+    "name": "Stella",
+    "default": "normal"
+   },
+   {
+    "id": "juun",
+    "name": "Juun",
+    "default": "normal"
+   },
+   {
+    "id": "a-na",
+    "name": "A-na",
+    "default": "normal"
+   },
+   {
+    "id": "ian",
+    "name": "Ian",
+    "default": "highlight"
+   },
+   {
+    "id": "ye-on",
+    "name": "Ye-on",
+    "default": "skip"
+   }
+  ]
+ },
+ {
+  "id": "illit",
+  "group": "ILLIT",
+  "skip": [
+   "Yunah"
+  ],
+  "highlight": [],
+  "members": [
+   {
+    "id": "yunah",
+    "name": "Yunah",
+    "default": "skip"
+   },
+   {
+    "id": "minju",
+    "name": "Minju",
+    "default": "normal"
+   },
+   {
+    "id": "moka",
+    "name": "Moka",
+    "default": "normal"
+   },
+   {
+    "id": "wonhee",
+    "name": "Wonhee",
+    "default": "normal"
+   },
+   {
+    "id": "iroha",
+    "name": "Iroha",
+    "default": "normal"
+   }
+  ]
+ },
+ {
+  "id": "kiiikiii",
+  "group": "KiiiKiii",
+  "skip": [],
+  "highlight": [
+   "Kya"
+  ],
+  "members": [
+   {
+    "id": "jiyu",
+    "name": "Jiyu",
+    "default": "normal"
+   },
+   {
+    "id": "leesol",
+    "name": "Leesol",
+    "default": "normal"
+   },
+   {
+    "id": "sui",
+    "name": "Sui",
+    "default": "normal"
+   },
+   {
+    "id": "haum",
+    "name": "Haum",
+    "default": "normal"
+   },
+   {
+    "id": "kya",
+    "name": "Kya",
+    "default": "highlight"
+   }
+  ]
+ }
+]

@@ -33,9 +33,37 @@ async function getJson(path) {
   }
 }
 
-async function getProfiles() {
+async function getBundledProfiles() {
   if (!bundledProfiles) bundledProfiles = (await getJson("skiplists/profiles.json")) || [];
   return bundledProfiles;
+}
+
+// a usable profiles.json: [{id, group, members: [{id, name, default}]}]
+const validProfiles = (p) => Array.isArray(p) && p.length > 0 && p.every((g) =>
+  g && PROFILE_RE.test(String(g.id)) && Array.isArray(g.members) &&
+  g.members.every((m) => m && typeof m.id === "string" && m.id));
+
+// The groups and their members' defaults: <base>/profiles.json (so a group added
+// later shows up without a new add-on version), cached like skip lists, else the
+// bundled copy. Users' choices are stored per member key, so they are kept;
+// members new to the list get their profile's default.
+async function getProfiles() {
+  const s = await getSettings();
+  if (!s.baseUrl) return getBundledProfiles();
+  const key = "cache:profiles";
+  const c = (await browser.storage.local.get(key))[key];
+  const cached = c && c.baseUrl === s.baseUrl && validProfiles(c.data) ? c : null;
+  if (cached && Date.now() - cached.at < s.cacheMinutes * 60000) return cached.data;
+  try {
+    const r = await fetchList(s.baseUrl.replace(/\/*$/, "/") + "profiles.json");
+    if (r.status === "ok" && validProfiles(r.data)) {
+      await browser.storage.local.set({ [key]: { at: Date.now(), baseUrl: s.baseUrl, data: r.data } });
+      return r.data;
+    }
+  } catch (e) {
+    console.warn("[kms] online profiles.json failed, using bundled copy:", e);
+  }
+  return cached ? cached.data : getBundledProfiles(); // an older online copy beats the bundled one
 }
 
 async function loadBundled(id) {

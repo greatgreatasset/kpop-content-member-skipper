@@ -660,6 +660,16 @@ def main():
         base = d.find_element(By.ID, "baseUrl").get_attribute("value")
         if not a.bundled:
             check("settings: default skip list URL", "kpop-content-member-skipper" in base, base)
+        # the groups come from <base>/profiles.json (cached), the bundled copy only without a base URL
+        cached = d.execute_async_script("""const done = arguments[arguments.length - 1];
+            browser.storage.local.get('cache:profiles').then(r => done(r['cache:profiles'] || null));""")
+        if a.bundled:
+            check("settings: groups from the bundled profiles.json (no base URL)", cached is None, repr(cached)[:80])
+        else:
+            online = [p["id"] for p in (cached or {}).get("data") or []]
+            local = [p["id"] for p in json.loads((EXT / "skiplists" / "profiles.json").read_text("utf-8"))]
+            check("settings: groups fetched online (<base>/profiles.json) = bundled copy", online == local,
+                  f"online {online} bundled {local}")
         # ask the background script (from this extension page) where the list comes from
         src = d.execute_async_script("""const done = arguments[arguments.length - 1];
             browser.runtime.sendMessage({type: 'getList', id: arguments[0]})

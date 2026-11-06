@@ -48,7 +48,7 @@ def main():
     title, summ = d.get("title") or a.video_id, f"{group_names(d)}: {summary(d)}"
     paths = [f"skiplists/{a.video_id}.json", "skiplists/index.json",
              f"extension/skiplists/{a.video_id}.json", "extension/skiplists/index.json",
-             "extension/skiplists/profiles.json"]
+             "extension/skiplists/profiles.json", "skiplists/profiles.json"]
     paths = [p for p in paths if (ROOT / p).exists()]
     git("add", "--", *paths)
     if git("diff", "--cached", "--quiet", "--", *paths, check=False).returncode == 0:

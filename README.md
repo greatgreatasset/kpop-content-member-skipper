@@ -69,11 +69,15 @@ everyone using the add-on; each user can change them for themselves.
 4. **Earlier videos:** `.venv\Scripts\python rescan_cached.py` rebuilds every skip
    list from the cached detections (seconds, nothing is downloaded), so videos
    scanned before also know about the new group.
-5. **Extension:** `.venv\Scripts\python sync_skiplists.py` (updates the groups and
-   members the popup and settings page list, with their defaults), commit the
-   profile and the lists, raise the extension version and run **sign.bat**.
-   The settings page then shows the new group's members with your defaults
-   selected.
+5. **Extension:** `.venv\Scripts\python sync_skiplists.py` (writes
+   `profiles.json`, the groups and members the popup and settings page list
+   with their defaults, to `skiplists/` and the bundled `extension/skiplists/`),
+   then commit and push the profile, `skiplists/profiles.json` and the lists.
+   Add-on 0.7.1 and later fetch `profiles.json` from GitHub like the skip lists
+   (cached for the cache time, the bundled copy as fallback), so the settings
+   page shows the new group's members with your defaults selected without a
+   new add-on version. Users' existing choices are kept. (Before 0.7.1 the
+   group list was only bundled, so it needed a new version and **sign.bat**.)
 
 From then on every scan also looks for the new group; nothing else changes.
 
@@ -336,8 +340,9 @@ Friends: open https://github.com/greatgreatasset/kpop-content-member-skipper/rel
 in Firefox and click the `.xpi`. Installed copies check `updates.json` (the
 manifest's `update_url`) about once a day and update themselves. To ship a
 change, raise `"version"` in `extension/manifest.json` (Mozilla signs each
-version once) and run **sign.bat** again. Skip lists don't need a new version;
-they are fetched from GitHub.
+version once) and run **sign.bat** again. Skip lists and new groups
+(`skiplists/profiles.json`, from 0.7.1 on) don't need a new version; they are
+fetched from GitHub.
 
 ### Loading it temporarily (development)
 

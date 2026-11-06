@@ -1,7 +1,8 @@
 """Copy skiplists/<videoId>.json into extension/skiplists/ (the bundled
 fallback), refresh both index.json files, and write
-extension/skiplists/profiles.json (the groups, skip and highlight members the
-popup and settings page show).
+profiles.json (the groups, skip and highlight members the popup and settings
+page show) to extension/skiplists/ (bundled) and skiplists/ (fetched online by
+add-on 0.7.1+, so a new group shows up without a new add-on version).
 
 The old per-group folders (skiplists/<profile>/) are left alone for add-on
 versions before 0.5.0 and are not bundled."""
@@ -30,8 +31,10 @@ def main():
     update_index(SKIPLISTS)
     update_index(dst)
     profiles = [Profile(pid).summary() for pid in all_profiles()]
-    (dst / "profiles.json").write_text(json.dumps(profiles, ensure_ascii=False, indent=1) + "\n",
-                                       encoding="utf-8")
+    text = json.dumps(profiles, ensure_ascii=False, indent=1) + "\n"
+    # the bundled copy, and the online one add-on 0.7.1+ fetches next to the skip lists
+    for d in (dst, SKIPLISTS):
+        (d / "profiles.json").write_text(text, encoding="utf-8")
     print(f"bundled {n} skip list(s); groups: {', '.join(p['group'] for p in profiles)}")
 
 
