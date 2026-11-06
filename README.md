@@ -5,8 +5,8 @@ screen when, so a Firefox extension can jump over the parts where only the
 members you want to skip are on screen, and mark the parts of the members you
 want to see more of (highlights). Each group is a **profile**: Hearts2Hearts
 (skip Carmen and Ye-on, highlight Ian), ILLIT (skip Yunah), KiiiKiii
-(highlight Kya), BABYMONSTER (skip Pharita, highlight Chiquita) and MEOVV
-(skip Gawon and Ella, highlight Anna). Those are the defaults; every add-on user can set each member
+(highlight Kya), BABYMONSTER (skip Pharita, highlight Chiquita), MEOVV
+(skip Gawon and Ella, highlight Anna) and IVE (skip Gaeul, Liz and Rei, highlight Yujin and Leeseo). Those are the defaults; every add-on user can set each member
 to Skip, Normal or Highlight on the settings page (see
 [Customizing members](#customizing-members)). Nobody picks a group: every
 video is checked against all members of all groups, and its skip list says
@@ -60,7 +60,7 @@ Members' looks change over time. With `"recentSince": "2025-11-01"` (and
 optionally `"recentShare": 0.6`, the default) build_refs takes that share of
 the `photosPerMember` sample from photos dated on/after that day (by the
 `YYYY-MM-DD` filename prefix the downloader writes) and the rest spread over
-the older ones (BABYMONSTER uses this). A member with no recent photos, e.g.
+the older ones (BABYMONSTER and IVE use this; IVE's Yujin has photos back to 2021, the other members only 2026 ones). A member with no recent photos, e.g.
 an inactive one (BABYMONSTER's Rami), goes in `usePhotosOf` so all her photos
 are used. Profiles without `recentSince` sample uniformly as before. They are the **defaults** for
 everyone using the add-on; each user can change them for themselves.

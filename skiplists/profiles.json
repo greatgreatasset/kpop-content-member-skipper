@@ -135,6 +135,51 @@
   ]
  },
  {
+  "id": "ive",
+  "group": "IVE",
+  "skip": [
+   "Gaeul",
+   "Liz",
+   "Rei"
+  ],
+  "highlight": [
+   "Yujin",
+   "Leeseo"
+  ],
+  "members": [
+   {
+    "id": "yujin",
+    "name": "Yujin",
+    "default": "highlight"
+   },
+   {
+    "id": "gaeul",
+    "name": "Gaeul",
+    "default": "skip"
+   },
+   {
+    "id": "rei",
+    "name": "Rei",
+    "default": "skip"
+   },
+   {
+    "id": "wonyoung",
+    "name": "Wonyoung",
+    "default": "normal"
+   },
+   {
+    "id": "liz",
+    "name": "Liz",
+    "default": "skip"
+   },
+   {
+    "id": "leeseo",
+    "name": "Leeseo",
+    "default": "highlight"
+   }
+  ]
+ },
+ {
   "id": "kiiikiii",
   "group": "KiiiKiii",
   "skip": [],

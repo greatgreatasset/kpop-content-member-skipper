@@ -1,0 +1,12 @@
+{
+ "id": "ive",
+ "group": "IVE",
+ "photosDir": "~/Pictures/IVE",
+ "members": ["yujin", "gaeul", "rei", "wonyoung", "liz", "leeseo"],
+ "names": {"yujin": "Yujin", "gaeul": "Gaeul", "rei": "Rei", "wonyoung": "Wonyoung", "liz": "Liz", "leeseo": "Leeseo"},
+ "skip": ["gaeul", "liz", "rei"],
+ "highlight": ["yujin", "leeseo"],
+ "photosPerMember": 2000,
+ "recentSince": "2025-09-01",
+ "recentShare": 0.6
+}
