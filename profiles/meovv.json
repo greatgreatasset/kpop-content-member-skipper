@@ -1,0 +1,10 @@
+{
+ "id": "meovv",
+ "group": "MEOVV",
+ "photosDir": "~/Pictures/MEOVV",
+ "members": ["sooin", "gawon", "anna", "narin", "ella"],
+ "names": {"sooin": "Sooin", "gawon": "Gawon", "anna": "Anna", "narin": "Narin", "ella": "Ella"},
+ "skip": ["gawon", "ella"],
+ "highlight": ["anna"],
+ "photosPerMember": 2000
+}

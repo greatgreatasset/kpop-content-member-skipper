@@ -168,5 +168,43 @@
     "default": "highlight"
    }
   ]
+ },
+ {
+  "id": "meovv",
+  "group": "MEOVV",
+  "skip": [
+   "Gawon",
+   "Ella"
+  ],
+  "highlight": [
+   "Anna"
+  ],
+  "members": [
+   {
+    "id": "sooin",
+    "name": "Sooin",
+    "default": "normal"
+   },
+   {
+    "id": "gawon",
+    "name": "Gawon",
+    "default": "skip"
+   },
+   {
+    "id": "anna",
+    "name": "Anna",
+    "default": "highlight"
+   },
+   {
+    "id": "narin",
+    "name": "Narin",
+    "default": "normal"
+   },
+   {
+    "id": "ella",
+    "name": "Ella",
+    "default": "skip"
+   }
+  ]
  }
 ]

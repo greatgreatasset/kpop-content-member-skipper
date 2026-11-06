@@ -5,7 +5,8 @@ screen when, so a Firefox extension can jump over the parts where only the
 members you want to skip are on screen, and mark the parts of the members you
 want to see more of (highlights). Each group is a **profile**: Hearts2Hearts
 (skip Carmen and Ye-on, highlight Ian), ILLIT (skip Yunah), KiiiKiii
-(highlight Kya) and BABYMONSTER (skip Pharita, highlight Chiquita). Those are the defaults; every add-on user can set each member
+(highlight Kya), BABYMONSTER (skip Pharita, highlight Chiquita) and MEOVV
+(skip Gawon and Ella, highlight Anna). Those are the defaults; every add-on user can set each member
 to Skip, Normal or Highlight on the settings page (see
 [Customizing members](#customizing-members)). Nobody picks a group: every
 video is checked against all members of all groups, and its skip list says
