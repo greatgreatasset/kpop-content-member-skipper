@@ -86,3 +86,10 @@ button.secondary { background: none; color: var(--accent); }
 .options .choice-list { display: flex; flex-direction: column; gap: 2px; }
 .options label.radio { display: flex; align-items: center; gap: 6px; margin: 2px 0; font-weight: 400; cursor: pointer; }
 .options label.radio input { accent-color: var(--accent); margin: 0; }
+
+/* settings: blur */
+.options label.check { display: flex; align-items: center; gap: 8px; font-weight: 400; margin: 4px 0; }
+.options .range-row { display: flex; align-items: center; gap: 8px; }
+.options .range-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+.options .range-row output { min-width: 86px; text-align: right; }
+.options #blurOpts.off { opacity: 0.5; }

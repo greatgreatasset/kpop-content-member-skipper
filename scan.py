@@ -30,14 +30,16 @@ from datetime import datetime, timezone
 
 import numpy as np
 
+import blur
 import rules
 from common import CACHE, SKIPLISTS, Gallery, update_index
 
 # harmless deprecation notice from insightface's use of scikit-image
 warnings.filterwarnings("ignore", category=FutureWarning, message=".*estimate.*deprecated")
 
-SCANNER_VERSION = "0.6.0"
-SKIPLIST_FORMAT = 5
+SCANNER_VERSION = "0.7.0"
+SKIPLIST_FORMAT = 6
+BLUR_CACHE_FORMAT = "1"  # bump when the cached blur-pass arrays change
 CACHE_FORMAT = "2"  # bump when the cached detection arrays change
 
 DEFAULTS = dict(
@@ -79,6 +81,12 @@ DEFAULTS = dict(
     # centre at most focus_center x frame width from the middle.
     focus_ratio=1.5,
     focus_center=0.3,
+    # Face boxes for "Blur skipped members when they can't be skipped" (blur.py):
+    # 1 = also detect faces in the frames midway between the timeline frames
+    # (6 fps boxes; 3 fps lags fast motion and misses short glimpses), find the
+    # scene cuts, and add timeline["faces"]. 0 = no boxes.
+    blur=1,
+    **blur.DEFAULTS,
 )
 
 
@@ -200,15 +208,39 @@ def probe_size(path):
     return w, h
 
 
-def decode_frames(path, fps, height, q, stats):
-    """Producer: ffmpeg -> raw BGR frames -> queue. Records its own busy time."""
+def frame_plan(path, fps):
+    """For the blur pass, which decodes at 2 x fps shifted by half a step (so its
+    frames are the timeline's frames plus the ones exactly between them): per
+    frame of that decode ("tl", timeline frame index) or ("mid", time), and the
+    time (s) each timeline frame really shows (ffmpeg's fps filter picks the
+    last source frame before the middle of each step, see blur.fps_pick)."""
+    pts, tb = blur.packet_times(path)
+    tl = blur.fps_pick(pts, tb, fps)
+    both = blur.fps_pick(pts, tb, 2 * fps, 1 / (4 * fps))
+    roles = [("mid", t) for t in both]
+    j = 0
+    for k, t in enumerate(tl):
+        while j + 1 < len(both) and abs(both[j + 1] - t) < abs(both[j] - t):
+            j += 1
+        roles[j] = ("tl", k)
+    return roles, tl
+
+
+def decode_frames(path, fps, height, q, stats, plan=None):
+    """Producer: ffmpeg -> raw BGR frames -> queue of (role, frame). Without a
+    plan every frame is a timeline frame ("tl", index) at fps; with one
+    (frame_plan) the decode is at 2 x fps and the plan says which is which.
+    Records its own busy time."""
     w0, h0 = probe_size(path)
     h = min(height, h0)
     w = int(round(w0 * h / h0 / 2) * 2)
     # software decode: for 720p, dav1d/h264 on CPU beat -hwaccel cuda here
     # (240 s of AV1 at 3 fps: ~3 s CPU vs ~14 s cuda with frame copy-back)
+    vf = f"fps={fps},scale={w}:{h}"
+    if plan is not None:
+        vf = f"setpts=PTS-{1 / (4 * fps)}/TB,fps={2 * fps},scale={w}:{h}"
     cmd = ["ffmpeg", "-v", "error", "-threads", "8", "-i", path,
-           "-vf", f"fps={fps},scale={w}:{h}", "-f", "rawvideo", "-pix_fmt", "bgr24", "-"]
+           "-vf", vf, "-f", "rawvideo", "-pix_fmt", "bgr24", "-"]
     t0 = time.perf_counter()
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, bufsize=w * h * 3 * 4)
     n, fsize, blocked = 0, w * h * 3, 0.0
@@ -217,8 +249,9 @@ def decode_frames(path, fps, height, q, stats):
         if len(buf) < fsize:
             break
         frame = np.frombuffer(buf, np.uint8).reshape(h, w, 3)
+        role = ("tl", n) if plan is None else plan[n] if n < len(plan) else ("mid", None)
         tb = time.perf_counter()
-        q.put((n / fps, frame))
+        q.put((role, frame))
         blocked += time.perf_counter() - tb
         n += 1
     p.wait()
@@ -229,36 +262,77 @@ def decode_frames(path, fps, height, q, stats):
     stats["frame_size"] = (w, h)
 
 
-def detect_all(path, fps, height, det_size, on_frame=None):
+def detect_all(path, fps, height, det_size, on_frame=None, timeline=True, between=False, cut_thr=None):
+    """Face detection + embeddings. timeline: the timeline frames (fps);
+    between: also the frames midway between them (for the blur boxes), and the
+    scene cuts (cut_thr; a separate ffmpeg pass in parallel). -> times, rows,
+    emb, kps, stats (+ stats["blur"]: the between frames' data, if asked for)."""
     from common import load_face_app
 
     app = load_face_app(det_size=det_size, det_thresh=0.5)
     q = queue.Queue(maxsize=32)
     stats = {}
-    th = threading.Thread(target=decode_frames, args=(path, fps, height, q, stats), daemon=True)
+    plan, tl_times = frame_plan(path, fps) if between else (None, None)
+    cuts = {}
+    if between:
+        def run_cuts():
+            try:
+                cuts["cuts"] = blur.detect_cuts(path, cut_thr)
+            except Exception as e:  # no cuts: boxes may slide across one, nothing worse
+                cuts["error"] = str(e)
+        ct = threading.Thread(target=run_cuts, daemon=True)
+        ct.start()
+    th = threading.Thread(target=decode_frames, args=(path, fps, height, q, stats, plan), daemon=True)
     t0 = time.perf_counter()
     th.start()
     times, rows, embs, kps = [], [], [], []
+    mid_t, mid_rows, mid_embs = [], [], []
     det_busy = 0.0
     while True:
         item = q.get()
         if item is None:
             break
-        t, frame = item
+        (kind, v), frame = item
+        if kind == "tl" and not timeline:
+            if on_frame:
+                on_frame(v / fps)
+            continue
+        if kind == "mid" and v is None:
+            continue
         tb = time.perf_counter()
         faces = app.get(frame)
         det_busy += time.perf_counter() - tb
-        fi = len(times)
-        times.append(t)
-        for f in faces:
-            rows.append([fi, *f.bbox.tolist(), float(f.det_score)])
-            embs.append(f.normed_embedding.astype(np.float32))
-            kps.append(np.asarray(f.kps, np.float32).reshape(5, 2))
+        if kind == "tl":
+            fi = len(times)
+            t = fi / fps
+            times.append(t)
+            for f in faces:
+                rows.append([fi, *f.bbox.tolist(), float(f.det_score)])
+                embs.append(f.normed_embedding.astype(np.float32))
+                kps.append(np.asarray(f.kps, np.float32).reshape(5, 2))
+        else:
+            t = v
+            mi = len(mid_t)
+            mid_t.append(v)
+            for f in faces:
+                mid_rows.append([mi, *f.bbox.tolist(), float(f.det_score)])
+                mid_embs.append(f.normed_embedding.astype(np.float32))
         if on_frame:
             on_frame(t)
     th.join()
     stats["detect_busy"] = det_busy
     stats["pipeline_wall"] = time.perf_counter() - t0
+    if between:
+        tc = time.perf_counter()
+        ct.join()
+        stats["cuts_wait_wall"] = time.perf_counter() - tc
+        stats["blur"] = dict(
+            tl_times=np.array(tl_times, np.float64), mid_times=np.array(mid_t, np.float64),
+            mid_rows=np.array(mid_rows, np.float32).reshape(-1, 6),
+            mid_emb=np.array(mid_embs, np.float32).reshape(-1, 512),
+            cuts=np.array(cuts.get("cuts", []), np.float64))
+        if "error" in cuts:
+            stats["cuts_error"] = cuts["error"]
     return (np.array(times, np.float32),
             np.array(rows, np.float32).reshape(-1, 6),
             np.array(embs, np.float32).reshape(-1, 512),
@@ -304,9 +378,11 @@ def detect_groups(S, ok, gal, thr, p):
     return found, counts
 
 
-def classify(rows, emb, gal, p):
+def classify(rows, emb, gal, p, extra=None):
     """Returns per-face class index (-1 unknown, -2 too small / background),
     best score, (threshold, its source) and (groups found, confident faces per group).
+    `extra` (a dict), if given, gets each face's best match among those groups
+    ("best") and face track ("track"), for the blur boxes.
 
     Pass 1 finds the groups with the joint threshold (all members of all groups);
     pass 2 matches each face only among the members of those groups, with the
@@ -336,8 +412,12 @@ def classify(rows, emb, gal, p):
     score = S.max(1) if len(S) else np.zeros(0)
     lab = np.where(score >= thr, best, -1)
     lab = np.where(big, lab, -2)
+    need = (p["track"] or extra is not None) and len(rows)
+    track = face_tracks(rows, emb, p) if need else np.arange(len(rows))
+    if extra is not None:
+        extra.update(best=best, track=track)
     if p["track"]:
-        lab = track_relabel(rows, emb, lab, S, p)
+        lab = track_relabel(rows, emb, lab, S, p, track)
     return lab, score, (thr, src), (groups, counts)
 
 
@@ -349,11 +429,9 @@ def iou(a, b):
     return inter / ua if ua > 0 else 0.0
 
 
-def track_relabel(rows, emb, lab, S, p):
-    """Link faces across consecutive frames (greedy IoU, embedding check), then
-    give unknown faces in a track the track's majority confident label. Carries
-    identity through profile / half-out-of-frame / blurred frames. Tiny faces
-    (-2) stay tiny."""
+def face_tracks(rows, emb, p):
+    """Track id per face: faces linked across consecutive frames (greedy IoU,
+    embedding check)."""
     fi = rows[:, 0].astype(int)
     track = -np.ones(len(rows), int)
     prev = []          # indices of faces in previous frame
@@ -384,6 +462,16 @@ def track_relabel(rows, emb, lab, S, p):
                 track[i] = n_tracks
                 n_tracks += 1
         prev, last_f = cur, f
+    return track
+
+
+def track_relabel(rows, emb, lab, S, p, track=None):
+    """Give unknown faces in a face track (face_tracks) the track's majority
+    confident label. Carries identity through profile / half-out-of-frame /
+    blurred frames. Tiny faces (-2) stay tiny."""
+    if track is None:
+        track = face_tracks(rows, emb, p)
+    n_tracks = int(track.max()) + 1 if len(track) else 0
     out = lab.copy()
     for t in range(n_tracks):
         idx = np.where(track == t)[0]
@@ -512,12 +600,16 @@ def build_timeline(n_frames, rows, lab, full, gal, groups, p, frame_size=None):
     }
 
 
-def build_segments(times, rows, emb, gal, p, kps=None, frame_size=None):
+def build_segments(times, rows, emb, gal, p, kps=None, frame_size=None, blur_data=None):
     """Classify the faces, build the presence timeline and apply the default
-    choices of the profiles (rules.py) -> default skips and highlights."""
-    lab, score, (thr, thr_src), (groups, counts) = classify(rows, emb, gal, p)  # identity (after tracking)
+    choices of the profiles (rules.py) -> default skips and highlights.
+    blur_data (load_blur / the blur pass): also the face boxes (timeline["faces"])."""
+    ex = {}
+    lab, score, (thr, thr_src), (groups, counts) = classify(rows, emb, gal, p, ex)  # identity (after tracking)
     full = full_face_mask(rows, kps, frame_size, p)
     tl = build_timeline(len(times), rows, lab, full, gal, groups, p, frame_size)
+    if blur_data is not None and p.get("blur", 1) and frame_size is not None:
+        tl["faces"] = face_boxes(rows, emb, lab, score, ex["best"], thr, groups, gal, frame_size, blur_data, p)
     res = rules.apply(tl, debug=True)
     skips = res["skips"]
     cls = {k: c for c, k in enumerate(gal.keys)}
@@ -551,6 +643,69 @@ def build_segments(times, rows, emb, gal, p, kps=None, frame_size=None):
                                    groups=found, skip_members=skip_members, timeline=tl), diag
 
 
+def face_boxes(rows, emb, lab, score, best, thr, groups, gal, frame_size, bd, p):
+    """timeline["faces"] (blur.py): the timeline frames' faces (their labels as
+    in the timeline, plus background / small faces that match a member) and the
+    faces of the frames between them (matched among the same groups, same
+    threshold), at the times the frames really show."""
+    tl_t = np.asarray(bd["tl_times"], float)
+    fi = rows[:, 0].astype(int)
+    if len(tl_t) < (fi.max() + 1 if len(fi) else 0):  # shouldn't happen; keep what's known
+        tl_t = np.r_[tl_t, (np.arange(len(tl_t), fi.max() + 1) / p["fps"])]
+    own = blur.own_labels(lab, best, score, thr)
+    mr, me = bd["mid_rows"], bd["mid_emb"]
+    S = class_scores(me, gal, p["method"], p["knn_k"])
+    if len(S) and groups and len(groups) < len(gal.profiles):
+        S[:, ~np.isin(gal.cls_prof, groups)] = -1.0
+    if not groups:
+        S[:] = -1.0
+    m_own = np.where(S.max(1) >= thr, S.argmax(1), -1) if len(S) else np.zeros(0, int)
+    t = np.r_[tl_t[fi], np.asarray(bd["mid_times"], float)[mr[:, 0].astype(int)]]
+    xyxy = np.r_[rows[:, 1:5], mr[:, 1:5]]
+    return blur.faces_block(t, xyxy, np.r_[emb, me], np.r_[own, m_own].astype(int), gal.keys,
+                            1 / p["fps"], frame_size, bd["cuts"], p)
+
+
+def blur_key(p):
+    return f"{BLUR_CACHE_FORMAT}|{p['fps']}|{p['height']}|{p['det_size']}|{p['cut_thr']}"
+
+
+def load_blur(vid, p):
+    """Cached blur-pass data of a video (the frames between the timeline frames,
+    the timeline frames' real times, scene cuts), or None."""
+    f = CACHE / f"{vid}.blur.npz"
+    if not f.exists():
+        return None
+    z = np.load(f)
+    if str(z["key"]) != blur_key(p):
+        return None
+    return {k: z[k] for k in ("tl_times", "mid_times", "mid_rows", "mid_emb", "cuts")}
+
+
+def save_blur(vid, bd, p):
+    np.savez(CACHE / f"{vid}.blur.npz", key=blur_key(p), **bd)
+
+
+def video_file(vid):
+    """The cached download of a video, or None."""
+    for f in sorted(CACHE.glob(f"{vid}.*")):
+        if f.suffix in (".mp4", ".webm", ".mkv"):
+            return f
+    return None
+
+
+def blur_pass(vid, p, on_frame=None):
+    """Only the blur pass (frames between the timeline frames + cuts) for a video
+    whose timeline frames are cached; needs its video file. -> data or None."""
+    path = video_file(vid)
+    if path is None:
+        return None
+    *_, st = detect_all(str(path), p["fps"], p["height"], p["det_size"], on_frame,
+                        timeline=False, between=True, cut_thr=p["cut_thr"])
+    save_blur(vid, st["blur"], p)
+    return st["blur"]
+
+
 # ---------------------------------------------------------------- skip list file
 def make_list(vid, title, duration, skips, highlights, dbg, only_profiles=None):
     """Skip list (format 5): the presence timeline (with per-frame focus), from
@@ -570,14 +725,26 @@ def make_list(vid, title, duration, skips, highlights, dbg, only_profiles=None):
 
 
 def dump_list(out):
-    """JSON with one timeline segment per line (readable diffs, small files)."""
+    """JSON with one timeline segment and one face track per line (readable
+    diffs, small files)."""
     tl = out.get("timeline")
     if not tl:
         return json.dumps(out, ensure_ascii=False, indent=1)
-    marker = "__SEGMENTS__"
-    text = json.dumps({**out, "timeline": {**tl, "segments": marker}}, ensure_ascii=False, indent=1)
-    segs = ",\n".join("   " + json.dumps(s, ensure_ascii=False, separators=(",", ":")) for s in tl["segments"])
-    return text.replace(f'"{marker}"', "[\n" + segs + "\n  ]")
+    seg_m, face_m = "__SEGMENTS__", "__FACES__"
+    rest = {**tl, "segments": seg_m}
+    if "faces" in tl:
+        rest["faces"] = face_m
+    text = json.dumps({**out, "timeline": rest}, ensure_ascii=False, indent=1)
+    one = lambda x: json.dumps(x, ensure_ascii=False, separators=(",", ":"))  # noqa: E731
+    segs = ",\n".join("   " + one(s) for s in tl["segments"])
+    text = text.replace(f'"{seg_m}"', "[\n" + segs + "\n  ]")
+    if "faces" in tl:
+        fc = tl["faces"]
+        head = one({k: v for k, v in fc.items() if k != "tracks"})[:-1]
+        tracks = ",\n".join(f"   {one(k)}: [\n" + ",\n".join("    " + one(t) for t in v) + "]"
+                             for k, v in fc["tracks"].items())
+        text = text.replace(f'"{face_m}"', head + ',"tracks":{\n' + tracks + "\n  }}")
+    return text
 
 
 def save_list(out):
@@ -611,24 +778,36 @@ def scan(url, p, rescan=False, profile=None, debug=False, progress=None):
     vid = info["id"]
     cache = CACHE / f"{vid}.faces.npz"
     key = f"{CACHE_FORMAT}|{p['fps']}|{p['height']}|{p['det_size']}"
-    if cache.exists() and not rescan and str(np.load(cache)["key"]) == key:
+    have_tl = cache.exists() and not rescan and str(np.load(cache)["key"]) == key
+    bd = load_blur(vid, p) if p["blur"] and not rescan else None
+    need_blur = bool(p["blur"]) and bd is None
+    if have_tl:
         z = np.load(cache)
         times, rows, emb, kps = z["times"], z["rows"], z["emb"], z["kps"]
         frame_size = tuple(int(x) for x in z["frame_size"])
+    if have_tl and not need_blur:
         st = {"cached": True}
         if progress:
             progress.cached()
     else:
         if progress:
             progress.detect_start(info.get("duration"))
-        times, rows, emb, kps, st = detect_all(path, p["fps"], p["height"], p["det_size"],
-                                               progress and progress.frame)
-        frame_size = st["frame_size"]
-        np.savez(cache, times=times, rows=rows, emb=emb, kps=kps,
-                 frame_size=np.array(frame_size), key=key)
+        res = detect_all(path, p["fps"], p["height"], p["det_size"], progress and progress.frame,
+                         timeline=not have_tl, between=need_blur, cut_thr=p["cut_thr"])
+        st = res[-1]
+        if not have_tl:
+            times, rows, emb, kps = res[:4]
+            frame_size = st["frame_size"]
+            np.savez(cache, times=times, rows=rows, emb=emb, kps=kps,
+                     frame_size=np.array(frame_size), key=key)
+        else:
+            st["cached"] = "timeline"
+        if need_blur:
+            bd = st["blur"]
+            save_blur(vid, bd, p)
     T.update({k: v for k, v in st.items() if k.endswith(("wall", "busy"))})
     tc = time.perf_counter()
-    skips, highlights, dbg, diag = build_segments(times, rows, emb, gal, p, kps, frame_size)
+    skips, highlights, dbg, diag = build_segments(times, rows, emb, gal, p, kps, frame_size, bd)
     T["classify_smooth"] = time.perf_counter() - tc
     T["total"] = time.perf_counter() - t0
 

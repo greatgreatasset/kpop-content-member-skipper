@@ -16,7 +16,11 @@ page Carmen -> Highlight and Ian -> Skip, which must change the skips, markers
 and stats line of the open video without a reload (expected values from
 rules.py), and "Reset to defaults" restores them. Last, a KiiiKiii video
 (--kiiikiii) shows Kya's highlights, and with "Highlight when: only when she's
-the main focus" only her focus parts (rules.py), back to all with "any time". With --scan-video it instead runs "Filter this video" for real (needs
+the main focus" only her focus parts (rules.py), back to all with "any time".
+Then "Blur skipped members when they can't be skipped" (--blur-only: just
+this): off by default; on, Carmen and Ye-on's faces are blurred at 2:00 of the
+test video where blur.py puts them (screenshots ext_blur_on.png /
+ext_blur_strong.png); off again, no boxes. With --scan-video it instead runs "Filter this video" for real (needs
 install_native_host.bat; commits and pushes the skip list like scan.bat):
 button -> progress banner -> skips applied. Screenshots go to cache/debug/.
 """
@@ -33,6 +37,7 @@ from selenium.webdriver.firefox.options import Options
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+import blur  # noqa: E402
 import rules  # noqa: E402
 EXT = ROOT / "extension"
 OUT = ROOT / "cache" / "debug"
@@ -523,6 +528,174 @@ def hl_focus(d, ext_uuid, sl):
           wait(d, lambda: markers_match(js(d, MARKERS_JS), sl, video_duration(d)), 10))
 
 
+BLUR_JS = """const L = document.querySelector('#movie_player .cys-blur-layer');
+    const v = document.querySelector('#movie_player video');
+    if (!L) return {layer: false, t: v.currentTime};
+    const lr = L.getBoundingClientRect(), vr = v.getBoundingClientRect();
+    const boxes = [...L.querySelectorAll('.cys-blur')].filter(e => e.style.display !== 'none').map(e => {
+        const r = e.getBoundingClientRect();
+        return {key: e.dataset.key, cx: (r.left + r.width / 2 - lr.left) / lr.width,
+                cy: (r.top + r.height / 2 - lr.top) / lr.height, w: r.width / lr.width,
+                op: parseFloat(e.style.opacity), filter: e.dataset.r, canvas: e.tagName === 'CANVAS'};
+    });
+    return {layer: true, t: v.currentTime, boxes, layer_rect: [lr.left, lr.top, lr.width, lr.height],
+            video_rect: [vr.left, vr.top, vr.width, vr.height], vw: v.videoWidth, vh: v.videoHeight,
+            rvfc: typeof v.requestVideoFrameCallback === 'function'};"""
+
+
+def expected_blur(sl, t):
+    """{member key: (centre x, centre y, w)} of the default skip-members' face
+    boxes at t (blur.py), or {} inside a skip range."""
+    if any(s["start"] <= t < s["end"] for s in sl["skips"]):
+        return {}
+    fc = sl["timeline"]["faces"]
+    dec = blur.decode_tracks(fc)
+    ct = blur.cut_times(fc)
+    out = {}
+    for m in sl["timeline"]["members"]:
+        if m["default"] != "skip":
+            continue
+        for tr in dec.get(m["key"], []):
+            r = blur.box_at(tr, fc["fps"], ct, t, fc["hold"])
+            if r and r[1] > 0:
+                x, y, w, h = r[0]
+                out.setdefault(m["key"], []).append((x + w / 2, y + h / 2, w, r[1]))
+    return out
+
+
+def blur_time(sl, a, b):
+    """A time in [a, b] where every default skip-member with a face box there is
+    shown fully (no fade), preferring the most of them, then the middle."""
+    best = None
+    for k in range(int(a * 10), int(b * 10)):
+        t = k / 10
+        e = expected_blur(sl, t)
+        if not e or any(op < 1 for v in e.values() for *_, op in v):
+            continue
+        score = (len(e), -abs(t - (a + b) / 2))
+        if best is None or score > best[0]:
+            best = (score, t)
+    return best and best[1]
+
+
+def blur_store(d, items):
+    d.execute_async_script("""const done = arguments[arguments.length - 1];
+        browser.storage.local.set(arguments[0]).then(() => done(true));""", items)
+
+
+def check_blur(d, a, ext_uuid):
+    """"Blur skipped members when they can't be skipped": off by default (no
+    boxes); turned on on the settings page, Carmen and Ye-on's faces are blurred
+    where they share the screen with Ian (oVMQTIUI_2c ~2:00), at the positions
+    blur.py gives; turned off again, the boxes go."""
+    sl = load_list(a.video)
+    if "faces" not in sl.get("timeline", {}):
+        check("blur: skip list has face boxes", False, f"{a.video}: format {sl.get('format')}")
+        return
+    t0 = blur_time(sl, 114, 126)
+    check("blur: a time near 2:00 with Carmen / Ye-on boxes", t0 is not None, f"t={t0}")
+    if t0 is None:
+        return
+    d.get(f"https://www.youtube.com/watch?v={a.video}")
+    if not wait_no_ad(d):
+        check("blur: video loaded, no ad", False)
+        return
+    yt = d.current_window_handle
+    open_ext_page(d, ext_uuid, "options.html")
+    opts = d.current_window_handle
+    blur_store(d, {"enabled": True})
+    cb = d.find_element(By.ID, "blur")
+    check("blur: setting off by default", not cb.is_selected())
+    d.switch_to.window(yt)
+
+    def seek(t):
+        js(d, "const v=document.querySelector('#movie_player video'); v.muted=true; v.pause(); v.currentTime=arguments[0];", t)
+        # wait until the frame there is decoded and shown (not buffering), so screenshots show it
+        wait(d, lambda: js(d, """const v=document.querySelector('#movie_player video');
+            return !v.seeking && v.readyState >= 3 &&
+                   !document.querySelector('#movie_player').classList.contains('buffering-mode');"""), 30)
+        time.sleep(1.5)
+
+    seek(t0)
+    st = js(d, BLUR_JS)
+    check("blur: off -> no blur boxes", not st["layer"] or not st["boxes"], repr(st)[:200])
+
+    d.switch_to.window(opts)
+    cb.click()
+    time.sleep(0.5)
+    stored = d.execute_async_script("""const done = arguments[arguments.length - 1];
+        browser.storage.local.get('blur').then(r => done(r.blur === true));""")
+    check("blur: turned on in settings (stored)", stored)
+    d.switch_to.window(yt)
+    seek(t0)
+    st = wait(d, lambda: (lambda s: s if s["layer"] and s["boxes"] else None)(js(d, BLUR_JS)), 10)
+    if not st:
+        check("blur: on -> boxes over Carmen / Ye-on", False, repr(js(d, BLUR_JS))[:300])
+        d.save_screenshot(str(OUT / "ext_blur_fail.png"))
+        print("       page state:", js(d, """const v=document.querySelector('#movie_player video');
+            return {src: !!v.src, rs: v.readyState, net: v.networkState, err: v.error && v.error.code,
+                    cls: document.querySelector('#movie_player').className.slice(0, 200)};"""))
+        return
+    t = st["t"]
+    want = expected_blur(sl, t)
+    got = {}
+    for b in st["boxes"]:
+        got.setdefault(b["key"], []).append(b)
+    check("blur: on -> boxes for the skipped members there", sorted(got) == sorted(want) and
+          all(k.split(":")[1] in ("carmen", "ye-on") for k in got),
+          f"t={t:.2f} got {sorted(got)} expected {sorted(want)}")
+    # positions: each expected face centre has a blur box centred on it (padding moves the
+    # centre up a little: the top padding is larger than the bottom one)
+    bad = []
+    for k, exp in want.items():
+        for cx, cy, w, _ in exp:
+            if not any(abs(b["cx"] - cx) < 0.03 and abs(b["cy"] - cy) < 0.06 and b["w"] >= w for b in got.get(k, [])):
+                bad.append((k, round(cx, 3), round(cy, 3)))
+    check("blur: boxes where blur.py puts the faces (padded)", not bad, repr(bad))
+    check("blur: blurred canvas per face", all(b["canvas"] and "blur(" in (b["filter"] or "") for b in st["boxes"]),
+          repr([b["filter"] for b in st["boxes"]]))
+    lr, vr = st["layer_rect"], st["video_rect"]
+    s = min(vr[2] / st["vw"], vr[3] / st["vh"])
+    check("blur: layer over the video picture", abs(lr[2] - st["vw"] * s) < 2 and abs(lr[3] - st["vh"] * s) < 2,
+          f"layer {lr}, video {vr}, {st['vw']}x{st['vh']}")
+    check("blur: frame callback available (requestVideoFrameCallback)", st["rvfc"])
+    d.save_screenshot(str(OUT / "ext_blur_on.png"))
+    print(f"       blur screenshot at t={t:.2f}: {OUT / 'ext_blur_on.png'}")
+    # stronger blur -> bigger radius
+    r1 = [b["filter"] for b in st["boxes"]]
+    d.switch_to.window(opts)
+    blur_store(d, {"blurStrength": 5})
+    d.switch_to.window(yt)
+    seek(t0)
+    st5 = js(d, BLUR_JS)
+    rad = lambda f: float(f.split("blur(")[1].split("px")[0])  # noqa: E731
+    check("blur: strength 'very strong' blurs more",
+          st5["boxes"] and all(rad(f5["filter"]) > rad(f1) for f5, f1 in zip(st5["boxes"], r1)),
+          f"{r1} -> {[b['filter'] for b in st5['boxes']]}")
+    d.save_screenshot(str(OUT / "ext_blur_strong.png"))
+    # playing: boxes follow the faces (frame callback), no errors
+    js(d, "document.querySelector('#movie_player video').play()")
+    wait(d, lambda: js(d, "return document.querySelector('#movie_player video').currentTime") > t0 + 1, 20)
+    stp = js(d, BLUR_JS)
+    js(d, "document.querySelector('#movie_player video').pause()")
+    tp = stp["t"]
+    wantp = expected_blur(sl, tp)
+    print(f"       while playing (t={tp:.2f}): {len(stp.get('boxes') or [])} boxes, expected about "
+          f"{sum(len(v) for v in wantp.values())}")
+    # off again
+    d.switch_to.window(opts)
+    d.find_element(By.ID, "blur").click()
+    time.sleep(0.5)
+    d.switch_to.window(yt)
+    seek(t0)
+    st = js(d, BLUR_JS)
+    check("blur: turned off -> boxes gone", not st["layer"] or not st["boxes"], repr(st)[:200])
+    d.switch_to.window(opts)
+    blur_store(d, {"blurStrength": 3})
+    d.close()
+    d.switch_to.window(yt)
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser()
@@ -534,6 +707,7 @@ def main():
                     help="use only the skip lists bundled in extension/ (test lists before pushing them)")
     ap.add_argument("--scan-video", help="run 'Filter this video' on this video (real scan + push)")
     ap.add_argument("--rescan", action="store_true", help="with --scan-video: rescan an already scanned video")
+    ap.add_argument("--blur-only", action="store_true", help="only the blur check")
     a = ap.parse_args()
     sl = load_list(a.video)
     hl = sl["highlights"][0]
@@ -574,6 +748,9 @@ def main():
         check("video loaded, no ad", ok)
         if not ok:
             d.save_screenshot(str(OUT / "ext_fail_load.png"))
+            return
+        if a.blur_only:
+            check_blur(d, a, ext_uuid)
             return
         js(d, "const v=document.querySelector('#movie_player video'); v.muted=true; v.play();")
 
@@ -725,6 +902,7 @@ def main():
         other_group(d, a, ext_uuid)
         custom_choices(d, a, ext_uuid)
         kiiikiii(d, a, ext_uuid)
+        check_blur(d, a, ext_uuid)
     finally:
         d.quit()
         passed = sum(ok for _, ok, _ in results)

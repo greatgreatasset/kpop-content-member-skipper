@@ -98,3 +98,18 @@ html:not([dark]) .cys-stats .cys-stat-hl { filter: brightness(0.82); } /* readab
 }
 .cys-banner.cys-show { opacity: 1; }
 .cys-banner small { display: block; opacity: 0.8; font-size: 12px; margin-top: 2px; }
+
+/* "Blur skipped members when they can't be skipped": a layer over the video
+   picture (above the video, below captions and the controls), one element
+   per face */
+.cys-blur-layer {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 11;
+}
+.cys-blur {
+  position: absolute;
+  border-radius: 30%;
+  pointer-events: none;
+}

@@ -27,6 +27,12 @@
     scanAskedAt: 0,
     bannerTimer: null,
     bannerShown: false,
+    // "Blur skipped members when they can't be skipped" (off by default)
+    blur: { on: false, strength: 3, size: "normal" },
+    blurIdx: null,       // the skipped members' face tracks of this video (KmsBlur.index), or null
+    blurVideo: null,     // video element the frame callback is registered on
+    blurHandle: null,    // pending requestVideoFrameCallback / requestAnimationFrame
+    blurRect: null,      // video picture inside the player: {left, top, width, height} px
   };
   const hooked = new WeakSet();
   const applied = new Set(); // videoIds whose finished scan was already applied
@@ -74,12 +80,14 @@
     const v = globalThis.KmsRules ? globalThis.KmsRules.forList(raw, st.profiles, st.choices, st.hlWhen) : null;
     if (!v) return raw;
     const highlights = v.highlights.map((h, i) => ({ ...h, color: HL_COLORS[i % HL_COLORS.length] }));
-    return { ...raw, skips: v.skips, highlights, skipMembers: v.skipMembers, custom: true };
+    const skipKeys = Object.keys(v.choices).filter((k) => v.choices[k] === "skip");
+    return { ...raw, skips: v.skips, highlights, skipMembers: v.skipMembers, skipKeys, custom: true };
   }
 
   function applyChoices() {
     const old = JSON.stringify(st.list ? [st.list.skips, st.list.highlights] : null);
     st.list = view(st.raw);
+    blurSetup(); // who is blurred follows the Skip choices
     if (JSON.stringify(st.list ? [st.list.skips, st.list.highlights] : null) === old) return;
     st.suppressed = new Set(); // skip indexes changed
     drawMarkers();
@@ -103,6 +111,7 @@
     st.source = "none";
     st.suppressed = new Set();
     st.scan = null;
+    blurSetup();
     removeMarkers();
     hideToast();
     hideBanner();
@@ -116,6 +125,7 @@
       st.raw = list && list.videoId === id ? list : null;
       st.list = view(st.raw);
       st.source = r ? r.source : "none";
+      blurSetup();
     } catch (e) {
       console.warn("[kms] could not load skip list", e);
     } finally {
@@ -322,6 +332,14 @@
     v.addEventListener("seeking", check);
     v.addEventListener("durationchange", drawMarkers);
     v.addEventListener("loadedmetadata", drawMarkers);
+    // the picture's size / letterboxing can change (quality, another video)
+    v.addEventListener("resize", () => {
+      st.blurRect = null;
+    });
+    v.addEventListener("seeked", () => {
+      if (st.blurIdx) blurRender();
+    });
+    if (st.blurIdx) blurStart();
   }
 
   function check() {
@@ -476,18 +494,215 @@
     if (st.list && (!box || stale || !box.isConnected)) drawMarkers();
     ensureNextButton();
     renderStats();
+    if (st.blurIdx) {
+      st.blurRect = null; // cheap once a second; catches player moves a resize doesn't
+      if (!blurLayer(false) || st.blurVideo !== st.video || !st.blurHandle) blurStart();
+    } else if (blurLayer(false)) {
+      blurStop();
+    }
     // keep following a running scan if updates stop (e.g. the background restarted)
     if (st.scan?.job?.state === "running" && Date.now() - st.scanAskedAt > 5000) refreshScan(st.videoId);
   }
 
+  // ------------------------------------------------------------ blur
+  // When a member the user skips is on screen with someone they don't skip, the
+  // frame isn't skipped; with "Blur skipped members when they can't be skipped"
+  // her face is blurred instead (face boxes: timeline.faces of format-6 lists,
+  // blur.js). One small canvas per face that draws that part of the current
+  // video frame blurred (canvas filter; works in every Firefox and in
+  // screenshots, unlike backdrop-filter over video), in a layer over
+  // the video picture inside the player (so it follows fullscreen / theater
+  // mode), updated on every video frame (requestVideoFrameCallback, else
+  // requestAnimationFrame). Only while skipping is on, never during ads or in
+  // a skipped range.
+  const BLUR_SETTINGS = ["blur", "blurStrength", "blurSize"];
+  const blurDecoded = new WeakMap(); // loaded list -> its decoded face tracks
+  // strength 1..5 (light ... very strong): blur radius as a share of the face width
+  const BLUR_K = [0, 0.04, 0.07, 0.1, 0.15, 0.22];
+  // padding around the detected face box (share of its width / height):
+  // left and right, top (forehead, hair), bottom (chin)
+  const BLUR_PAD = { face: [0.15, 0.25, 0.1], normal: [0.3, 0.45, 0.2], large: [0.5, 0.75, 0.35] };
+
+  function readBlurSettings(s) {
+    st.blur = {
+      on: s.blur === true,
+      strength: Number.isInteger(s.blurStrength) && s.blurStrength >= 1 && s.blurStrength <= 5 ? s.blurStrength : 3,
+      size: Object.hasOwn(BLUR_PAD, s.blurSize) ? s.blurSize : "normal",
+      raw: { blur: s.blur, blurStrength: s.blurStrength, blurSize: s.blurSize },
+    };
+  }
+
+  // (Re)build the index of the skipped members' face tracks; start / stop the loop.
+  function blurSetup() {
+    const B = globalThis.KmsBlur;
+    const faces = st.list?.timeline?.faces;
+    const keys = st.list?.skipKeys || [];
+    st.blurIdx = null;
+    if (B && st.blur.on && B.valid(faces) && keys.length) {
+      // decoded once per loaded list (st.list is rebuilt when choices change)
+      if (st.raw && !blurDecoded.has(st.raw)) blurDecoded.set(st.raw, B.decode(faces));
+      const dec = st.raw && blurDecoded.get(st.raw);
+      const idx = dec && B.index(dec, keys);
+      st.blurIdx = idx && idx.count ? idx : null;
+    }
+    if (st.blurIdx) blurStart();
+    else blurStop();
+  }
+
+  const blurWanted = () => !!(st.blurIdx && st.blur.on && st.settings.enabled && st.list &&
+                              currentVideoId() === st.list.videoId);
+
+  let blurRO = null;
+  function blurLayer(create) {
+    const p = player();
+    let el = p?.querySelector(".cys-blur-layer");
+    if (!el && create && p) {
+      el = document.createElement("div");
+      el.className = "cys-blur-layer";
+      p.appendChild(el);
+      st.blurRect = null;
+      if (typeof ResizeObserver !== "undefined") {
+        blurRO = blurRO || new ResizeObserver(() => {
+          st.blurRect = null;
+          if (st.blurIdx) blurRender();
+        });
+        blurRO.disconnect();
+        blurRO.observe(p);
+        if (st.video) blurRO.observe(st.video);
+      }
+    }
+    return el;
+  }
+
+  // The video picture inside the player, in px: YouTube sizes and places the
+  // <video> element itself, and the picture is letterboxed inside it
+  // (object-fit: contain) when their aspect ratios differ.
+  function blurPlace(layer) {
+    const v = st.video, p = player();
+    if (!v || !p || !v.videoWidth || !v.videoHeight) return false;
+    if (!st.blurRect) {
+      const pr = p.getBoundingClientRect(), vr = v.getBoundingClientRect();
+      if (!vr.width || !vr.height) return false;
+      const s = Math.min(vr.width / v.videoWidth, vr.height / v.videoHeight);
+      const w = v.videoWidth * s, h = v.videoHeight * s;
+      const r = { left: vr.left - pr.left + (vr.width - w) / 2, top: vr.top - pr.top + (vr.height - h) / 2,
+                  width: w, height: h };
+      st.blurRect = r;
+      layer.style.left = `${r.left}px`;
+      layer.style.top = `${r.top}px`;
+      layer.style.width = `${r.width}px`;
+      layer.style.height = `${r.height}px`;
+    }
+    return true;
+  }
+
+  const inSkip = (t) => (st.list?.skips || []).some((s) => t >= s.start && t < s.end);
+
+  function blurRender(mediaTime) {
+    const want = blurWanted();
+    const layer = blurLayer(want);
+    if (!layer) return;
+    const v = st.video;
+    const t = typeof mediaTime === "number" ? mediaTime : v?.currentTime;
+    let boxes = [];
+    if (want && v && !isAd() && typeof t === "number" && !inSkip(t) && blurPlace(layer)) {
+      boxes = globalThis.KmsBlur.boxesAt(st.blurIdx, t);
+    }
+    const [px, pt, pb] = BLUR_PAD[st.blur.size];
+    const k = BLUR_K[st.blur.strength];
+    const W = st.blurRect?.width || 0;
+    while (layer.children.length < boxes.length) {
+      const c = document.createElement("canvas");
+      c.className = "cys-blur";
+      layer.appendChild(c);
+    }
+    const H = st.blurRect?.height || 0;
+    for (let i = 0; i < layer.children.length; i++) {
+      const c = layer.children[i];
+      const b = boxes[i];
+      if (!b) {
+        if (c.style.display !== "none") c.style.display = "none";
+        continue;
+      }
+      // the padded box, as a share of the picture
+      const bx = b.x - px * b.w, by = b.y - pt * b.h, bw = b.w * (1 + 2 * px), bh = b.h * (1 + pt + pb);
+      c.style.display = "";
+      c.style.left = `${100 * bx}%`;
+      c.style.top = `${100 * by}%`;
+      c.style.width = `${100 * bw}%`;
+      c.style.height = `${100 * bh}%`;
+      c.style.opacity = String(b.op);
+      c.dataset.key = b.key;
+      // That part of the current video frame, blurred, drawn small (it is blurred
+      // anyway) and scaled up by CSS. The radius grows with the face's size.
+      const sw = Math.max(1, bw * W), sh = Math.max(1, bh * H);
+      const cw = Math.max(8, Math.min(200, Math.round(sw / 2)));
+      const ch = Math.max(8, Math.round((cw * sh) / sw));
+      if (c.width !== cw) c.width = cw;
+      if (c.height !== ch) c.height = ch;
+      const s = cw / sw; // canvas px per screen px
+      const r = Math.max(1, k * b.w * W * s);
+      c.dataset.r = `blur(${Math.round(k * b.w * W)}px)`;
+      const ctx = c.getContext("2d");
+      const vw = v.videoWidth, vh = v.videoHeight;
+      const m = Math.ceil(2 * r); // drawn beyond the edges so the blur doesn't fade out there
+      const ex = m / cw, ey = m / ch;
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.filter = `blur(${r}px)`;
+      try {
+        ctx.drawImage(v, (bx - ex * bw) * vw, (by - ey * bh) * vh, bw * (1 + 2 * ex) * vw, bh * (1 + 2 * ey) * vh,
+                      -m, -m, cw + 2 * m, ch + 2 * m);
+      } catch (e) {
+        // no frame to draw yet: leave it empty
+      }
+    }
+    layer.dataset.count = String(boxes.length);
+  }
+
+  function blurTick(now, meta) {
+    st.blurHandle = null;
+    blurRender(meta && typeof meta.mediaTime === "number" ? meta.mediaTime : undefined);
+    if (blurWanted()) blurSchedule();
+  }
+
+  function blurSchedule() {
+    const v = st.video;
+    if (!v || st.blurHandle) return;
+    st.blurVideo = v;
+    st.blurHandle = typeof v.requestVideoFrameCallback === "function"
+      ? { v, id: v.requestVideoFrameCallback(blurTick) }
+      : { raf: requestAnimationFrame(blurTick) };
+  }
+
+  function blurCancel() {
+    const h = st.blurHandle;
+    st.blurHandle = null;
+    if (!h) return;
+    if (h.raf) cancelAnimationFrame(h.raf);
+    else if (h.v.cancelVideoFrameCallback) h.v.cancelVideoFrameCallback(h.id);
+  }
+
+  function blurStart() {
+    if (st.blurVideo !== st.video) blurCancel(); // YouTube swapped the <video>
+    blurRender();
+    if (blurWanted()) blurSchedule();
+  }
+
+  function blurStop() {
+    blurCancel();
+    blurLayer(false)?.remove();
+    st.blurRect = null;
+  }
+
   // ------------------------------------------------------------ wiring
   Promise.all([
-    browser.storage.local.get(["enabled", "highlights", "choices", "hlWhen"]),
+    browser.storage.local.get(["enabled", "highlights", "choices", "hlWhen", ...BLUR_SETTINGS]),
     browser.runtime.sendMessage({ type: "profiles" }).catch(() => []),
   ]).then(([s, profiles]) => {
     for (const k of ["enabled", "highlights"]) if (k in s) st.settings[k] = s[k];
     st.choices = s.choices || {};
     st.hlWhen = s.hlWhen || "any";
+    readBlurSettings(s);
     st.profiles = profiles || [];
     applyChoices();
     ensure();
@@ -499,6 +714,12 @@
       if ("choices" in ch) st.choices = ch.choices.newValue || {};
       if ("hlWhen" in ch) st.hlWhen = ch.hlWhen.newValue || "any";
       applyChoices(); // settings page changed who is skipped / highlighted: no reload
+    }
+    if (BLUR_SETTINGS.some((k) => k in ch) || "enabled" in ch) {
+      const v = { ...st.blur.raw };
+      for (const k of BLUR_SETTINGS) if (k in ch) v[k] = ch[k].newValue;
+      readBlurSettings(v);
+      blurSetup();
     }
     if ("baseUrl" in ch) {
       reload();

@@ -24,6 +24,26 @@
   <p class="hint">"Main focus": hers is the largest face, clearly bigger (1.5&times;) than anyone else's,
     and near the middle of the picture. Fewer, shorter highlights; skipping is not affected. Older skip lists
     without focus info keep "any time" until they are rescanned.</p>
+  <label>Blur</label>
+  <label class="radio check"><input type="checkbox" id="blur"> Blur skipped members when they can't be skipped</label>
+  <p class="hint">When a member you skip is on screen together with someone you don't skip, that part can't be
+    skipped; this blurs her face instead. Works for videos scanned with scanner 0.7.0 or later (others until
+    they are rescanned). Not while an ad plays, and not when skipping is turned off.</p>
+  <div id="blurOpts">
+    <label for="blurStrength">Blur strength</label>
+    <div class="range-row">
+      <span class="hint">Light</span>
+      <input type="range" id="blurStrength" min="1" max="5" step="1">
+      <span class="hint">Very strong</span>
+      <output id="blurStrengthText" class="hint"></output>
+    </div>
+    <label for="blurSize">Blurred area</label>
+    <select id="blurSize">
+      <option value="face">Face only</option>
+      <option value="normal">Face and hair (default)</option>
+      <option value="large">Large (whole head)</option>
+    </select>
+  </div>
   <label for="baseUrl">Skip list base URL</label>
   <input type="url" id="baseUrl">
   <p class="hint">The <code>skiplists/</code> folder that holds <code>&lt;videoId&gt;.json</code>.

@@ -10,7 +10,9 @@ want to see more of (highlights). Each group is a **profile**: Hearts2Hearts
 to Skip, Normal or Highlight on the settings page (see
 [Customizing members](#customizing-members)). Nobody picks a group: every
 video is checked against all members of all groups, and its skip list says
-which groups are in it.
+which groups are in it. When a skipped member shares the screen with someone
+you don't skip (so that part can't be skipped), the add-on can blur her face
+instead ([Blur](#blur-skipped-members-when-they-cant-be-skipped), off by default).
 
 ## Setup (Windows, NVIDIA GPU)
 
@@ -98,8 +100,8 @@ From then on every scan also looks for the new group; nothing else changes.
 ## Scanning a video
 
 Double-click **scan.bat**, paste the YouTube link (youtube.com/watch, youtu.be
-or shorts) and press Enter. It scans the video (about 1.5 minutes for a
-30-minute video), then commits **only** that video's skip-list files and pushes
+or shorts) and press Enter. It scans the video (about 3 minutes for a
+30-minute video, about half of it the blur pass for the face boxes), then commits **only** that video's skip-list files and pushes
 them to GitHub. Each stage shows one updating line:
 
 ```
@@ -176,7 +178,8 @@ over native messaging; it starts a separate worker process for the scan (using
 python build_refs.py [--profile illit]           # photos -> data/<profile>/refs.npz (~4 min) + joint check
 python build_refs.py --joint                     # only the joint check of all groups -> data/gallery.json
 python scan.py <link or video id> [--profile ...] # scan only -> skiplists/<videoId>.json
-python rescan_cached.py [<videoId> ...]          # rebuild lists from cached detections (no download)
+python rescan_cached.py [<videoId> ...]          # rebuild lists from cached detections (no download;
+                                                 #  GPU blur pass for videos without cache/<id>.blur.npz)
 python sync_skiplists.py                         # refresh the extension's bundled copies
 python publish_skiplists.py [<videoId>]          # commit + push only that video's skip list
 python eval_test.py --detail [--profile ...]     # compare against tests/labels_*.json
@@ -185,16 +188,17 @@ python debug_frames.py <videoId> 1:46 2:18 ...   # annotated frames -> cache/deb
 
 Photos, embeddings, videos and caches live in the gitignored `data/` and
 `cache/` folders; only code, profiles and `skiplists/` are committed. Face
-detections are cached per video (`cache/<id>.faces.npz`), so re-scanning a
-video after adding a group or changing the rules takes seconds.
+detections are cached per video (`cache/<id>.faces.npz`, and the blur pass's
+`cache/<id>.blur.npz`), so re-scanning a video after adding a group or
+changing the rules takes seconds.
 
 ## Skip list format (`skiplists/<videoId>.json`)
 
-One list per video, for whichever groups are in it (format 5, scanner 0.6.0):
+One list per video, for whichever groups are in it (format 6, scanner 0.7.0):
 
 ```json
-{"format": 5, "videoId": "oVMQTIUI_2c", "title": "...", "duration": 1672,
- "scannedAt": "...", "scannerVersion": "0.6.0",
+{"format": 6, "videoId": "oVMQTIUI_2c", "title": "...", "duration": 1672,
+ "scannedAt": "...", "scannerVersion": "0.7.0",
  "groups": [{"id": "hearts2hearts", "name": "Hearts2Hearts", "faces": 7476}],
  "skipMembers": [{"member": "carmen", "name": "Carmen", "group": "Hearts2Hearts", "profile": "hearts2hearts"}, ...],
  "skips": [{"start": 4.5, "end": 23.17}],
@@ -210,7 +214,11 @@ One list per video, for whichever groups are in it (format 5, scanner 0.6.0):
    "segments": [
     {"start":0.0,"end":4.0,"state":"none"},
     {"start":4.0,"end":8.67,"partial":["hearts2hearts:carmen"]},
-    {"start":8.67,"end":12.33,"members":["hearts2hearts:carmen"],"focus":"hearts2hearts:carmen"}, ...]}}
+    {"start":8.67,"end":12.33,"members":["hearts2hearts:carmen"],"focus":"hearts2hearts:carmen"}, ...],
+   "faces": {"fps": 60, "hold": 0.34, "cuts": [342, 412, ...],
+     "tracks": {
+      "hearts2hearts:a-na": [
+       [1728, "AaSAPP9nrKc2PvP2oGKddM0QhptKaQAk..."], ...], ...}}}}
 ```
 
 `groups` are the groups found in the video (with the number of confidently
@@ -223,9 +231,24 @@ dancers) or `none` (no face). `focus` is the member who is the main subject
 of the frame, if any: the largest face in the frame is hers, it is at least
 1.5x the area of the next largest face (anyone's, recognized or not), and its
 centre is in the middle 60% of the width (`--focus-ratio`, `--focus-center`).
-It is only used for "Highlight when: only when she's the main focus". Format 4
-(scanner 0.5.0) is the same without `focusRule` and `focus`; the add-on still
-reads it (with "any time" highlights). The add-on works out each user's own skips and
+It is only used for "Highlight when: only when she's the main focus".
+
+`faces` (format 6) are the face boxes for blurring: for every recognized
+member (each user skips someone else), where her face is, as tracks (one face
+followed through one shot), and the scene `cuts`, so a box never slides from
+one shot into the next. Times are in 1/60 s. Each sample is 9 characters: the
+step from the previous sample and the box (x, y, w, h relative to the video
+frame, 12 bits each, base64url); see `blur.py` for the details. The samples
+are the timeline's 3 fps frames plus the frames exactly between them (the
+scanner's blur pass, so 6 fps), at the time each frame really shows. Faces
+too small or too far in the background for the timeline get boxes too when
+they match a member, and so do faces unknown on their own (turned away) that
+belong to a recognized face's track. The add-on shows a box from 0.34 s
+(`hold`) before a track to 0.34 s after it, never across a cut, interpolating
+between samples. Format 5 (scanner 0.6.0) is the same without `faces` (no
+blurring until rescanned); format 4 (scanner 0.5.0) also lacks `focusRule` and
+`focus`. The add-on still reads both (format 4 with "any time" highlights);
+add-ons before 0.8.0 read format 6 like format 5. The add-on works out each user's own skips and
 highlights from it with the rules below (`rules.js`, the same as the scanner's
 `rules.py`). `skips`, `highlights` and `skipMembers` are the results for the
 profiles' default choices: add-on 0.5.0 reads only those, and they are the
@@ -295,11 +318,14 @@ What it does on youtube.com/watch pages:
   Skipped: 0%" for KiiiKiii, "Ian: 29% · Carmen: 21% · Skipped: …" with two
   highlighted members, "Skipped: 12%" for ILLIT (share of the video's length;
   follows the on/off switches), or "Not filtered yet"
+- optionally, blurs the faces of skipped members in the parts that can't be
+  skipped because someone you don't skip is on screen too (see
+  [Blur](#blur-skipped-members-when-they-cant-be-skipped))
 - toolbar popup: who is skipped, e.g. "Skipping Yunah (ILLIT)" (without a
   scanned video: every group's skipped members), skipping on/off, highlights
   on/off, and e.g. "10 skips (… s) · 22 Ian parts" for the current video
-- settings page: each group's members with Skip / Normal / Highlight and
-  "Highlight when" (see below), skip list base URL and cache time. There is no group to pick. Lists are fetched from
+- settings page: each group's members with Skip / Normal / Highlight,
+  "Highlight when" and Blur (see below), skip list base URL and cache time. There is no group to pick. Lists are fetched from
   `https://raw.githubusercontent.com/greatgreatasset/kpop-content-member-skipper/master/skiplists/<videoId>.json`
   by default (falling back to the pre-0.5.0 `skiplists/hearts2hearts/<videoId>.json`),
   and the copy bundled in the extension is used when a video has no list
@@ -335,6 +361,41 @@ reload). **Reset to defaults** goes back to the profiles' choices.
   and FQmWuyL3vSk from 28 (501 s) to 6 (161 s). Skipping is not affected.
   Lists from before scanner 0.6.0 (format 4) have no focus info and keep "any
   time" until rescanned.
+
+### Blur skipped members when they can't be skipped
+
+A part where a member you skip is on screen together with someone you don't
+skip can't be skipped (e.g. oVMQTIUI_2c 1:54-2:06, Carmen and Ye-on with Ian).
+With **Blur skipped members when they can't be skipped** turned on (settings
+page, off by default) her face is blurred there instead, following her as she
+moves. Only members set to Skip are blurred, only where the video isn't being
+skipped anyway, not while an ad plays, and not while skipping is turned off
+in the popup.
+
+- **Blur strength**: Light, Medium-light, Medium (default), Strong, Very
+  strong (the blur radius grows with the face's size).
+- **Blurred area**: Face only, Face and hair (default), Large (whole head):
+  how far the blur reaches beyond the detected face.
+
+It works in normal, theater and fullscreen mode (the blur sits inside
+YouTube's player, over the video picture, and follows letterboxing and
+resizes). Each blurred face is a small canvas that draws that part of the
+current video frame with a blur filter, redrawn on every video frame
+(`requestVideoFrameCallback`).
+It needs the face boxes of format 6, so videos scanned before scanner 0.7.0
+get no blur until they are rescanned (`rescan_cached.py`; every list in the
+repo is format 6 now).
+
+How well the boxes follow the faces (compared with face detections on every
+frame of the video, 20% padding, "Face and hair" pads more): in a
+vlog (oVMQTIUI_2c 1:54-2:06 and 3:30-4:55) the box is missing or leaves more
+than 15% of the face uncovered in 0.5% of the frames (1.4% with the 3 fps
+timeline frames alone); in a fast-cut MV (Moonride) 8% instead of 15%, and
+those remaining misses are faces the recognizer doesn't know in any sampled
+frame (small, turned away), not boxes lagging behind. The blur pass doubles
+the face detection time (a 28-minute video: 75 s -> 147 s) and makes the skip
+lists about 2.7x bigger (all 14: 723 KB -> 1.9 MB; 76 KB -> 862 KB gzipped,
+as GitHub sends them).
 
 Member choices work for
 every video scanned with scanner 0.5.0 or later (format 4, which has the
@@ -381,8 +442,11 @@ with it installed.
 cd extension && npx web-ext lint --self-hosted   # manifest/code lint (self-distributed add-on)
 node tests\rules_test.js                         # add-on rules with default choices = scanner's skips, every list
 .venv\Scripts\python tests\rules_crosscheck.py  # rules.py = rules.js for random member choices
+node tests\blur_test.js                          # blur.js: interpolation, hold, scene cuts, fades
+.venv\Scripts\python tests\blur_test.py        # blur.py: tracks, cuts, gaps, frame times; blur.js = blur.py, every list
 .venv\Scripts\python tests\browser_test.py       # end-to-end in headless Firefox
 .venv\Scripts\python tests\browser_test.py --bundled   # the same with only the bundled lists (before pushing)
+.venv\Scripts\python tests\browser_test.py --blur-only [--bundled]   # only the blur check
 .venv\Scripts\python tests\browser_test.py --scan-video <id> [--rescan]   # "Filter this video", real scan + upload
 ```
 
@@ -395,6 +459,10 @@ Highlight and Ian → Skip (the open video's skips, markers, line and button
 must follow, compared with `rules.py`), both Carmen and Ian highlighted
 (distinct colours, Ian pink, Next goes through both), Reset to defaults, and a
 KiiiKiii video with Kya's highlights, then "Highlight when: only when she's the
-main focus" (Kya's markers and line must follow `rules.py`) and back. `--scan-video`
+main focus" (Kya's markers and line must follow `rules.py`) and back, and last
+the blur: off by default (no boxes), on at about 2:00 of the test video boxes
+over Carmen and Ye-on exactly where `blur.py` puts them (screenshots
+`cache/debug/ext_blur_on.png`, `ext_blur_strong.png`), a stronger blur with
+"Very strong", none again when it's turned off. `--scan-video`
 needs install_native_host.bat and checks button → progress banner → skips
 applied (it commits and pushes the skip list like scan.bat).

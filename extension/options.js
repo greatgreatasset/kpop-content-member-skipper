@@ -89,6 +89,38 @@ async function init() {
     if (area === "local" && "hlWhen" in ch) renderHlWhen(ch.hlWhen.newValue);
   });
 
+  // Blur skipped members when they can't be skipped (default off, strength 3, "normal" area)
+  const STRENGTH = ["", "Light", "Medium-light", "Medium", "Strong", "Very strong"];
+  const renderBlur = (b) => {
+    $("blur").checked = b.blur === true;
+    const s = Number.isInteger(b.blurStrength) ? b.blurStrength : 3;
+    $("blurStrength").value = String(s);
+    $("blurStrengthText").textContent = STRENGTH[s] || "";
+    $("blurSize").value = ["face", "normal", "large"].includes(b.blurSize) ? b.blurSize : "normal";
+    $("blurOpts").classList.toggle("off", !$("blur").checked);
+  };
+  renderBlur(await browser.storage.local.get(["blur", "blurStrength", "blurSize"]));
+  $("blur").addEventListener("change", () => {
+    if ($("blur").checked) browser.storage.local.set({ blur: true });
+    else browser.storage.local.remove("blur");
+  });
+  $("blurStrength").addEventListener("input", () => {
+    const s = parseInt($("blurStrength").value, 10);
+    $("blurStrengthText").textContent = STRENGTH[s] || "";
+    if (s === 3) browser.storage.local.remove("blurStrength");
+    else browser.storage.local.set({ blurStrength: s });
+  });
+  $("blurSize").addEventListener("change", () => {
+    const v = $("blurSize").value;
+    if (v === "normal") browser.storage.local.remove("blurSize");
+    else browser.storage.local.set({ blurSize: v });
+  });
+  browser.storage.onChanged.addListener(async (ch, area) => {
+    if (area === "local" && ["blur", "blurStrength", "blurSize"].some((k) => k in ch)) {
+      renderBlur(await browser.storage.local.get(["blur", "blurStrength", "blurSize"]));
+    }
+  });
+
   $("resetChoices").addEventListener("click", async () => {
     await browser.storage.local.remove("choices");
     renderGroups(profiles, {});
