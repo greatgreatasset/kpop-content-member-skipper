@@ -172,6 +172,27 @@ over native messaging; it starts a separate worker process for the scan (using
 `scan_cli.py`'s scan and publish functions) that writes its progress to
 `cache/jobs/<videoId>.json`, and relays that to the add-on.
 
+## Scanning a whole channel
+
+```
+.venv\Scripts\python batch_scan.py --list          # what is still to do (Hearts2Hearts channel)
+.venv\Scripts\python batch_scan.py [--limit N] [--push]
+.venv\Scripts\python batch_scan.py <channel url, @handle or UC... id> [--shorts]
+```
+
+Scans every video on the channel's Videos tab (Shorts with `--shorts`), newest
+first, one at a time, leaving out videos that already have a list from this
+scanner version and ones that failed for good (private, members-only). Ctrl+C
+any time; the next run continues where it stopped. Downloads are paced (a
+random 45-120 s pause after each, a 10-20 min break every 15) and the run stops
+by itself on YouTube's bot check / rate limit. Lists are committed one by one;
+`--push` uploads them in one push at the end. The .mp4 is deleted after each
+scan (`--keep-videos` keeps it). State and log: `cache/batch/<channel id>.json/.log`.
+
+`python screen_time.py` then writes `cache/screen_time.csv` and a sortable
+`cache/screen_time.html`: per Hearts2Hearts video, how long Ian, Ye-on, Carmen
+and the other members are on screen, and the default skip time.
+
 ## Usage (individual steps)
 
 ```

@@ -1,0 +1,143 @@
+<title>Hearts2Hearts Screen Time</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one wide sortable ledger under a short summary line; member columns carry their own colour. */
+:root {
+  --bg: #f7f6f9; --surface: #ffffff; --fg: #1d1a24; --muted: #6b6578; --line: #e3e0ea;
+  --accent: #b03a74;
+  --ian: #1f8a6b; --skip: #c4483f; --other: #6f6a86;
+  --ian-soft: #d9efe7; --skip-soft: #f6dcd9; --other-soft: #e6e4ee;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15131a; --surface: #1d1a24; --fg: #ece9f2; --muted: #a29bb2; --line: #2e2a38;
+  --accent: #e57bae; --ian: #4cc79f; --skip: #ee7a70; --other: #a8a3c2;
+  --ian-soft: #1c3a31; --skip-soft: #45231f; --other-soft: #2c2938; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15131a; --surface: #1d1a24; --fg: #ece9f2; --muted: #a29bb2; --line: #2e2a38;
+  --accent: #e57bae; --ian: #4cc79f; --skip: #ee7a70; --other: #a8a3c2;
+  --ian-soft: #1c3a31; --skip-soft: #45231f; --other-soft: #2c2938; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 48px; }
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; }
+h1 { font-family: var(--display); font-size: clamp(26px, 4vw, 36px); line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 span { color: var(--accent); }
+.lede { color: var(--muted); max-width: 68ch; margin: 6px 0 0; }
+.stats { display: flex; flex-wrap: wrap; gap: 10px 28px; }
+.stat { display: grid; gap: 2px; }
+.stat b { font-family: var(--mono); font-weight: 500; font-size: 20px; font-variant-numeric: tabular-nums; }
+.stat small { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface); }
+.seg button { font: inherit; font-size: 13px; border: 0; background: none; color: var(--muted); padding: 5px 14px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+input[type="search"] { font: inherit; font-size: 13px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--fg); width: min(280px, 100%); }
+button:focus-visible, input:focus-visible, th:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.table-box { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 880px; font-variant-numeric: tabular-nums; }
+th, td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--surface); }
+th[aria-sort="ascending"]::after { content: " ▲"; } th[aria-sort="descending"]::after { content: " ▼"; }
+th.t, td.t { text-align: left; }
+td.t { white-space: normal; min-width: 260px; max-width: 420px; }
+td.t a { color: var(--fg); text-decoration: none; } td.t a:hover { text-decoration: underline; }
+td.t small { display: block; color: var(--muted); font-family: var(--mono); font-size: 11px; }
+td.n { font-family: var(--mono); font-size: 13px; }
+th.ian { color: var(--ian); } th.skip, th.yeon, th.carmen { color: var(--skip); } th.other { color: var(--other); }
+.cell { display: grid; gap: 3px; justify-items: end; }
+.bar { width: 72px; height: 4px; border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; }
+.ian .bar { background: var(--ian-soft); } .ian .bar i { background: var(--ian); }
+.yeon .bar, .carmen .bar, .skip .bar { background: var(--skip-soft); } .yeon .bar i, .carmen .bar i, .skip .bar i { background: var(--skip); }
+.other .bar { background: var(--other-soft); } .other .bar i { background: var(--other); }
+tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
+.empty { padding: 32px; text-align: center; color: var(--muted); }
+.foot { color: var(--muted); font-size: 12px; max-width: 80ch; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Hearts2Hearts <span>screen time</span></h1>
+    <p class="lede">How long Ian, Ye-on, Carmen and the other members are on screen in each scanned video, and how much the default skips (Carmen and Ye-on alone on screen) cut out. Click a column to sort.</p>
+  </header>
+  <div class="stats" id="stats"></div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Show values as">
+      <button type="button" id="mode-share" aria-pressed="true">Share of video</button>
+      <button type="button" id="mode-time" aria-pressed="false">Time</button>
+    </div>
+    <input type="search" id="q" placeholder="Filter by title" aria-label="Filter by title">
+  </div>
+  <div class="table-box">
+    <table>
+      <thead><tr id="head"></tr></thead>
+      <tbody id="body"></tbody>
+      <tfoot id="foot"></tfoot>
+    </table>
+  </div>
+  <p class="foot" id="note"></p>
+</div>
+
+<script>
+const DATA = /*DATA*/null || {generated: "", videos: []};
+const COLS = [
+  {k: "title", label: "Video", cls: "t"},
+  {k: "date", label: "Posted", cls: "n"},
+  {k: "duration", label: "Length", cls: "n"},
+  {k: "ian", label: "Ian", cls: "ian", m: 1},
+  {k: "ye-on", label: "Ye-on", cls: "yeon", m: 1},
+  {k: "carmen", label: "Carmen", cls: "carmen", m: 1},
+  {k: "other", label: "Other members", cls: "other", m: 1},
+  {k: "skip", label: "Skipped", cls: "skip", m: 1},
+];
+let mode = "share", sortKey = "date", sortDir = -1, q = "";
+try { mode = localStorage.getItem("st-mode") || mode; } catch (e) {}
+const clock = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+  return h ? `${h}:${String(m).padStart(2, "0")}:${String(x).padStart(2, "0")}` : `${m}:${String(x).padStart(2, "0")}`; };
+const pct = f => (100 * f).toFixed(f < 0.1 ? 1 : 0) + "%";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const val = (v, k) => k === "title" ? v.title.toLowerCase() : k === "date" ? (v.date || "") :
+  COLS.find(c => c.k === k).m && mode === "share" ? v[k] / v.duration : v[k];
+
+function cell(c, secs, dur) {
+  const f = dur ? secs / dur : 0;
+  return `<td class="n ${c.cls}"><div class="cell"><span>${mode === "share" ? pct(f) : clock(secs)}</span>` +
+    `<span class="bar"><i style="width:${Math.min(100, 100 * f).toFixed(1)}%"></i></span></div></td>`;
+}
+function render() {
+  document.getElementById("mode-share").setAttribute("aria-pressed", mode === "share");
+  document.getElementById("mode-time").setAttribute("aria-pressed", mode === "time");
+  document.getElementById("head").innerHTML = COLS.map(c =>
+    `<th class="${c.cls}" tabindex="0" data-k="${c.k}" aria-sort="${c.k === sortKey ? (sortDir > 0 ? "ascending" : "descending") : "none"}">${c.label}</th>`).join("");
+  const rows = DATA.videos.filter(v => !q || v.title.toLowerCase().includes(q))
+    .sort((a, b) => { const x = val(a, sortKey), y = val(b, sortKey); return (x < y ? -1 : x > y ? 1 : 0) * sortDir; });
+  const body = document.getElementById("body");
+  if (!rows.length) {
+    body.innerHTML = `<tr><td colspan="${COLS.length}" class="empty">${DATA.videos.length ? "No video title matches that filter." : "No Hearts2Hearts videos scanned yet."}</td></tr>`;
+  } else {
+    body.innerHTML = rows.map(v => `<tr><td class="t"><a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">${esc(v.title)}</a><small>${esc(v.id)} · ${v.skips} skip${v.skips === 1 ? "" : "s"}</small></td>` +
+      `<td class="n">${v.date || "–"}</td><td class="n">${clock(v.duration)}</td>` +
+      COLS.filter(c => c.m).map(c => cell(c, v[c.k], v.duration)).join("") + "</tr>").join("");
+  }
+  const tot = k => rows.reduce((s, v) => s + v[k], 0), dur = tot("duration");
+  document.getElementById("foot").innerHTML = rows.length ? `<tr><td class="t">All ${rows.length} shown</td><td class="n"></td><td class="n">${clock(dur)}</td>` +
+    COLS.filter(c => c.m).map(c => cell(c, tot(c.k), dur)).join("") + "</tr>" : "";
+  const all = DATA.videos, D = all.reduce((s, v) => s + v.duration, 0), S = all.reduce((s, v) => s + v.skip, 0);
+  const I = all.reduce((s, v) => s + v.ian, 0);
+  document.getElementById("stats").innerHTML = [
+    [all.length, "videos scanned"], [(D / 3600).toFixed(1) + " h", "of video"],
+    [clock(S), `skipped (${D ? pct(S / D) : "0%"})`], [clock(I), `Ian on screen (${D ? pct(I / D) : "0%"})`],
+  ].map(([b, s]) => `<div class="stat"><b>${b}</b><small>${s}</small></div>`).join("");
+  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Skipped" is the default skip list: parts where only Carmen and/or Ye-on are on screen. Posted dates are approximate. Updated ${DATA.generated}.`;
+}
+function sortBy(k) { if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = k === "title" ? 1 : -1; } render(); }
+document.getElementById("head").addEventListener("click", e => { const th = e.target.closest("th"); if (th) sortBy(th.dataset.k); });
+document.getElementById("head").addEventListener("keydown", e => { const th = e.target.closest("th"); if (th && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); sortBy(th.dataset.k); } });
+for (const m of ["share", "time"]) document.getElementById("mode-" + m).addEventListener("click", () => {
+  mode = m; try { localStorage.setItem("st-mode", m); } catch (e) {} render(); });
+document.getElementById("q").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); render(); });
+render();
+</script>
