@@ -1,0 +1,38 @@
+{
+ "format": 6,
+ "videoId": "vAv7P8AEJPQ",
+ "title": "Hearts2Hearts 하츠투하츠 'Moonride' MV Teaser",
+ "duration": 19,
+ "scannedAt": "2026-11-09T03:16:46+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 57,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":19.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[183,275,338,408,520],"tracks":{
+
+  }}
+ }
+}
