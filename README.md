@@ -186,7 +186,7 @@ scanner version and ones that failed for good (private, members-only). Ctrl+C
 any time; the next run continues where it stopped. Downloads are paced (a
 random 45-120 s pause after each, a 10-20 min break every 15) and the run stops
 by itself on YouTube's bot check / rate limit. Lists are committed one by one;
-`--push` uploads them in one push at the end. The .mp4 is deleted after each
+`--push` uploads them every 5 lists (`--push-every N`) and at the end. The .mp4 is deleted after each
 scan (`--keep-videos` keeps it). State and log: `cache/batch/<channel id>.json/.log`.
 
 `python screen_time.py` then writes `cache/screen_time.csv` and a sortable

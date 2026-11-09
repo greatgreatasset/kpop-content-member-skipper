@@ -17,7 +17,8 @@ stops by itself on the first bot check / rate limit (wait a few hours, then run
 it again). Videos whose detections are cached need no download and no pause.
 
 Each finished list is committed locally (like scan.bat --no-push); --push
-uploads them all at the end (or after Ctrl+C / a stop), in one push. The
+uploads them every --push-every lists (default 5) and at the end (or after
+Ctrl+C / a stop). The
 downloaded .mp4 is deleted after its scan (the cached detections are all that
 rescans need); --keep-videos keeps them.
 
@@ -201,7 +202,8 @@ def main():
     ap.add_argument("--pause", type=pair, default=(45, 120), help="s between downloads, e.g. 45-120")
     ap.add_argument("--batch", type=int, default=15, help="downloads between longer breaks")
     ap.add_argument("--break", dest="brk", type=pair, default=(600, 1200), help="s, e.g. 600-1200")
-    ap.add_argument("--push", action="store_true", help="upload the new lists at the end")
+    ap.add_argument("--push", action="store_true", help="upload the new lists as they finish")
+    ap.add_argument("--push-every", type=int, default=5, help="with --push: upload after every N new lists")
     ap.add_argument("--keep-videos", action="store_true", help="don't delete the .mp4 after a scan")
     ap.add_argument("--retry-failed", action="store_true", help="try videos that failed for good again")
     ap.add_argument("--relist", action="store_true", help="list the channel again now")
@@ -288,6 +290,8 @@ def main():
             st.save()
             st.log(f"{vid} done: {scan_cli.summary(res)}")
             new.append(vid)
+            if a.push and len(new) % max(1, a.push_every) == 0:
+                push()
             if not a.keep_videos:
                 mp4 = CACHE / f"{vid}.mp4"
                 if mp4.exists() and (CACHE / f"{vid}.faces.npz").exists():
@@ -302,7 +306,7 @@ def main():
     finally:
         st.save()
     print(f"\n{len(new)} new skip list{'s' if len(new) != 1 else ''} this run.")
-    if new and a.push:
+    if new and a.push and len(new) % max(1, a.push_every):
         push()
     elif new:
         print("Committed on this PC. Upload with:  git push origin master   (or run with --push)")
