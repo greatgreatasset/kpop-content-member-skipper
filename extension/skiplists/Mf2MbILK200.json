@@ -1,0 +1,149 @@
+{
+ "format": 6,
+ "videoId": "Mf2MbILK200",
+ "title": "Hearts2Hearts 하츠투하츠 'RUDE!' Mood Sampler #IAN #이안",
+ "duration": 33,
+ "scannedAt": "2026-11-09T11:32:24+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 68
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
+ ],
+ "skips": [],
+ "highlights": [
+  {
+   "member": "ian",
+   "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
+   "ranges": [
+    {
+     "start": 0.0,
+     "end": 17.67
+    },
+    {
+     "start": 24.0,
+     "end": 29.33
+    }
+   ]
+  }
+ ],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 99,
+  "members": [
+   {
+    "key": "hearts2hearts:jiwoo",
+    "member": "jiwoo",
+    "name": "Jiwoo",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:carmen",
+    "member": "carmen",
+    "name": "Carmen",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   },
+   {
+    "key": "hearts2hearts:yuha",
+    "member": "yuha",
+    "name": "Yuha",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:stella",
+    "member": "stella",
+    "name": "Stella",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:juun",
+    "member": "juun",
+    "name": "Juun",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:a-na",
+    "member": "a-na",
+    "name": "A-na",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:ian",
+    "member": "ian",
+    "name": "Ian",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "highlight"
+   },
+   {
+    "key": "hearts2hearts:ye-on",
+    "member": "ye-on",
+    "name": "Ye-on",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":7.0,"members":["hearts2hearts:ian"],"focus":"hearts2hearts:ian"},
+   {"start":7.0,"end":7.33,"state":"none"},
+   {"start":7.33,"end":17.67,"members":["hearts2hearts:ian"],"focus":"hearts2hearts:ian"},
+   {"start":17.67,"end":24.0,"state":"none"},
+   {"start":24.0,"end":29.33,"members":["hearts2hearts:ian"],"focus":"hearts2hearts:ian"},
+   {"start":29.33,"end":33.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[650,792,940,1062,1430,1758],"tracks":{
+   "hearts2hearts:ian": [
+    [0,"AeaWAD3KPIeaWBD3KOKedWSD2J-KecWLD3KEKecWKD5KFKecWJD5KHKeaWJD5KHKeYWDD6KLKeaVuD8KPKecVdD_KKKeSVJEHKTKedU6EFKZKemVAECKcKeqVSECKAKenVMEDKSKelVUECKOKekVXEAKMKeeVSEBKPKeaVMEDKPKecVED_KUKeaUxD_KVKeZUHECKVKeVTOEHKWKeNSkEOKoKeNSfEVK2KeOSwEaK9KeLS6EdLBKeIS4EgLIKeDS-EdLKKd9TBEcLJKdqTMElK3KdcTgEpKnKdVT2EsKfKdSUYEoKcKdYU9EfKdKdlVsEQKTKd6WoEDKMKeKXJD2J_KeNXDD1KIKePW1D0KDKeVWSD3KSKehV1D3KRKeqVpD6KJeexVGD5KPKeuVZD5KKKe1VgD0KBKe0VPD1KGKewVBD4KMJesUxD7KULewUbECKhKe7T_EDKXKfBTUEIKfKfASVENK2KfDSBESKyKfHSFEaK2KfCSOEdK4KfASwEZKgKe8TKEWKUKe2TrEQKgKevVGEKKjKenU0ECKpKefU8EGKiKeYU7EJKoKeUVCEGKi"],
+    [658,"AXRAAULtxKXhAATytrKXoAAT2tnKXqAAT1tmKXpAAT3tkKXsAATttkKXwAATotbKXwAATotcKXrAATItjKXqAATQtdKXkAATStlKXjAATdtkKXjAATStgKXjAATMtf"],
+    [798,"AdYBzGaQAKdMBnGgQPKdIBlGlQTKdKBmGpQdKdKBlGtQqKdEBtG6QyKc3BwHNRUKcvCHHkR2KcMDlIcSpKbnG_JGTMKbdLFJeToKbyPGJ6TlKcERcJ5S6Kb9ROJ4TQKbwRXKCTc"],
+    [948,"AY2BqYb0cKYuBpYi0SKYjBjYn0aKYbB0Yr0TJYMBzYz0QLYBBCZC1CKYHBQZF1KJYGAMZF2eLYIAcY32MKYHAIZA2MKYPAMY02EKYVAVZA1_"],
+    [1438,"AXQCfSfvBKXKCqSgu3KXLCxShuyKXMCtSeu1KXNCdSUvBKXhBvSLu1KYBB-SIupKYMEASOtpKX5EnSLtZKX8EbSCtsKYBD1R8ubKYECwSGw8KYADOSKvfKYCDXSHvGKYMEWSAugKYUETR9vxKYNENSDvZKYUECSDvWKYeEISIvAKYXEaR5uAKYZEGSAuPKYQEbSJuIKYQEfSMuGKYREkSIuDKYPEoSJuBKYVEuSFt6KYPEsSFt7KYGEmSMuEKYBEkSUuKKYFEuSRt-KYHEaSDuUKYNEYSGuX"]]
+  }}
+ }
+}
