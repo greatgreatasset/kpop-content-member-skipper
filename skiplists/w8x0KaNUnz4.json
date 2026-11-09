@@ -1,0 +1,171 @@
+{
+ "format": 6,
+ "videoId": "w8x0KaNUnz4",
+ "title": "Hearts2Hearts 하츠투하츠 'Next Chapter' MV Teaser",
+ "duration": 23,
+ "scannedAt": "2026-11-09T02:06:06+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 34
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
+ ],
+ "skips": [],
+ "highlights": [
+  {
+   "member": "ian",
+   "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
+   "ranges": [
+    {
+     "start": 6.0,
+     "end": 7.0
+    }
+   ]
+  }
+ ],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 70,
+  "members": [
+   {
+    "key": "hearts2hearts:jiwoo",
+    "member": "jiwoo",
+    "name": "Jiwoo",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:carmen",
+    "member": "carmen",
+    "name": "Carmen",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   },
+   {
+    "key": "hearts2hearts:yuha",
+    "member": "yuha",
+    "name": "Yuha",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:stella",
+    "member": "stella",
+    "name": "Stella",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:juun",
+    "member": "juun",
+    "name": "Juun",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:a-na",
+    "member": "a-na",
+    "name": "A-na",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:ian",
+    "member": "ian",
+    "name": "Ian",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "highlight"
+   },
+   {
+    "key": "hearts2hearts:ye-on",
+    "member": "ye-on",
+    "name": "Ye-on",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":0.67,"state":"none"},
+   {"start":0.67,"end":1.67,"members":["hearts2hearts:jiwoo"],"focus":"hearts2hearts:jiwoo"},
+   {"start":1.67,"end":2.33,"state":"wide"},
+   {"start":2.33,"end":3.33,"members":["hearts2hearts:carmen","hearts2hearts:stella"]},
+   {"start":3.33,"end":4.0,"members":["hearts2hearts:yuha"]},
+   {"start":4.0,"end":5.0,"members":["hearts2hearts:jiwoo","hearts2hearts:ye-on"]},
+   {"start":5.0,"end":6.0,"state":"unknown"},
+   {"start":6.0,"end":7.0,"members":["hearts2hearts:a-na","hearts2hearts:ian"]},
+   {"start":7.0,"end":8.0,"members":["hearts2hearts:stella"],"focus":"hearts2hearts:stella"},
+   {"start":8.0,"end":8.67,"members":["hearts2hearts:carmen"],"focus":"hearts2hearts:carmen"},
+   {"start":8.67,"end":9.67,"members":["hearts2hearts:yuha"],"focus":"hearts2hearts:yuha"},
+   {"start":9.67,"end":10.67,"members":["hearts2hearts:ye-on"],"focus":"hearts2hearts:ye-on"},
+   {"start":10.67,"end":11.67,"state":"unknown"},
+   {"start":11.67,"end":12.0,"state":"wide"},
+   {"start":12.0,"end":13.33,"state":"unknown"},
+   {"start":13.33,"end":14.33,"state":"wide"},
+   {"start":14.33,"end":23.33,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[305,360,390,395,423,425,641,806,866,953],"tracks":{
+   "hearts2hearts:a-na": [
+    [368,"Aj5InGSPCKkBKBGPOXKj4J3GQOV"],
+    [398,"AjyKbGLOBKjwKVGKOIKjxKXGIOB"]],
+   "hearts2hearts:carmen": [
+    [148,"AVbO0GjO5KWaN3GZPyKXHQaGhPIKXOP5GpPSKXFPGGjPWKW8OyGdPh"],
+    [488,"AbAPtGSN1KcBOSGZO4Kc5OeGtPEKcLSGH2Oc"]],
+   "hearts2hearts:ian": [
+    [368,"AZRLyFbNfKZFL7FYNbKY1MQFXNO"],
+    [398,"AY9KPFxN-KYwKJFpODKYeKLFuOI"]],
+   "hearts2hearts:jiwoo": [
+    [48,"AaKGtQyoeKaJGVQ7pEKaGGNREprKZ8GURTqGKZnGLRoqtKZeF5R4rM"],
+    [248,"ArKKvHSRKKqLLWHKQeKpnMbHHQPKpdMqHGQMKpiM_G3P5KpsMmGxPq"]],
+   "hearts2hearts:stella": [
+    [148,"Aj2P9GgOTKkkPoGnOzKkrQCGqOfKkkQFGkOlKklQZGdOkKkeQfGWOo"],
+    [428,"AWyMASCqWKV1HHS8vZKVsIoTTvrKVlKeTMvwKVYKXTJvdKVKK5TAwQ"]],
+   "hearts2hearts:ye-on": [
+    [248,"APlSMG1QSKPOSDG-QEKPOSwG6PnKPdTVG4PbKPzTWGsPeKQBS_GrPf"],
+    [588,"AaiJsJ8ZRKbFJlJzYyKcFJnJLYZKcAJZJUYUKb8JEJHYaKamHsJdY-"]],
+   "hearts2hearts:yuha": [
+    [208,"AlcZFDiIIKl6YnDhIPKmDYrDfH8KmAX_DgIN"],
+    [528,"AVuItJuW6KWEIWJnXzKWhIcJqX2KXcJLJxXqKYYJuJzXdKZbJ0J0X1"]]
+  }}
+ }
+}
