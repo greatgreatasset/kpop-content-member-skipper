@@ -1,0 +1,48 @@
+{
+ "format": 6,
+ "videoId": "C9McWCeK6QA",
+ "title": "Hearts2Hearts 하츠투하츠 'FOCUS' Dance Practice",
+ "duration": 191,
+ "scannedAt": "2026-11-09T15:32:19+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 572,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":7.67,"state":"wide"},
+   {"start":7.67,"end":8.0,"state":"none"},
+   {"start":8.0,"end":103.33,"state":"wide"},
+   {"start":103.33,"end":103.67,"state":"none"},
+   {"start":103.67,"end":154.33,"state":"wide"},
+   {"start":154.33,"end":155.0,"state":"none"},
+   {"start":155.0,"end":179.67,"state":"wide"},
+   {"start":179.67,"end":180.33,"state":"unknown"},
+   {"start":180.33,"end":181.0,"state":"wide"},
+   {"start":181.0,"end":181.33,"state":"unknown"},
+   {"start":181.33,"end":190.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[],"tracks":{
+
+  }}
+ }
+}
