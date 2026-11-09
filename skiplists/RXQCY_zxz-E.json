@@ -1,0 +1,67 @@
+{
+ "format": 6,
+ "videoId": "RXQCY_zxz-E",
+ "title": "Hearts2Hearts 하츠투하츠 'RUDE!' Dance Practice",
+ "duration": 212,
+ "scannedAt": "2026-11-09T11:15:11+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 636,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":6.67,"state":"wide"},
+   {"start":6.67,"end":7.0,"state":"none"},
+   {"start":7.0,"end":50.33,"state":"wide"},
+   {"start":50.33,"end":50.67,"state":"none"},
+   {"start":50.67,"end":65.33,"state":"wide"},
+   {"start":65.33,"end":65.67,"state":"none"},
+   {"start":65.67,"end":206.0,"state":"wide"},
+   {"start":206.0,"end":212.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[],"tracks":{
+   "hearts2hearts:a-na": [
+    [5158,"ALyYuBFC1KLVYrBFC3KLNZaA_CnKLbZkBHCw"]],
+   "hearts2hearts:ian": [
+    [1829,"AevZ4BACoKexZlBDCxKetZgBGCzKe1ZeBFCwKe0ZhBGCuKeTaFBWCrKePaPBYCqKeOaNBZCwKeVaGBWCpKenZ2BPCkKe8ZwBLCfKfRZdBHCm"],
+    [12030,"AiSg7BPDAKhug9BQDIKhghLBSC_KhfhJBPC8Khig-BQDAKhlg6BQDEKhpg4BRDCKhrg4BUDGKhug6BSDFKhug7BRDDKhtg9BRDDKhrhABRDDKhshGBPC_KhshKBOC9KhphMBNC5KhlhLBPC8KhlhNBOC7KhkhIBPDBKhfg_BUDGKhZhIBTC7KhLhfBdC_KhFhhBTCuKg-hVBiDFKg2heBaC2KgvhQBdDd"]],
+   "hearts2hearts:jiwoo": [
+    [12030,"AdRhCBYDCKdxhBBXC9KeBhFBVC2KeBhJBWC1Kd-hRBWC0Kd2hYBWC2KdzheBUCuKduhaBWCzKdqhYBZC4KdqhjBXC0KdqhnBYC0KdphoBYC0KdrhpBXCzKduhpBWC3KdyhnBSC0KdwhcBVC8KduhPBUC4KdthFBXC6KdyhJBWDEKd6hsBTCxKeAhrBTC3KeMh4BNCxKeHh7BXC0KeKh8BbCzKeKh1BQC4KeEhyBYC8KeLh8BSCsKeGhyBTC1Kdwh6BQCy"]],
+   "hearts2hearts:juun": [
+    [3058,"AcwZ5A_CXKcrZyBDCcKcxZ1BDCfKczZ5BFCkKc2aBBDCfKc1aGBECdKc0aPBFCdKcwaaBICeKcxavBFCbKcqbABFCiKcPbOBBCc"],
+    [5538,"AtjW-BSCvKtkWUBdDEKt_XjBNCk"],
+    [5728,"AxughBRC7KxtgtBOC4KxmgxBLC1Kxag6BLC1KxQg9BOC6KxKg8BMC8KxGg9BKC9KxDg9BMC_KxChABLC9KxDhABLC_KxEhBBLC8KxDhCBNC-KxChDBNC8KxChDBPC9KxUhEBRC4"],
+    [6429,"AzpY7BQCiKz4Y9BSCwK0HZVBRCtK0JZVBUCvK0MZZBSCwK0NZTBRCyK0GZcBPCrKzzZ0BOCs"]],
+   "hearts2hearts:stella": [
+    [938,"AUlc8A5B-KUWdQA8CAKUPdaA9B6KUKdQA6B-"],
+    [3589,"AO9ZNBICQKOuZGBKChKOXY3BRCtKOVZBBQCmKOSZWBQCpKOYZMBQCoKOlZRBRCjKOxZoBTCmKPAZ3BTClKO_aqBTCr"],
+    [3739,"AOHajBMCuKOKaRBPC1KOKaKBPCxKOKaFBQC2KOKaEBPCzKOLaGBSC1KOJakBOCr"],
+    [3989,"AOmbeBJCsKOhbLBJCr"],
+    [8619,"ARTYxBNCxKQtYyBQCtKQVYxBNCsKQEYwBPC0KP5Y6BRCxKP5ZJBRCuKQAZGBOCpKQNZEBQCqKQaZHBPCm"],
+    [11239,"AIkXxBSC9KIbXrBVDDKIgX7BTC5KIzYmBMClKI3ZBBbCzKI1YTBaCzKIkZUBaC2KICZVBQC0"],
+    [12030,"AYoZFBPC3KY0Y3BSDBKYwY-BOC0KYjYzBNCxKYaY3BMCuKYYY2BLCwKYXY6BJCtKYXY_BKCtKYXY_BLCwKYYY_BLCyKYZZEBKC0KYZZABLCyKYZY-BLCyKYaY9BLCyKYdY8BJCyKYgY6BKC1KYhY-BLC2KYhYfBSDBKYiYQBUC3KYjYqBZCsKYtYxBbCqKYvYwBeCsKYuYlBaC1KYvYhBcC5KYwYhBVC5KYyYhBTC2KYzYkBVCxKY1YmBUCrKYzYiBVCyKYsYeBQC0KYgYRBUCy"]],
+   "hearts2hearts:ye-on": [
+    [5818,"AZhYZBOCvKZiYZBWCsKZRX6BaCkKZGYsBSCzKZMYLBPC1KZkXnBVC0"],
+    [12030,"AnjY3BPC6KnAZKBNCqKm1ZQBLCoKmzZQBNCqKm6ZLBPCuKnBZSBPCnKnJZYBMChKnLZXBQClKnNZUBPClKnMZSBPCmKnLZRBQCnKnKZOBQCpKnJZOBOCpKnIZQBMCpKnGZQBOCqKnBZMBQCsKm9ZEBRCvKm9ZABRC0Km9Y_BQCzKm7ZBBRCxKm6Y1BPC2Km4YzBPC6KmwYzBXDDKmwY2BQC8KmxY0BPC3KmsYuBSC8KmtYvBSC3KmuYrBPC1KmuYqBOC2KmpYlBPC0KmlYnBRC8KmqY2BMC2KmwY0BOCx"]]
+  }}
+ }
+}
