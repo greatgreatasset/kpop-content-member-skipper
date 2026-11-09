@@ -1,0 +1,128 @@
+{
+ "format": 6,
+ "videoId": "OMyCbdH3KTY",
+ "title": "Hearts2Hearts 하츠투하츠 'RUDE!' Mood Sampler #JUUN #주은",
+ "duration": 26,
+ "scannedAt": "2026-11-09T11:35:35+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 46
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 77,
+  "members": [
+   {
+    "key": "hearts2hearts:jiwoo",
+    "member": "jiwoo",
+    "name": "Jiwoo",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:carmen",
+    "member": "carmen",
+    "name": "Carmen",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   },
+   {
+    "key": "hearts2hearts:yuha",
+    "member": "yuha",
+    "name": "Yuha",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:stella",
+    "member": "stella",
+    "name": "Stella",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:juun",
+    "member": "juun",
+    "name": "Juun",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:a-na",
+    "member": "a-na",
+    "name": "A-na",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:ian",
+    "member": "ian",
+    "name": "Ian",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "highlight"
+   },
+   {
+    "key": "hearts2hearts:ye-on",
+    "member": "ye-on",
+    "name": "Ye-on",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":11.33,"members":["hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":11.33,"end":15.33,"state":"none"},
+   {"start":15.33,"end":21.67,"members":["hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":21.67,"end":25.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[560,670,800,925,1308],"tracks":{
+   "hearts2hearts:juun": [
+    [0,"AfHTiC9HWIfHTjC9HUKfLTgC7HTKfLTeC7HWKfMTcC7HXKfHTfC9HVKfETeC-HWKfFThC-HWKfGThC-HZKfFThC-HaKfETjC9HXKfFTjC9HbKfHTlC9HZKfHTkC9HaKfGTkC9HaKfbTEDHHpKfZTHDHHnKfXTHDFHmKfWTIDFHlKfXTJDFHlKfXTJDEHlKfXTKDEHkKfXTKDEHlKf9TXDHHpKfyTZDIHnKfxTgDBHlKd6TnDSHZKeKTdDWHlKeqTYDeH3KesTTDaHvKe2TJDYHxKfATFDVHuKfDTCDSHxKfETCDTHvKfPTeDJHXKfKTaDDHgKe-TQDGHoKezTPDZHoKezTQDXHnKfQUFDNH6KfQUFDNH6KfPUGDJH7KfPUIDJH5Kd2UlDYHiKdtUkDXHkKdvUiDYHjKd0UeDYHlKd1UcDbHlKfzU5DNHlKfyU0DMHmJfvUuDKHpLftUWDHH1KflTwDJH9KfSThDAHtKe2TzDCIAKetUGDCHSKepUUDBHH"],
+    [568,"AajAAYB0jKaoAAX80fKapAAX50kKa6AAXV0nKbAAAXR0-Ka_AAXM1FKa-AAXa1RKa9AAXa1TKa9AAXj1YKa-AAXh1XKbAAAXg1W"],
+    [928,"AWqBgTiuuKWXBdTsu8KV3BeTmvGKVNB0T3vCKUICLVAvrKTOEhVhuDJTSEkVhuHLTsEcVauIKTlEDVxuyJTuD7VwvKLT9EGVUvyKTzEAVavGKT1D-Vhu4KT4EYVYuoKUBEXVSucKUFEVVJuZKUJEcVJuQKUKERVAuPKUGENVCuSKULERU6uLKUPEhU2tyKUaEKU3uLKUiEIU4uHKUmERU4uBKUjEJU_uHKUfEPVAuHKUYEIU-uRKUYEaUzt2KUUEeUztzKUQEOU-uJKUPEIVBuRKUTENVBuKKUTEHVCuRKUWEFVGuVKUcEJVEuUKUbEJVGuUKUgEGVDuUKUhEGVBuR"]]
+  }}
+ }
+}
