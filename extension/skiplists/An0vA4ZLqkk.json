@@ -1,0 +1,55 @@
+{
+ "format": 6,
+ "videoId": "An0vA4ZLqkk",
+ "title": "Hearts2Hearts 하츠투하츠 'ICONIC HEART' Dance Practice",
+ "duration": 206,
+ "scannedAt": "2026-11-09T04:19:55+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 618,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":8.33,"state":"wide"},
+   {"start":8.33,"end":8.67,"state":"none"},
+   {"start":8.67,"end":138.0,"state":"wide"},
+   {"start":138.0,"end":138.67,"state":"none"},
+   {"start":138.67,"end":157.33,"state":"wide"},
+   {"start":157.33,"end":157.67,"state":"unknown"},
+   {"start":157.67,"end":192.33,"state":"wide"},
+   {"start":192.33,"end":194.0,"state":"unknown"},
+   {"start":194.0,"end":194.33,"state":"wide"},
+   {"start":194.33,"end":194.67,"state":"unknown"},
+   {"start":194.67,"end":206.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[],"tracks":{
+   "hearts2hearts:a-na": [
+    [11179,"Ap0WBBUDPKqWWHBfDMKqzWrBeDEKq_XDBiDEKrEXBBfDEKrCW5BfDHKq-W4BdDFKq8W4BaDCKq6W3BcDGKq2W1BcDIKqxWyBdDLKqvWzBcDLKqtW0BcDKKqsWzBcDLKqrW0BcDKKqrWyBeDRKqrWvBdDSKqrWtBdDRKqtWvBdDQKqsWtBdDTKqtWpBbDVKqmWeBYDTKqSWVBZDYKpoWNBaDW"]],
+   "hearts2hearts:ian": [
+    [11119,"ARhXABaDLKRdW1BZDOKRsXFBXDTKSFXQBWDQKSiXbBYDQKSwXrBaDOKSNXGBXDIKR1XEBVDRKRnXMBWDRKRcXdBWDSKRTXvBUDSKRNXsBXDUKRJXrBXDUKRGXpBWDUKRDXpBWDVKRDXpBVDVKRCXoBVDUKRBXoBWDSKRAXpBWDSKQ-XqBXDTKQ-XpBWDSKQ9XoBXDSKQ9XnBXDTKQ8XpBXDTKQ9XoBXDTKQ8XpBXDVKQ6XrBXDVKQ6XrBXDWKQ7XqBWDWKRCXpBVDPKRNXKBZDS"]],
+   "hearts2hearts:stella": [
+    [2170,"AqUgJBICdKqfgDBPCZKqdgDBJCdKqchEBGCeKqchbBICnKqdg2BICkKqNgEBKClKqLgMBJCoKqHhcBFCfKp0hOBJCdKpphRBJCdKpqhSBGCfKpshSBGCkKpshSBGCjKpqhcBHClKpWhVBHCiKpahMBHCcKpuhRBECdKqAhUBFCjKqah2BGCpKqyiABGCg"],
+    [10798,"ArLX1BDCuKrVX3BLCvKrmX-BXC8KsEYqBWC8KshZbBSDD"],
+    [11189,"AkxYKBNCuKlJYgBJCpKlWY3BJCvKlaY2BJCuKlZY1BKCvKlaYyBKCwKlaYxBKCvKlaYvBMCwKlbYyBMCtKlbYyBMCsKldYzBNCuKlgY0BMCsKlhY1BLCrKlhY1BMCrKliY0BMCsKliY0BOCuKliYzBPCwKliY3BOCuKljY9BNCsKljY-BMCrKljY6BOCuKlhY4BQCzKleYzBOCvKlWYvBJCpKk9YlBLCnKkaYRBOCwKj6YNBRCvKjoYCBTC4KjjYBBSC3KjvX3BSDCKj7XxBWDBKkLZABUCs"]]
+  }}
+ }
+}
