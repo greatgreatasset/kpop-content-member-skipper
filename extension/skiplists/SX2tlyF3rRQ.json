@@ -1,0 +1,69 @@
+{
+ "format": 6,
+ "videoId": "SX2tlyF3rRQ",
+ "title": "Hearts2Hearts 하츠투하츠 'Electric Shock' Stage Rehearsal (Original Song by f(x))",
+ "duration": 139,
+ "scannedAt": "2026-11-09T11:17:42+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 417,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":4.0,"state":"wide"},
+   {"start":4.0,"end":4.33,"state":"none"},
+   {"start":4.33,"end":10.67,"state":"wide"},
+   {"start":10.67,"end":11.0,"state":"none"},
+   {"start":11.0,"end":11.33,"state":"wide"},
+   {"start":11.33,"end":11.67,"state":"none"},
+   {"start":11.67,"end":15.0,"state":"wide"},
+   {"start":15.0,"end":15.33,"state":"none"},
+   {"start":15.33,"end":16.33,"state":"wide"},
+   {"start":16.33,"end":17.0,"state":"none"},
+   {"start":17.0,"end":21.0,"state":"wide"},
+   {"start":21.0,"end":22.0,"state":"none"},
+   {"start":22.0,"end":30.0,"state":"wide"},
+   {"start":30.0,"end":30.33,"state":"none"},
+   {"start":30.33,"end":30.67,"state":"wide"},
+   {"start":30.67,"end":31.0,"state":"none"},
+   {"start":31.0,"end":35.0,"state":"wide"},
+   {"start":35.0,"end":35.33,"state":"none"},
+   {"start":35.33,"end":39.67,"state":"wide"},
+   {"start":39.67,"end":40.33,"state":"none"},
+   {"start":40.33,"end":82.67,"state":"wide"},
+   {"start":82.67,"end":83.0,"state":"none"},
+   {"start":83.0,"end":99.0,"state":"wide"},
+   {"start":99.0,"end":99.33,"state":"none"},
+   {"start":99.33,"end":99.67,"state":"wide"},
+   {"start":99.67,"end":100.67,"state":"none"},
+   {"start":100.67,"end":128.0,"state":"wide"},
+   {"start":128.0,"end":128.33,"state":"none"},
+   {"start":128.33,"end":130.67,"state":"wide"},
+   {"start":130.67,"end":131.33,"state":"none"},
+   {"start":131.33,"end":134.0,"state":"wide"},
+   {"start":134.0,"end":139.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[92,102,3316,3320,6544,6548,7838],"tracks":{
+
+  }}
+ }
+}
