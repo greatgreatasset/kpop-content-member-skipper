@@ -190,8 +190,8 @@ by itself on YouTube's bot check / rate limit. Lists are committed one by one;
 scan (`--keep-videos` keeps it). State and log: `cache/batch/<channel id>.json/.log`.
 
 `python screen_time.py` then writes `cache/screen_time.csv` and a sortable
-`cache/screen_time.html`: per Hearts2Hearts video, how long Ian, Ye-on, Carmen
-and the other members are on screen, and the default skip time.
+`cache/screen_time.html`: per Hearts2Hearts video, how long each member is on
+screen, and how much time the default skips cut out.
 
 ## Usage (individual steps)
 
