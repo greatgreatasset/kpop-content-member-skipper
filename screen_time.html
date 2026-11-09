@@ -47,7 +47,7 @@ td.t a { color: var(--fg); text-decoration: none; } td.t a:hover { text-decorati
 td.t small { display: block; color: var(--muted); font-family: var(--mono); font-size: 11px; }
 td.n { font-family: var(--mono); font-size: 13px; }
 th.highlight { color: var(--ian); } th.skip, th.skipm { color: var(--skip); } th.normal { color: var(--other); }
-th small { display: block; font-weight: 400; letter-spacing: 0.02em; text-transform: none; font-size: 10px; }
+th small { display: block; white-space: nowrap; font-weight: 400; letter-spacing: 0.02em; text-transform: none; font-size: 10px; }
 .cell { display: grid; gap: 3px; justify-items: end; }
 .bar { width: 52px; height: 4px; border-radius: 2px; overflow: hidden; }
 .bar i { display: block; height: 100%; }
@@ -64,13 +64,13 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
 <div class="wrap">
   <header>
     <h1>Hearts2Hearts <span>screen time</span></h1>
-    <p class="lede">How much of each scanned video every member is on screen, and how much time the default skips (Carmen and Ye-on alone on screen) cut out. Click a column to sort.</p>
+    <p class="lede">The first column is the time the add-on really jumps over in each video: only the parts where Carmen and/or Ye-on are on screen with nobody else. The member columns show how much of the video each member is on screen at all, alone or with others, so a group video can show Carmen at 90% and still have almost nothing skipped. Click a column to sort.</p>
   </header>
   <div class="stats" id="stats"></div>
   <div class="controls">
     <div class="seg" role="group" aria-label="Show values as">
-      <button type="button" id="mode-share" aria-pressed="true">Share of video</button>
-      <button type="button" id="mode-time" aria-pressed="false">Time</button>
+      <button type="button" id="mode-share" aria-pressed="true">% of video</button>
+      <button type="button" id="mode-time" aria-pressed="false">Minutes</button>
     </div>
     <input type="search" id="q" placeholder="Filter by title" aria-label="Filter by title">
   </div>
@@ -86,9 +86,9 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
 
 <script>
 const DATA = /*DATA*/null || {generated: "", members: [], videos: []};
-const TAG = {skip: "skipped", highlight: "highlighted", normal: ""};
+const TAG = {skip: "on screen · set to skip", highlight: "on screen · highlighted", normal: "on screen"};
 const COLS = [
-  {k: "skip", label: "Skipped", cls: "skip", m: 1},
+  {k: "skip", label: "Time actually skipped", sub: "Carmen / Ye-on alone", cls: "skip", m: 1},
   {k: "title", label: "Video", cls: "t"},
   {k: "date", label: "Posted", cls: "n"},
   {k: "duration", label: "Length", cls: "n"},
@@ -131,9 +131,9 @@ function render() {
   const I = all.reduce((s, v) => s + v.ian, 0);
   document.getElementById("stats").innerHTML = [
     [all.length, "videos scanned"], [(D / 3600).toFixed(1) + " h", "of video"],
-    [clock(S), `skipped (${D ? pct(S / D) : "0%"})`], [clock(I), `Ian on screen (${D ? pct(I / D) : "0%"})`],
+    [clock(S), `actually skipped (${D ? pct(S / D) : "0%"})`], [clock(I), `Ian on screen (${D ? pct(I / D) : "0%"})`],
   ].map(([b, s]) => `<div class="stat"><b>${b}</b><small>${s}</small></div>`).join("");
-  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Skipped" is how much the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Posted dates are approximate. Updated ${DATA.generated}.`;
+  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Posted dates are approximate. Updated ${DATA.generated}.`;
 }
 function sortBy(k) { if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = k === "title" ? 1 : -1; } render(); }
 document.getElementById("head").addEventListener("click", e => { const th = e.target.closest("th"); if (th) sortBy(th.dataset.k); });
