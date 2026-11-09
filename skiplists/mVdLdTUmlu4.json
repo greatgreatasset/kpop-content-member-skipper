@@ -1,0 +1,40 @@
+{
+ "format": 6,
+ "videoId": "mVdLdTUmlu4",
+ "title": "Hearts2Hearts 하츠투하츠 'FOCUS (Jaebin Remix)' Visualizer",
+ "duration": 224,
+ "scannedAt": "2026-11-09T14:31:49+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 672,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":199.33,"state":"none"},
+   {"start":199.33,"end":199.67,"state":"unknown"},
+   {"start":199.67,"end":224.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[433,626,1344,1792,2262,6637,10148,13153],"tracks":{
+
+  }}
+ }
+}
