@@ -1,0 +1,69 @@
+{
+ "format": 6,
+ "videoId": "38bNr6gy4CE",
+ "title": "Hearts2Hearts 하츠투하츠 'The Chase' Dance Practice",
+ "duration": 188,
+ "scannedAt": "2026-11-10T17:13:29+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 565,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":14.67,"state":"wide"},
+   {"start":14.67,"end":15.0,"state":"none"},
+   {"start":15.0,"end":15.33,"state":"wide"},
+   {"start":15.33,"end":15.67,"state":"none"},
+   {"start":15.67,"end":22.0,"state":"wide"},
+   {"start":22.0,"end":22.33,"state":"none"},
+   {"start":22.33,"end":59.0,"state":"wide"},
+   {"start":59.0,"end":59.33,"state":"none"},
+   {"start":59.33,"end":62.0,"state":"wide"},
+   {"start":62.0,"end":62.33,"state":"none"},
+   {"start":62.33,"end":71.67,"state":"wide"},
+   {"start":71.67,"end":72.0,"state":"none"},
+   {"start":72.0,"end":74.67,"state":"wide"},
+   {"start":74.67,"end":75.0,"state":"none"},
+   {"start":75.0,"end":79.67,"state":"wide"},
+   {"start":79.67,"end":80.0,"state":"none"},
+   {"start":80.0,"end":94.67,"state":"wide"},
+   {"start":94.67,"end":95.0,"state":"none"},
+   {"start":95.0,"end":130.67,"state":"wide"},
+   {"start":130.67,"end":131.0,"state":"none"},
+   {"start":131.0,"end":141.0,"state":"wide"},
+   {"start":141.0,"end":141.33,"state":"none"},
+   {"start":141.33,"end":144.33,"state":"wide"},
+   {"start":144.33,"end":145.33,"state":"none"},
+   {"start":145.33,"end":147.33,"state":"wide"},
+   {"start":147.33,"end":148.0,"state":"none"},
+   {"start":148.0,"end":149.0,"state":"wide"},
+   {"start":149.0,"end":154.33,"state":"none"},
+   {"start":154.33,"end":184.0,"state":"wide"},
+   {"start":184.0,"end":184.33,"state":"unknown"},
+   {"start":184.33,"end":184.67,"state":"wide"},
+   {"start":184.67,"end":188.33,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[],"tracks":{
+
+  }}
+ }
+}
