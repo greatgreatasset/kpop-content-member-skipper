@@ -1,0 +1,332 @@
+{
+ "format": 6,
+ "videoId": "GtPPT-qSXj8",
+ "title": "Hearts2Hearts 하츠투하츠 'The Chase' Performance Video",
+ "duration": 189,
+ "scannedAt": "2026-11-10T17:40:38+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 73
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
+ ],
+ "skips": [],
+ "highlights": [
+  {
+   "member": "ian",
+   "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
+   "ranges": [
+    {
+     "start": 1.33,
+     "end": 2.67
+    },
+    {
+     "start": 18.67,
+     "end": 19.67
+    },
+    {
+     "start": 88.0,
+     "end": 89.67
+    },
+    {
+     "start": 122.0,
+     "end": 123.0
+    },
+    {
+     "start": 154.67,
+     "end": 155.67
+    },
+    {
+     "start": 174.33,
+     "end": 175.67
+    }
+   ]
+  }
+ ],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 567,
+  "members": [
+   {
+    "key": "hearts2hearts:jiwoo",
+    "member": "jiwoo",
+    "name": "Jiwoo",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:carmen",
+    "member": "carmen",
+    "name": "Carmen",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   },
+   {
+    "key": "hearts2hearts:yuha",
+    "member": "yuha",
+    "name": "Yuha",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:stella",
+    "member": "stella",
+    "name": "Stella",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:juun",
+    "member": "juun",
+    "name": "Juun",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:a-na",
+    "member": "a-na",
+    "name": "A-na",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:ian",
+    "member": "ian",
+    "name": "Ian",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "highlight"
+   },
+   {
+    "key": "hearts2hearts:ye-on",
+    "member": "ye-on",
+    "name": "Ye-on",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":1.33,"state":"wide"},
+   {"start":1.33,"end":2.67,"members":["hearts2hearts:ian"],"focus":"hearts2hearts:ian"},
+   {"start":2.67,"end":8.0,"state":"unknown"},
+   {"start":8.0,"end":12.0,"members":["hearts2hearts:yuha"],"focus":"hearts2hearts:yuha"},
+   {"start":12.0,"end":15.33,"state":"unknown"},
+   {"start":15.33,"end":16.0,"state":"wide"},
+   {"start":16.0,"end":18.67,"state":"unknown"},
+   {"start":18.67,"end":19.67,"members":["hearts2hearts:ian"]},
+   {"start":19.67,"end":21.33,"state":"wide"},
+   {"start":21.33,"end":22.67,"state":"unknown"},
+   {"start":22.67,"end":23.0,"state":"none"},
+   {"start":23.0,"end":24.0,"members":["hearts2hearts:jiwoo"],"focus":"hearts2hearts:jiwoo"},
+   {"start":24.0,"end":24.67,"state":"unknown"},
+   {"start":24.67,"end":26.67,"state":"wide"},
+   {"start":26.67,"end":27.0,"members":["hearts2hearts:jiwoo"],"focus":"hearts2hearts:jiwoo"},
+   {"start":27.0,"end":28.0,"state":"wide"},
+   {"start":28.0,"end":35.33,"state":"unknown"},
+   {"start":35.33,"end":35.67,"members":["hearts2hearts:ye-on"]},
+   {"start":35.67,"end":36.33,"members":["hearts2hearts:jiwoo"]},
+   {"start":36.33,"end":39.67,"state":"unknown"},
+   {"start":39.67,"end":40.0,"state":"wide"},
+   {"start":40.0,"end":40.33,"state":"unknown"},
+   {"start":40.33,"end":41.67,"state":"wide"},
+   {"start":41.67,"end":42.0,"members":["hearts2hearts:jiwoo","hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":42.0,"end":42.67,"state":"unknown"},
+   {"start":42.67,"end":43.67,"state":"wide"},
+   {"start":43.67,"end":48.33,"state":"unknown"},
+   {"start":48.33,"end":50.0,"state":"wide"},
+   {"start":50.0,"end":51.33,"state":"unknown"},
+   {"start":51.33,"end":51.67,"members":["hearts2hearts:ian"]},
+   {"start":51.67,"end":52.33,"state":"unknown"},
+   {"start":52.33,"end":52.67,"state":"wide"},
+   {"start":52.67,"end":53.33,"state":"unknown"},
+   {"start":53.33,"end":54.0,"state":"wide"},
+   {"start":54.0,"end":55.0,"state":"none"},
+   {"start":55.0,"end":55.33,"state":"wide"},
+   {"start":55.33,"end":56.0,"state":"unknown"},
+   {"start":56.0,"end":57.33,"state":"wide"},
+   {"start":57.33,"end":57.67,"members":["hearts2hearts:a-na"],"focus":"hearts2hearts:a-na"},
+   {"start":57.67,"end":58.33,"state":"unknown"},
+   {"start":58.33,"end":59.0,"members":["hearts2hearts:a-na"],"focus":"hearts2hearts:a-na"},
+   {"start":59.0,"end":59.33,"state":"unknown"},
+   {"start":59.33,"end":59.67,"state":"none"},
+   {"start":59.67,"end":61.33,"state":"unknown"},
+   {"start":61.33,"end":62.0,"members":["hearts2hearts:ian"],"focus":"hearts2hearts:ian"},
+   {"start":62.0,"end":62.33,"state":"wide"},
+   {"start":62.33,"end":62.67,"state":"none"},
+   {"start":62.67,"end":68.67,"state":"unknown"},
+   {"start":68.67,"end":69.67,"state":"wide"},
+   {"start":69.67,"end":74.33,"state":"unknown"},
+   {"start":74.33,"end":74.67,"members":["hearts2hearts:ian"]},
+   {"start":74.67,"end":75.0,"state":"unknown"},
+   {"start":75.0,"end":76.0,"members":["hearts2hearts:yuha"],"focus":"hearts2hearts:yuha"},
+   {"start":76.0,"end":76.33,"state":"unknown"},
+   {"start":76.33,"end":77.0,"members":["hearts2hearts:yuha"],"focus":"hearts2hearts:yuha"},
+   {"start":77.0,"end":77.67,"state":"unknown"},
+   {"start":77.67,"end":80.0,"state":"wide"},
+   {"start":80.0,"end":80.33,"state":"unknown"},
+   {"start":80.33,"end":81.67,"members":["hearts2hearts:carmen"],"focus":"hearts2hearts:carmen"},
+   {"start":81.67,"end":82.67,"state":"wide"},
+   {"start":82.67,"end":84.0,"state":"unknown"},
+   {"start":84.0,"end":84.67,"state":"wide"},
+   {"start":84.67,"end":85.67,"state":"unknown"},
+   {"start":85.67,"end":86.33,"members":["hearts2hearts:yuha"]},
+   {"start":86.33,"end":86.67,"members":["hearts2hearts:jiwoo","hearts2hearts:yuha"]},
+   {"start":86.67,"end":87.67,"state":"unknown"},
+   {"start":87.67,"end":88.0,"state":"wide"},
+   {"start":88.0,"end":89.67,"members":["hearts2hearts:ian"],"focus":"hearts2hearts:ian"},
+   {"start":89.67,"end":91.67,"state":"unknown"},
+   {"start":91.67,"end":94.0,"state":"wide"},
+   {"start":94.0,"end":95.33,"state":"unknown"},
+   {"start":95.33,"end":95.67,"state":"none"},
+   {"start":95.67,"end":96.67,"state":"wide"},
+   {"start":96.67,"end":97.67,"state":"unknown"},
+   {"start":97.67,"end":98.33,"members":["hearts2hearts:juun"]},
+   {"start":98.33,"end":99.33,"state":"unknown"},
+   {"start":99.33,"end":101.0,"state":"wide"},
+   {"start":101.0,"end":107.33,"state":"unknown"},
+   {"start":107.33,"end":108.67,"state":"wide"},
+   {"start":108.67,"end":110.0,"state":"unknown"},
+   {"start":110.0,"end":111.0,"state":"none"},
+   {"start":111.0,"end":113.33,"state":"unknown"},
+   {"start":113.33,"end":115.33,"state":"wide"},
+   {"start":115.33,"end":117.0,"state":"unknown"},
+   {"start":117.0,"end":117.33,"members":["hearts2hearts:a-na"]},
+   {"start":117.33,"end":118.33,"state":"unknown"},
+   {"start":118.33,"end":118.67,"members":["hearts2hearts:jiwoo"]},
+   {"start":118.67,"end":119.0,"members":["hearts2hearts:a-na","hearts2hearts:jiwoo"]},
+   {"start":119.0,"end":120.33,"state":"wide"},
+   {"start":120.33,"end":122.0,"state":"unknown"},
+   {"start":122.0,"end":123.0,"members":["hearts2hearts:ian"]},
+   {"start":123.0,"end":123.67,"state":"unknown"},
+   {"start":123.67,"end":124.33,"members":["hearts2hearts:ye-on"],"focus":"hearts2hearts:ye-on"},
+   {"start":124.33,"end":124.67,"state":"unknown"},
+   {"start":124.67,"end":125.67,"state":"wide"},
+   {"start":125.67,"end":126.67,"state":"unknown"},
+   {"start":126.67,"end":127.0,"state":"wide"},
+   {"start":127.0,"end":132.0,"state":"unknown"},
+   {"start":132.0,"end":132.33,"members":["hearts2hearts:ian"]},
+   {"start":132.33,"end":133.33,"members":["hearts2hearts:juun"]},
+   {"start":133.33,"end":136.0,"state":"unknown"},
+   {"start":136.0,"end":136.67,"members":["hearts2hearts:jiwoo","hearts2hearts:juun"]},
+   {"start":136.67,"end":137.0,"members":["hearts2hearts:juun"]},
+   {"start":137.0,"end":137.67,"state":"unknown"},
+   {"start":137.67,"end":138.0,"state":"wide"},
+   {"start":138.0,"end":144.67,"state":"unknown"},
+   {"start":144.67,"end":151.0,"state":"none"},
+   {"start":151.0,"end":151.33,"state":"unknown"},
+   {"start":151.33,"end":151.67,"members":["hearts2hearts:ian"]},
+   {"start":151.67,"end":153.0,"state":"unknown"},
+   {"start":153.0,"end":153.67,"state":"none"},
+   {"start":153.67,"end":154.67,"members":["hearts2hearts:a-na"]},
+   {"start":154.67,"end":155.33,"members":["hearts2hearts:a-na","hearts2hearts:ian"]},
+   {"start":155.33,"end":155.67,"members":["hearts2hearts:ian"]},
+   {"start":155.67,"end":156.67,"state":"unknown"},
+   {"start":156.67,"end":157.0,"state":"wide"},
+   {"start":157.0,"end":157.33,"members":["hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":157.33,"end":158.0,"state":"unknown"},
+   {"start":158.0,"end":159.0,"members":["hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":159.0,"end":159.33,"state":"unknown"},
+   {"start":159.33,"end":160.0,"members":["hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":160.0,"end":160.33,"state":"none"},
+   {"start":160.33,"end":163.33,"state":"wide"},
+   {"start":163.33,"end":168.67,"state":"unknown"},
+   {"start":168.67,"end":171.67,"state":"wide"},
+   {"start":171.67,"end":174.33,"state":"unknown"},
+   {"start":174.33,"end":175.67,"members":["hearts2hearts:ian"],"focus":"hearts2hearts:ian"},
+   {"start":175.67,"end":179.67,"state":"wide"},
+   {"start":179.67,"end":189.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[80,290,473,728,783,911,966,1171,1271,1371,1474,1592,1624,1867,2080,2127,2300,2505,3000,3233,3271,3311,3448,3571,3654,3711,3746,3906,3971,4127,4417,4810,5285,5380,5968,6091,6221,6376,6436,6522,6664,6822,6892,6959,7145,7227,7803,7925,8031,8168,8338,8398,8696,8956,9062,9174,9227,9602,9725,9840,10125,10290,10546,10778],"tracks":{
+   "hearts2hearts:a-na": [
+    [3448,"AaAM4IASe"],
+    [3498,"AfJG9HiPqLhjHhH3R6KhqH_IKSOKdaGuINSR"],
+    [3849,"AmTYQIOTuKkESDI-Vu"],
+    [3879,"AWzT4IsVW"],
+    [6959,"ApRWbGrNWKstVCGsNLKuOTuGcMzKutSyGMMZKuqSXGKM9LuxVCGjNZKvFXyG1OGKwEbOG5OkKyNfKHFO2K0shSGyOh"],
+    [7070,"A4QUdGqO8K26RSGnO0Kz5SvGnOmKz-U2GsOXKzjWqGNNzKyUVpF1NgKwfV0FlM1KvOWgFYM2"],
+    [9229,"AqIPTHJNVKpqQIGaMkKo5QFGYMqKomQvFRL9KoRUYESKvKnSZtEBJ5KnHc3DaI7KmxdpC9IaKmFexC8HtKlwhCChGpKlChiCaGJKk0hHCPFq"]],
+   "hearts2hearts:carmen": [
+    [4830,"AeTPNF-M9KeWPQF-OKKeJRNGEOdKejUWGNOiKebWEGiPKKeGWxG4O6KdlWzGzPeKcvTqGsQk"]],
+   "hearts2hearts:ian": [
+    [88,"AdQMIFjMdKcqJoF7NnKcKIvGHOJKcAJIGFOJKb9KCF4NZKcOLvFpM-KclN2FZMjKdNSLE8Kt"],
+    [1119,"AreYuD1JBKqFbREKJGKq0cZEHJcKrpcwETJuKsTchESJvKtXcOEXJi"],
+    [3088,"AhWGlFRLKKePEhFDLo"],
+    [3118,"AS-NEERJ7"],
+    [3679,"AVxNbGAOHKV-TLF2Nw"],
+    [3709,"AeHTcFyOT"],
+    [4419,"AQ5QKDcHtKQuPaDgHjKQxPVDqHtKRTPSDfH-KQIPWDhIXKPVPiDfIgKQAN-DlIU"],
+    [5288,"AV_KeIfUMKXJOIJNU8KYCMaJ2XQKYXL_KvaRKbKNKK8ZuKgKLeK5aQKhyNBJ4ZdKeRLLKNYeKacI2KGZNKaiH4KRYw"],
+    [7320,"AOwGnGqPG"],
+    [7330,"AXhNBGTOv"],
+    [7340,"Ad2RtGNOvKiJSyGOOrKj3T7F9N1KkuV8FtNgKklXQFLM4"],
+    [7928,"AA01GFnK5"],
+    [9089,"AMCbfFlJcKJ4dFGCKCKIzdCFYLMKIQcJFQLPKIPZSFCLjKIUWLFKLZKISTdFaK-KHSP4FqLjKFaL3GJNX"],
+    [9279,"AROavEjJ9KSSeJECI0KTge8D0IOKU3f-DYHZKV7hXDEGpKWUgdC2GOKXTfVClF4"],
+    [10458,"AcxM4ESKGKd5PWEaKaKdxQJEoK0KeJQME-LyKeLPfFNNAKd1OPFnNbKdRK0F_NbKc-KbGeMaKcSKMG4NA"]],
+   "hearts2hearts:jiwoo": [
+    [1379,"AadOeH6R6KbLRuISSaKb2RsIhU2KaBMoHMPNKZ4IFH2QRKaSJ-HXO1KcnN0GhOTKedSaFSMqKe6T6EgLQKfyQqETJ8"],
+    [1599,"AVCGpI_UAKU3GTJUTyKXzH5IbSs"],
+    [2150,"AvBavFnNmKsGaiGBN9KsicLF7NOKuec9FxMo"],
+    [2508,"Au_U7EhKFKuDTXEMJ3"],
+    [5188,"ArID0EcLWKpsGxEBJm"],
+    [7100,"AKxLuHZQTKNeNBHFQBKPHMVHFPJKQVLpG1PSKQ7LxGWPg"],
+    [8168,"AQsaHFqM_KSyXcFwM0KUFWSF2NgKSrTwF8OR"],
+    [9299,"AcodtEJJaKdceoDjIsKd7gRDOHrKe2eqC1HGKfZdTCkGFKfVdICkF5KfFcrCVFj"]],
+   "hearts2hearts:juun": [
+    [2508,"AeBRPHSRsKdpLyHCRSKcGI7GOQbKcQMcFaNgKcJM6FZLJKb2PPESJt"],
+    [5868,"AwEQiD8JRKuURqDTIFKtOQ4DAHGKs0PHCnGOKsHNZCTGEKrPM1CUFVKqWNLCJE7"],
+    [7938,"AS9JkF1ORKXhOrGAOsKYASaGLPYKUIJ9GwQeKPtMqGqQsKMLKCG2QXKIxNLGwP1"],
+    [8168,"AcaYHGVPEKfhUhGdOtKiMTHGYP4KijUDGzPlKj7cSGaQg"],
+    [9419,"AigXMG-QlKjHVmGZO2KksZnGIQl"],
+    [9489,"AjWV8FJM-KiFWoE_NNLhjVREoMYKhbYXEvLtKhnKYK0boKfhP8KYbFUhQJPIvWdKgnN5IjUoKfPUEHqUTKe6RkHvT7Kg-XRH2Rx"]],
+   "hearts2hearts:ye-on": [
+    [2130,"Ag4WsHURW"],
+    [7360,"ATiL8G7Qh"],
+    [7430,"AfPPTH-SEKeSMjILR9KehO4HlQo"]],
+   "hearts2hearts:yuha": [
+    [478,"AcrSDGDP5KerPMGIQUKfbI4GwRMKfoNhHARwUfgMWGfQmKe9KQHMQZKe2LoHsRXKe7NuHvR8KfMPJHZSsKfKPiHFSoKfSNFG1TBKfPLzG-SVKe3K3HQSDKeoLSG9RqKeoMFGsRrKeeM7GiR9KeWOKGTRPKeJOKGTRFKd_NdGNR7KdTPkGaR3KdRPtGdR6KdqGnGxRTKcdKMG_RR"],
+    [4489,"AbsR7ElKgKcNPwFIK4Lb5KMFfLzKcGSKFyL4Kb5OSGRNlKceMbHJQZKbWSGH-SHKYgROIcSYKTUH5IoTuKQYLOInUbKPWPRIkUSKPZPkIGTuKPsMYHuTc"],
+    [5148,"ALlP5EQKNKKbKJFNLpKLCK2FKL4KOgMTElLqKRrNKEBKH"]]
+  }}
+ }
+}
