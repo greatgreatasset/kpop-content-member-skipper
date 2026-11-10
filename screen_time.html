@@ -29,6 +29,10 @@ h1 span { color: var(--accent); }
 .stats { display: flex; flex-wrap: wrap; gap: 10px 28px; }
 .stat { display: grid; gap: 2px; }
 .stat b { font-family: var(--mono); font-weight: 500; font-size: 20px; font-variant-numeric: tabular-nums; }
+.mstats-box { display: grid; gap: 8px; }
+h2 { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+#mstats .stat b { font-size: 17px; }
+#mstats .highlight b { color: var(--ian); } #mstats .skipm b { color: var(--skip); }
 .stat small { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
 .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface); }
@@ -67,6 +71,7 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
     <p class="lede">The first column is the time the add-on really jumps over in each video: only the parts where Carmen and/or Ye-on are on screen with nobody else. The member columns show how much of the video each member is on screen at all, alone or with others, so a group video can show Carmen at 90% and still have almost nothing skipped. Click a column to sort.</p>
   </header>
   <div class="stats" id="stats"></div>
+  <div class="mstats-box"><h2>Total time on screen, all videos</h2><div class="stats" id="mstats"></div></div>
   <div class="controls">
     <div class="seg" role="group" aria-label="Show values as">
       <button type="button" id="mode-share" aria-pressed="true">% of video</button>
@@ -128,11 +133,14 @@ function render() {
   document.getElementById("foot").innerHTML = rows.length ? `<tr>${cell(COLS[0], tot("skip"), dur)}<td class="t">All ${rows.length} shown</td><td class="n"></td><td class="n">${clock(dur)}</td>` +
     COLS.slice(4).map(c => cell(c, tot(c.k), dur)).join("") + "</tr>" : "";
   const all = DATA.videos, D = all.reduce((s, v) => s + v.duration, 0), S = all.reduce((s, v) => s + v.skip, 0);
-  const I = all.reduce((s, v) => s + v.ian, 0);
   document.getElementById("stats").innerHTML = [
     [all.length, "videos scanned"], [(D / 3600).toFixed(1) + " h", "of video"],
-    [clock(S), `actually skipped (${D ? pct(S / D) : "0%"})`], [clock(I), `Ian on screen (${D ? pct(I / D) : "0%"})`],
+    [clock(S), `actually skipped (${D ? pct(S / D) : "0%"})`],
   ].map(([b, s]) => `<div class="stat"><b>${b}</b><small>${s}</small></div>`).join("");
+  document.getElementById("mstats").innerHTML = DATA.members.map(m => {
+    const t = all.reduce((s, v) => s + (v[m.id] || 0), 0);
+    return `<div class="stat ${m.choice === "skip" ? "skipm" : m.choice}"><b>${clock(t)}</b><small>${esc(m.name)} on screen (${D ? pct(t / D) : "0%"})</small></div>`;
+  }).join("");
   document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Posted dates are approximate. Updated ${DATA.generated}.`;
 }
 function sortBy(k) { if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = k === "title" ? 1 : -1; } render(); }
