@@ -1,0 +1,40 @@
+{
+ "format": 6,
+ "videoId": "clVrZJeuqqk",
+ "title": "˗ˋˏϟˎˊ˗ ☎ 𖡬 𖤐 | Hearts2Hearts",
+ "duration": 133,
+ "scannedAt": "2026-11-10T18:37:39+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 398,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":124.33,"state":"none"},
+   {"start":124.33,"end":125.67,"state":"unknown"},
+   {"start":125.67,"end":132.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[7535],"tracks":{
+
+  }}
+ }
+}
