@@ -1,0 +1,239 @@
+{
+ "format": 6,
+ "videoId": "ANK7KJbaymk",
+ "title": "Hearts2Hearts의 좌충우돌 첫 예능 리얼리티 | [ Chat Hearts2Hearts ] MAIN TEASER",
+ "duration": 62,
+ "scannedAt": "2026-11-10T16:40:37+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "hearts2hearts",
+   "name": "Hearts2Hearts",
+   "faces": 111
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "carmen",
+   "name": "Carmen",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  },
+  {
+   "member": "ye-on",
+   "name": "Ye-on",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts"
+  }
+ ],
+ "skips": [],
+ "highlights": [
+  {
+   "member": "ian",
+   "name": "Ian",
+   "group": "Hearts2Hearts",
+   "profile": "hearts2hearts",
+   "ranges": [
+    {
+     "start": 16.0,
+     "end": 17.33
+    },
+    {
+     "start": 20.0,
+     "end": 21.67
+    },
+    {
+     "start": 41.33,
+     "end": 48.33
+    }
+   ]
+  }
+ ],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 186,
+  "members": [
+   {
+    "key": "hearts2hearts:jiwoo",
+    "member": "jiwoo",
+    "name": "Jiwoo",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:carmen",
+    "member": "carmen",
+    "name": "Carmen",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   },
+   {
+    "key": "hearts2hearts:yuha",
+    "member": "yuha",
+    "name": "Yuha",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:stella",
+    "member": "stella",
+    "name": "Stella",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:juun",
+    "member": "juun",
+    "name": "Juun",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:a-na",
+    "member": "a-na",
+    "name": "A-na",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "normal"
+   },
+   {
+    "key": "hearts2hearts:ian",
+    "member": "ian",
+    "name": "Ian",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "highlight"
+   },
+   {
+    "key": "hearts2hearts:ye-on",
+    "member": "ye-on",
+    "name": "Ye-on",
+    "group": "Hearts2Hearts",
+    "profile": "hearts2hearts",
+    "default": "skip"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":3.0,"state":"none"},
+   {"start":3.0,"end":3.33,"members":["hearts2hearts:a-na"],"focus":"hearts2hearts:a-na"},
+   {"start":3.33,"end":3.67,"state":"unknown"},
+   {"start":3.67,"end":4.0,"members":["hearts2hearts:a-na"],"focus":"hearts2hearts:a-na"},
+   {"start":4.0,"end":4.33,"state":"none"},
+   {"start":4.33,"end":7.33,"state":"unknown"},
+   {"start":7.33,"end":8.0,"state":"none"},
+   {"start":8.0,"end":12.0,"state":"unknown"},
+   {"start":12.0,"end":12.33,"state":"wide"},
+   {"start":12.33,"end":14.33,"state":"unknown"},
+   {"start":14.33,"end":16.0,"members":["hearts2hearts:a-na"],"focus":"hearts2hearts:a-na"},
+   {"start":16.0,"end":16.67,"members":["hearts2hearts:ian"]},
+   {"start":16.67,"end":17.33,"members":["hearts2hearts:ian"],"focus":"hearts2hearts:ian"},
+   {"start":17.33,"end":18.67,"members":["hearts2hearts:yuha"],"focus":"hearts2hearts:yuha"},
+   {"start":18.67,"end":20.0,"state":"unknown"},
+   {"start":20.0,"end":21.67,"members":["hearts2hearts:ian","hearts2hearts:stella","hearts2hearts:yuha"]},
+   {"start":21.67,"end":22.33,"state":"unknown"},
+   {"start":22.33,"end":23.0,"state":"none"},
+   {"start":23.0,"end":23.33,"state":"unknown"},
+   {"start":23.33,"end":25.67,"members":["hearts2hearts:a-na","hearts2hearts:yuha"]},
+   {"start":25.67,"end":27.33,"members":["hearts2hearts:a-na","hearts2hearts:ye-on"],"focus":"hearts2hearts:a-na"},
+   {"start":27.33,"end":28.33,"members":["hearts2hearts:stella"],"focus":"hearts2hearts:stella"},
+   {"start":28.33,"end":30.67,"state":"unknown"},
+   {"start":30.67,"end":31.67,"members":["hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":31.67,"end":34.33,"members":["hearts2hearts:jiwoo"],"focus":"hearts2hearts:jiwoo"},
+   {"start":34.33,"end":35.33,"state":"unknown"},
+   {"start":35.33,"end":36.33,"members":["hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":36.33,"end":37.33,"state":"unknown"},
+   {"start":37.33,"end":38.0,"members":["hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":38.0,"end":38.67,"state":"unknown"},
+   {"start":38.67,"end":39.0,"members":["hearts2hearts:ian"]},
+   {"start":39.0,"end":39.33,"partial":["hearts2hearts:ian"]},
+   {"start":39.33,"end":40.0,"members":["hearts2hearts:carmen"],"focus":"hearts2hearts:carmen"},
+   {"start":40.0,"end":41.33,"members":["hearts2hearts:carmen","hearts2hearts:juun"],"focus":"hearts2hearts:carmen"},
+   {"start":41.33,"end":43.0,"members":["hearts2hearts:ian"],"focus":"hearts2hearts:ian"},
+   {"start":43.0,"end":44.33,"members":["hearts2hearts:carmen"]},
+   {"start":44.33,"end":46.0,"members":["hearts2hearts:a-na","hearts2hearts:ian"]},
+   {"start":46.0,"end":46.33,"members":["hearts2hearts:ian","hearts2hearts:juun","hearts2hearts:stella"]},
+   {"start":46.33,"end":46.67,"members":["hearts2hearts:ian","hearts2hearts:juun"]},
+   {"start":46.67,"end":47.0,"state":"unknown"},
+   {"start":47.0,"end":48.33,"members":["hearts2hearts:ian","hearts2hearts:juun"],"focus":"hearts2hearts:ian"},
+   {"start":48.33,"end":49.33,"members":["hearts2hearts:a-na","hearts2hearts:yuha"]},
+   {"start":49.33,"end":49.67,"state":"unknown"},
+   {"start":49.67,"end":50.0,"members":["hearts2hearts:juun"],"focus":"hearts2hearts:juun"},
+   {"start":50.0,"end":50.67,"members":["hearts2hearts:juun"]},
+   {"start":50.67,"end":52.0,"members":["hearts2hearts:yuha"],"focus":"hearts2hearts:yuha"},
+   {"start":52.0,"end":52.33,"state":"none"},
+   {"start":52.33,"end":53.0,"state":"unknown"},
+   {"start":53.0,"end":53.67,"state":"none"},
+   {"start":53.67,"end":55.0,"members":["hearts2hearts:carmen"],"focus":"hearts2hearts:carmen"},
+   {"start":55.0,"end":57.0,"state":"unknown"},
+   {"start":57.0,"end":62.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[20,36,62,76,88,106,120,138,180,248,422,523,711,733,761,959,1043,1121,1207,1303,1403,1634,1702,1800,1848,1904,2178,2310,2368,2470,2589,2659,2769,2891,2965,3033,3111,3219,3291,3355,3441],"tracks":{
+   "hearts2hearts:a-na": [
+    [188,"Ad3KCGgP7KduKfHQQ3Kc9MFIERKKdXLsH2RmKdeLpHtRZKdfLeHmRU"],
+    [869,"AUmR9MLaCKSPP1MldNKR7QGMgc_KRwPuMVdOKRVPiMZdKKRYPfMUdJKRYPeMMc1KRXPVMcc9KRkPJMedN"],
+    [1409,"AR9MZKYY3KSBNSKsZLKREOjKzZmKQeO8KgZCKQqPaKpaEKPzO7LKZoKONOMLUZpKNfOcLCbZKNXOrK2buKNxPiK-a6LNzQwLLaTKMqR7LUZRKLjRrLBZ1"],
+    [1540,"AnlHNOdjLKm1ZGOhjqKmKZnOwj5Km-TjRdpsKnpTSRbp7Kn-U4RPpsKoEWSRAo1KoOWdQ8o1KoWRlQyrZKncN-QztD"],
+    [2659,"AUPOIHHRvKR5LTIaUjKRsKvIZVLKRpK7IaVFKRdLDIhU6KRRLCIfUxKRMK9IdUxKRQKzIaU5KRcK4IfVCKRmKsIaV7KROKFIYWO"],
+    [2899,"AbhNeGRQwKbDJjHkUmKa3IzHwU4KbKJTHaUfKbMHnHMWaKbPHoHQVeKcEIGHOWD"]],
+   "hearts2hearts:carmen": [
+    [769,"AbGOYHOTvKZ_RkHYUOKYbKHHLUy"],
+    [1209,"A1fP1FNLGK2TSYFnLIK2YQxFgK5K2-RjFuLTK2nQYFQMN"],
+    [2368,"AWVObHmSmKTyLZJHWWKSvMPJkWfKR-MYJkW2KQrMEJ0W9KO2KWKQX_KPXKnKPYBKPuK0KfYtKQLHJKqaqKQTDmKkagKQeAAKwaD"],
+    [2589,"Ah1MrFgNpKgtLpFxOkKeEJLGmRQKeQJuGJRZKd-KIFlRLKclKAGWTcKbtKQGTS_"],
+    [3219,"AgzIpHURMKhQJJHXSvKgeKZHsSOKerJPIoUsKbPHXIvV6KWuHXIvVVKSoFtIRVVKShFMICU2"]],
+   "hearts2hearts:ian": [
+    [959,"AdyKFH4VsKdxKrIJU4KeKKlIYVQKd8LCIbV5KgDKQIKWNKccChJtbjKelCBJpcEKc7AWJxboKa6AAJTba"],
+    [1209,"Aj1Q_FhMhKj1QlFkNOKj6QRFoNVKkNQYFzNJKkGPLFzNWKn3TBJgX3Kn6TmJpY2Kn1SDJ0YyKnMQ0KCYdKnKPMJ5Yq"],
+    [2318,"AClWYIJVkKBsWiIMWdKAAZuHlYpKAAZ2HCZTKAAaYG3ZJ"],
+    [2478,"AZVN8JiYpKY3N7LAcQKZwMRK5cbLaXJyK4c7KaNJ8K0ctKYTMnK9cMKUtP1L_beKT4PfMRcPKUYNaL-ckKVJM5L1b5KVzMWLjb3"],
+    [2659,"AlMM7H2SOKleKdJNTiKlYKsJbTsKlgL9JWTwKlmMzJaT2KlbNRJVTyKlOM0JQUEKlJMnJWUjKlJMqJeUcKlTMiJmUqKl_MUJoUf"],
+    [2769,"A1BNoFfKbK0sNbF3LQKzzNJGPL-KyPM6GdNC"],
+    [2819,"ArmOrGONZKpiOTGPOMKoiNoGkOxKnjN4GuPyKm1NKHDP4KmbMmHOQbKmWMMHYRKKmbL2HlQ2"]],
+   "hearts2hearts:jiwoo": [
+    [1910,"AZDJzGZRRKZOKKGaRnKY0JZGmRtKZKJpGjRkKZGJPGiRkKZeI8GlRUKZ4JlGmRgKaiKSGbRQKchJ6I6YqIc5KlI5YTKc8KiJIYIKdYK_JCXjKdjLBJUXVKdwKiJNX1KdqKOJOYFKdZJOJlaX"]],
+   "hearts2hearts:juun": [
+    [1850,"AeBNiK4bkKeeJdLBb7KePJULOdFKeEJLLcdrKdyJBLmeaKddIZMAfU"],
+    [2118,"AczOqF9QCKc5OrF8PkKcbOlGGP7KcIPFF_PIKb9PQGLPCKcNPGF-PH"],
+    [2238,"AblKNJzXjKaQKwKxc7KaSMALIbwKZ0LZLodB"],
+    [2398,"AiCPYGPN0Kh8QRGVNNKheOvGeN-KiLNOGrORKjFOGGuPWKkdNtHSRwKjxMkHoR5KjcGiHvSq"],
+    [2769,"AovNAEjKuKobNXEsKkKoRNiEkKVKneNeEUKh"],
+    [2829,"AgEPTEAK5Ke1PHEPLWKd8PwEVLYKdgO7EgLnKdFOMEtMfKcxOJE0MwKcUONFDMo"],
+    [2969,"ApgUNLzgsKoeQzL-glKkVMyLtfPKiAOsKvd_KiqQXLLc0KlgPaK5dcKnkQVLDcp"]],
+   "hearts2hearts:stella": [
+    [1129,"AY2OOL2aMKYtORLeaNKYQI4OjgyKZuH3PKjPKaVIIO-icKZPF3PTkRKXLIIPNjSKWYJ2PRjP"],
+    [1209,"As1NHFGMKKtfNyFoMYKt2M4FhMYKuMNNFkNDKuDMzFJM_"],
+    [1259,"A0LM9IEWiKzlNbIfWkKznMMIYWnKzgLxIeXJKzdKLIeXo"],
+    [1640,"AZXH0JbXoKZKG-LFamKZjFjLBZxKYWJsK6akKYLJYKzbAKX5KTK7bWKXrKXLHar"],
+    [2769,"AYQQTDQH0KW8Q3DSHq"]],
+   "hearts2hearts:ye-on": [
+    [1540,"AYDDrJwVq"],
+    [1550,"AXiTjJvYlKW_U8JvYKKVmNvLma_KWuMbLqchKXKPHLucYKWvPuLyc9KWlP-LhdgKW8PzLXcNKXMOELZdb"]],
+   "hearts2hearts:yuha": [
+    [1049,"AdxI2LieDKdiHULqeNKcJHpNXi1Ka2HyOUkTKa0GnOekbKa1GfOblYKa9GsOXlIKa_G_OTlA"],
+    [1209,"AV_KkFzNrKWxKcFlOiKW6JyFtN4KXUJ5FnOiKW1JAFyONKU5IsIhaXKT_IfIuZqKTDGqI1ZpKSFG1JebKKSBFZI-aA"],
+    [1409,"AsAJ1JKbNKrqKwJCbXKrYGzJndNKstEOLNcnKrKFqK5a6KpeHQKscGKnlHQKsbMKmLHcKobnKlsINKXb6KkeIFKlcfLigJQK2ciKhMKrLEc1KiMMVKxbo"],
+    [2899,"AmSPEHJRNKnMM7IiUGKnHMMIoUsKnILtIiWbKnbIyIYXSKoeFTIbU0Ko8FcHpO-"],
+    [3039,"AblL9GsR1KbdJSHjSiKbiJIHvTIKb1MIHtSyKb9MOHySRKcTLwHoSpKcbL0HtSPKclL1HtSB"]]
+  }}
+ }
+}
