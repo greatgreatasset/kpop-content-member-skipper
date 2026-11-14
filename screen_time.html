@@ -22,7 +22,7 @@
   --ian-soft: #1c3a31; --skip-soft: #45231f; --other-soft: #2c2938; color-scheme: dark }
 body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 14px; line-height: 1.5;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 48px; }
-.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; }
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
 h1 { font-family: var(--display); font-size: clamp(26px, 4vw, 36px); line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
 h1 span { color: var(--accent); }
 .lede { color: var(--muted); max-width: 68ch; margin: 6px 0 0; }
@@ -41,7 +41,19 @@ h2 { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06
 input[type="search"] { font: inherit; font-size: 13px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--fg); width: min(280px, 100%); }
 button:focus-visible, input:focus-visible, th:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .table-box { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-table { border-collapse: collapse; width: 100%; min-width: 1180px; font-variant-numeric: tabular-nums; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+#main { min-width: 1300px; }
+td.pr small { display: block; color: var(--muted); font-size: 11px; }
+.duo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; align-items: start; }
+.duo > div { min-width: 0; display: grid; gap: 8px; }
+.duo table { min-width: 400px; }
+.duo .table-box { max-height: 520px; overflow-y: auto; }
+tr.sus td { background: var(--skip-soft); }
+.ratio { display: inline-block; min-width: 3.2em; font-weight: 500; }
+.ratio.hi { color: var(--ian); } .ratio.lo { color: var(--muted); }
+h2.big { font-family: var(--display); font-size: 20px; text-transform: none; letter-spacing: 0; color: var(--fg); }
+.finding { max-width: 78ch; margin: 0; }
+
 th, td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
 th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--surface); }
 th[aria-sort="ascending"]::after { content: " ▲"; } th[aria-sort="descending"]::after { content: " ▼"; }
@@ -80,17 +92,26 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
     <input type="search" id="q" placeholder="Filter by title" aria-label="Filter by title">
   </div>
   <div class="table-box">
-    <table>
+    <table id="main">
       <thead><tr id="head"></tr></thead>
       <tbody id="body"></tbody>
       <tfoot id="foot"></tfoot>
     </table>
   </div>
   <p class="foot" id="note"></p>
+  <h2 class="big">Who shares the screen</h2>
+  <p class="finding" id="finding"></p>
+  <div class="duo">
+    <div><h2>Two members on screen, nobody else</h2><div class="table-box"><table><thead><tr id="phead"></tr></thead><tbody id="pbody"></tbody></table></div></div>
+    <div><h2>Three members on screen, nobody else</h2><div class="table-box"><table><thead><tr id="thead3"></tr></thead><tbody id="tbody3"></tbody></table></div></div>
+  </div>
+  <p class="foot">"Time together" counts only the moments when exactly those members are recognized on screen. "If random" is how long they would share the screen if who appears with whom were random, given how often each member is in two-member (or three-member) shots at all. "vs random" is the first divided by the second: above 1 means they are shown together more than chance, below 1 less. "Videos" counts videos where they get at least 5 seconds together. A high number shows a pattern, not a reason: seating order, friendships, units and shared segments all push pairs together.</p>
 </div>
 
 <script>
-const DATA = /*DATA*/null || {generated: "", members: [], videos: []};
+const DATA = /*DATA*/null || {generated: "", members: [], videos: [], pairs: [], trios: []};
+const NAME = Object.fromEntries(DATA.members.map(m => [m.id, m.name]));
+const names = ids => ids.map(i => NAME[i] || i).join(" + ");
 const TAG = {skip: "on screen · set to skip", highlight: "on screen · highlighted", normal: "on screen"};
 const COLS = [
   {k: "skip", label: "Time actually skipped", sub: "Carmen / Ye-on alone", cls: "skip", m: 1},
@@ -98,7 +119,9 @@ const COLS = [
   {k: "date", label: "Posted", cls: "n"},
   {k: "duration", label: "Length", cls: "n"},
   ...DATA.members.map(m => ({k: m.id, label: m.name, sub: TAG[m.choice], cls: m.choice === "skip" ? "skipm" : m.choice, m: 1})),
+  {k: "pairSecs", label: "Top pair", sub: "most time as a duo", cls: "pr"},
 ];
+const MCOLS = COLS.filter(c => c.m && c.k !== "skip");
 let mode = "share", sortKey = "date", sortDir = -1, q = "";
 try { mode = localStorage.getItem("st-mode") || mode; } catch (e) {}
 const clock = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
@@ -127,11 +150,12 @@ function render() {
   } else {
     body.innerHTML = rows.map(v => cell(COLS[0], v.skip, v.duration) + `<td class="t"><a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">${esc(v.title)}</a><small>${esc(v.id)} · ${v.skips} skip${v.skips === 1 ? "" : "s"}</small></td>` +
       `<td class="n">${v.date || "–"}</td><td class="n">${clock(v.duration)}</td>` +
-      COLS.slice(4).map(c => cell(c, v[c.k], v.duration)).join("")).map(r => `<tr>${r}</tr>`).join("");
+      MCOLS.map(c => cell(c, v[c.k], v.duration)).join("") +
+      `<td class="n pr">${v.pair ? `${esc(names(v.pair.split("+")))}<small>${clock(v.pairSecs)}</small>` : "–"}</td>`).map(r => `<tr>${r}</tr>`).join("");
   }
   const tot = k => rows.reduce((s, v) => s + v[k], 0), dur = tot("duration");
   document.getElementById("foot").innerHTML = rows.length ? `<tr>${cell(COLS[0], tot("skip"), dur)}<td class="t">All ${rows.length} shown</td><td class="n"></td><td class="n">${clock(dur)}</td>` +
-    COLS.slice(4).map(c => cell(c, tot(c.k), dur)).join("") + "</tr>" : "";
+    MCOLS.map(c => cell(c, tot(c.k), dur)).join("") + "<td></td></tr>" : "";
   const all = DATA.videos, D = all.reduce((s, v) => s + v.duration, 0), S = all.reduce((s, v) => s + v.skip, 0);
   document.getElementById("stats").innerHTML = [
     [all.length, "videos scanned"], [(D / 3600).toFixed(1) + " h", "of video"],
@@ -143,6 +167,33 @@ function render() {
   }).join("");
   document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Posted dates are approximate. Updated ${DATA.generated}.`;
 }
+const tsort = {p: ["ratio", -1], t: ["secs", -1]};
+function combo(kind, list, headId, bodyId) {
+  const cols = [["m", "Members"], ["secs", "Time together"], ["expected", "If random"], ["ratio", "vs random"], ["videos", "Videos"]];
+  const [k, dir] = tsort[kind];
+  const rows = list.map(x => ({...x, ratio: x.expected > 0 ? x.secs / x.expected : 0}))
+    .sort((a, b) => k === "m" ? names(a.m).localeCompare(names(b.m)) * dir : (a[k] - b[k]) * dir);
+  document.getElementById(headId).innerHTML = cols.map(([c, l]) =>
+    `<th class="${c === "m" ? "t" : ""}" tabindex="0" data-k="${c}" aria-sort="${c === k ? (dir > 0 ? "ascending" : "descending") : "none"}">${l}</th>`).join("");
+  document.getElementById(bodyId).innerHTML = rows.map(x => {
+    const sus = ["carmen", "ye-on"].every(m => x.m.includes(m));
+    return `<tr class="${sus ? "sus" : ""}"><td class="t">${esc(names(x.m))}</td><td class="n">${clock(x.secs)}</td><td class="n">${clock(x.expected)}</td>` +
+      `<td class="n"><span class="ratio ${x.ratio >= 1.25 ? "hi" : x.ratio < 0.8 ? "lo" : ""}">${x.ratio.toFixed(2)}×</span></td><td class="n">${x.videos}</td></tr>`; }).join("");
+}
+function combos() {
+  combo("p", DATA.pairs, "phead", "pbody"); combo("t", DATA.trios, "thead3", "tbody3");
+  const P = DATA.pairs.map(x => ({...x, ratio: x.expected > 0 ? x.secs / x.expected : 0})).sort((a, b) => b.ratio - a.ratio);
+  const cy = P.find(x => x.m.includes("carmen") && x.m.includes("ye-on"));
+  if (cy) document.getElementById("finding").textContent = `Carmen + Ye-on have ${clock(cy.secs)} on screen as a duo, ${cy.ratio.toFixed(2)} times what random pairing would give (${clock(cy.expected)}), across ${cy.videos} videos. That ranks ${P.indexOf(cy) + 1} of ${P.length} pairs for being shown together more than chance` +
+    (P[0] !== cy ? `; the top is ${names(P[0].m)} at ${P[0].ratio.toFixed(2)}×.` : `; next is ${names(P[1].m)} at ${P[1].ratio.toFixed(2)}×.`);
+}
+for (const [kind, id] of [["p", "phead"], ["t", "thead3"]]) {
+  const go = e => { const th = e.target.closest("th"); if (!th) return; const k = th.dataset.k;
+    tsort[kind] = [k, tsort[kind][0] === k ? -tsort[kind][1] : (k === "m" ? 1 : -1)]; combos(); };
+  document.getElementById(id).addEventListener("click", go);
+  document.getElementById(id).addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(e); } });
+}
+combos();
 function sortBy(k) { if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = k === "title" ? 1 : -1; } render(); }
 document.getElementById("head").addEventListener("click", e => { const th = e.target.closest("th"); if (th) sortBy(th.dataset.k); });
 document.getElementById("head").addEventListener("keydown", e => { const th = e.target.closest("th"); if (th && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); sortBy(th.dataset.k); } });
