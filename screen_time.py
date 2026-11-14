@@ -25,7 +25,7 @@ TEMPLATE = ROOT / "screen_time.html"
 
 
 def dates():
-    """videoId -> unix timestamp, from every batch listing."""
+    """videoId -> YYYY-MM-DD: exact where fetch_dates.py got it, else approximate from the batch listing."""
     out = {}
     for f in (CACHE / "batch").glob("*.json"):
         try:
@@ -34,7 +34,10 @@ def dates():
             continue
         for vid, v in d.get("videos", {}).items():
             if v.get("timestamp"):
-                out[vid] = v["timestamp"]
+                out[vid] = dt.datetime.fromtimestamp(v["timestamp"], dt.timezone.utc).strftime("%Y-%m-%d")
+    exact = CACHE / "batch" / "upload_dates.json"  # fetch_dates.py: real upload dates
+    if exact.exists():
+        out.update(json.loads(exact.read_text(encoding="utf-8")))
     return out
 
 
@@ -98,6 +101,21 @@ def together(rows, members, size, min_video=5.0):
                    for S in obs), key=lambda x: -x["secs"])
 
 
+def by_month(rows, members):
+    """Per upload month: every pair's duo time and its random-pairing expectation
+    within that month's videos. [{month, videos, pairs: {"a+b": [secs, expected]}}]"""
+    months = {}
+    for r in rows:
+        if r["date"]:
+            months.setdefault(r["date"][:7], []).append(r)
+    out = []
+    for mo in sorted(months):
+        t = together(months[mo], members, 2)
+        out.append({"month": mo, "videos": len(months[mo]),
+                    "pairs": {"+".join(x["m"]): [x["secs"], x["expected"]] for x in t}})
+    return out
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     when = dates()
@@ -107,8 +125,7 @@ def main():
             continue
         r = video_row(json.loads(f.read_text(encoding="utf-8")))
         if r:
-            ts = when.get(r["id"])
-            r["date"] = dt.datetime.fromtimestamp(ts, dt.timezone.utc).strftime("%Y-%m-%d") if ts else None
+            r["date"] = when.get(r["id"])
             rows.append(r)
     rows.sort(key=lambda r: r["date"] or "", reverse=True)
 
@@ -130,7 +147,7 @@ def main():
                        [f"{r[c] / r['duration']:.3f}" for c in (*members, "skip")])
     data = {"generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             "members": [{"id": m, "name": prof.names.get(m, m), "choice": prof.choice(m)} for m in members],
-            "pairs": pairs, "trios": trios,
+            "pairs": pairs, "trios": trios, "months": by_month(rows, members),
             "videos": [{k: v for k, v in r.items() if k != "combos"} for r in rows]}
     with open(CACHE / "screen_time_together.csv", "w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)

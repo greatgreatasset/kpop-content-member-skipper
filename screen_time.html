@@ -44,6 +44,16 @@ button:focus-visible, input:focus-visible, th:focus-visible { outline: 2px solid
 table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
 #main { min-width: 1300px; }
 td.pr small { display: block; color: var(--muted); font-size: 11px; }
+.trend { display: grid; gap: 8px; }
+select { font: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--fg); }
+.chart-box { padding: 12px; }
+#trend { display: block; min-width: 760px; width: 100%; height: auto; }
+#trend text { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
+#trend text.v { fill: var(--fg); }
+#trend .grid { stroke: var(--line); stroke-width: 1; }
+#trend .one { stroke: var(--fg); stroke-width: 1; stroke-dasharray: 4 3; }
+#trend rect.hi { fill: var(--skip); } #trend rect.lo { fill: var(--other); } #trend rect.thin { opacity: 0.35; }
+#trend path.cum { fill: none; stroke: var(--accent); stroke-width: 2; }
 .duo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; align-items: start; }
 .duo > div { min-width: 0; display: grid; gap: 8px; }
 .duo table { min-width: 400px; }
@@ -101,6 +111,12 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
   <p class="foot" id="note"></p>
   <h2 class="big">Who shares the screen</h2>
   <p class="finding" id="finding"></p>
+  <div class="trend">
+    <div class="controls"><h2>Over time</h2>
+      <select id="pairsel" aria-label="Pair to chart"></select></div>
+    <div class="table-box chart-box"><svg id="trend" role="img" aria-label="Pairing compared with chance, by upload month"></svg></div>
+    <p class="foot" id="trendnote"></p>
+  </div>
   <div class="duo">
     <div><h2>Two members on screen, nobody else</h2><div class="table-box"><table><thead><tr id="phead"></tr></thead><tbody id="pbody"></tbody></table></div></div>
     <div><h2>Three members on screen, nobody else</h2><div class="table-box"><table><thead><tr id="thead3"></tr></thead><tbody id="tbody3"></tbody></table></div></div>
@@ -109,7 +125,7 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
 </div>
 
 <script>
-const DATA = /*DATA*/null || {generated: "", members: [], videos: [], pairs: [], trios: []};
+const DATA = /*DATA*/null || {generated: "", members: [], videos: [], pairs: [], trios: [], months: []};
 const NAME = Object.fromEntries(DATA.members.map(m => [m.id, m.name]));
 const names = ids => ids.map(i => NAME[i] || i).join(" + ");
 const TAG = {skip: "on screen · set to skip", highlight: "on screen · highlighted", normal: "on screen"};
@@ -165,7 +181,7 @@ function render() {
     const t = all.reduce((s, v) => s + (v[m.id] || 0), 0);
     return `<div class="stat ${m.choice === "skip" ? "skipm" : m.choice}"><b>${clock(t)}</b><small>${esc(m.name)} on screen (${D ? pct(t / D) : "0%"})</small></div>`;
   }).join("");
-  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Posted dates are approximate. Updated ${DATA.generated}.`;
+  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Updated ${DATA.generated}.`;
 }
 const tsort = {p: ["ratio", -1], t: ["secs", -1]};
 function combo(kind, list, headId, bodyId) {
@@ -194,6 +210,30 @@ for (const [kind, id] of [["p", "phead"], ["t", "thead3"]]) {
   document.getElementById(id).addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(e); } });
 }
 combos();
+function trend() {
+  const key = document.getElementById("pairsel").value, M = DATA.months;
+  const W = Math.max(760, 44 * M.length + 60), H = 260, L = 40, B = 46, T = 16, pw = (W - L - 8) / Math.max(1, M.length);
+  let cs = 0, ce = 0;
+  const pts = M.map(m => { const [s, e] = m.pairs[key] || [0, 0]; cs += s; ce += e;
+    return {mo: m.month, n: m.videos, s, e, r: e > 0 ? s / e : 0, cum: ce > 0 ? cs / ce : 0}; });
+  const top = Math.max(2, Math.ceil(Math.max(...pts.map(p => Math.max(p.r, p.cum)), 0) * 2) / 2);
+  const y = v => T + (H - T - B) * (1 - Math.min(v, top) / top);
+  let g = "";
+  for (let v = 0; v <= top; v += 0.5) g += `<line class="${v === 1 ? "one" : "grid"}" x1="${L}" x2="${W - 8}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(1)}×</text>`;
+  pts.forEach((p, i) => { const x = L + i * pw + pw * 0.18, w = pw * 0.64;
+    g += `<rect class="${p.r >= 1 ? "hi" : "lo"}${p.e < 30 ? " thin" : ""}" x="${x}" y="${y(p.r)}" width="${w}" height="${Math.max(0, y(0) - y(p.r))}"><title>${p.mo}: ${clock(p.s)} together, ${clock(p.e)} if random, ${p.n} videos</title></rect>` +
+      `<text class="v" x="${x + w / 2}" y="${y(p.r) - 4}" text-anchor="middle">${p.e > 0 ? p.r.toFixed(1) : ""}</text>` +
+      `<text x="${x + w / 2}" y="${H - B + 14}" text-anchor="middle">${p.mo.slice(5)}</text><text x="${x + w / 2}" y="${H - B + 27}" text-anchor="middle">${i === 0 || p.mo.slice(5) === "01" ? p.mo.slice(0, 4) : ""}</text>` +
+      `<text x="${x + w / 2}" y="${H - 4}" text-anchor="middle">${p.n}v</text>`; });
+  g += `<path class="cum" d="${pts.map((p, i) => `${i ? "L" : "M"}${L + i * pw + pw / 2} ${y(p.cum)}`).join(" ")}"/>`;
+  const svg = document.getElementById("trend"); svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = g;
+  document.getElementById("trendnote").textContent = `Each bar is one upload month: time ${names(key.split("+"))} spent on screen as a duo, divided by what random pairing would give among that month's videos. The dashed line at 1.0× is chance. Faded bars are months with too little two-member footage to trust (under 30 seconds expected). The line is the running total since the first video. Under each month: number of videos. Hover a bar for the times.`;
+}
+{ const sel = document.getElementById("pairsel");
+  sel.innerHTML = DATA.pairs.map(x => x.m.join("+")).sort((a, b) => names(a.split("+")).localeCompare(names(b.split("+"))))
+    .map(k => `<option value="${k}">${esc(names(k.split("+")))}</option>`).join("");
+  const def = DATA.pairs.find(x => x.m.includes("carmen") && x.m.includes("ye-on")); if (def) sel.value = def.m.join("+");
+  sel.addEventListener("change", trend); if (DATA.months.length) trend(); }
 function sortBy(k) { if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = k === "title" ? 1 : -1; } render(); }
 document.getElementById("head").addEventListener("click", e => { const th = e.target.closest("th"); if (th) sortBy(th.dataset.k); });
 document.getElementById("head").addEventListener("keydown", e => { const th = e.target.closest("th"); if (th && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); sortBy(th.dataset.k); } });
