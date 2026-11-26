@@ -198,9 +198,8 @@ def publish(vid, no_push, capture=False):
         if not capture:
             print("!! " + msg)
         return 5, msg + (f"\n{r.stderr}" if capture else "")
-    cmd = [py, "publish_skiplists.py", vid]
-    if no_push:
-        cmd.append("--no-push")
+    # "--" before the id: video ids can start with "-" (argparse would read it as an option)
+    cmd = [py, "publish_skiplists.py"] + (["--no-push"] if no_push else []) + ["--", vid]
     r = subprocess.run(cmd, cwd=ROOT, capture_output=capture, text=True, encoding="utf-8",
                        errors="replace")
     return r.returncode, ((r.stdout or "") + (r.stderr or "")).strip() if capture else ""
