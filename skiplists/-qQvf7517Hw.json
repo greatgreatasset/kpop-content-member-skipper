@@ -1,0 +1,82 @@
+{
+ "format": 6,
+ "videoId": "-qQvf7517Hw",
+ "title": "Hearts2Hearts 하츠투하츠 '15-LOVE' Dance Practice",
+ "duration": 166,
+ "scannedAt": "2026-11-09T03:48:41+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 498,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":3.67,"state":"wide"},
+   {"start":3.67,"end":4.0,"state":"none"},
+   {"start":4.0,"end":7.33,"state":"wide"},
+   {"start":7.33,"end":8.0,"state":"none"},
+   {"start":8.0,"end":10.33,"state":"wide"},
+   {"start":10.33,"end":10.67,"state":"none"},
+   {"start":10.67,"end":12.0,"state":"wide"},
+   {"start":12.0,"end":12.33,"state":"none"},
+   {"start":12.33,"end":17.33,"state":"wide"},
+   {"start":17.33,"end":17.67,"state":"none"},
+   {"start":17.67,"end":20.0,"state":"wide"},
+   {"start":20.0,"end":20.33,"state":"none"},
+   {"start":20.33,"end":20.67,"state":"wide"},
+   {"start":20.67,"end":21.33,"state":"none"},
+   {"start":21.33,"end":23.33,"state":"wide"},
+   {"start":23.33,"end":23.67,"state":"none"},
+   {"start":23.67,"end":24.33,"state":"wide"},
+   {"start":24.33,"end":24.67,"state":"none"},
+   {"start":24.67,"end":26.67,"state":"wide"},
+   {"start":26.67,"end":27.0,"state":"none"},
+   {"start":27.0,"end":28.33,"state":"wide"},
+   {"start":28.33,"end":28.67,"state":"none"},
+   {"start":28.67,"end":30.67,"state":"wide"},
+   {"start":30.67,"end":31.0,"state":"none"},
+   {"start":31.0,"end":31.33,"state":"wide"},
+   {"start":31.33,"end":32.0,"state":"none"},
+   {"start":32.0,"end":73.67,"state":"wide"},
+   {"start":73.67,"end":74.33,"state":"none"},
+   {"start":74.33,"end":157.33,"state":"wide"},
+   {"start":157.33,"end":158.0,"state":"unknown"},
+   {"start":158.0,"end":158.33,"state":"wide"},
+   {"start":158.33,"end":159.33,"state":"unknown"},
+   {"start":159.33,"end":160.0,"state":"wide"},
+   {"start":160.0,"end":160.33,"state":"unknown"},
+   {"start":160.33,"end":166.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[],"tracks":{
+   "hearts2hearts:carmen": [
+    [9029,"AzCYGBPDsKzDX_BNDpKy5XnBTDiKyrW0BODfKyTWNBcDVKyPWHBtDQKyRWjBvDQKyVW4ByDXKybXXByDfKycXDBxDkKyaXHBvDoKyZXFBuDnKyXXFBvDnKyWXCBvDpKyUXABvDrKyTW9BuDsKySW3BuDsKySW4BtDqKyQW3BvDpKyOW2BuDqKyMW6BvDnKyKW4BuDmKyIWzBuDlKyHWyBuDrKyIWuBvDyKyIWvBxDyKyJWvBxDyKyKWtByD1KyKWoBxD7KyLWtBtDsKyJWsBuDyKyKWsBwDyKyLWsBxDxKyMWvBvDuKyMWwBwDtKyNW8BtDqKyNW_BuDqKx-W2BvDsKx-V3BkDyKyGWTBpDuKyjWPBxEF"]],
+   "hearts2hearts:ian": [
+    [9059,"AnwVvBiDYKoBViBjDbKnwV5BjDbKnsWMBiDiKn2WgBiDjKn_WcBmDoKoBWdBmDlKoIWfBkDkKoNWgBiDiKoPWhBhDjKoQWiBgDiKoSWjBgDgKoWWgBgDhKoZWfBiDhKoaWeBjDjKoaWfBjDlKobWeBkDmKobWeBjDnKocWeBjDnKocWgBkDoKodWhBjDmKoeWiBiDlKocWjBkDnKoaWjBjDqKoaWkBiDmKoZWjBiDoKoZWjBjDpKobWhBkDqKodWhBkDpKoeWhBjDrKodWiBjDpKobWcBkDqKoRVzBlDzKn-VbBkDzKniVRBjD1KnIVaBkD2Km4VvBiDvKmtVrBjDwKmmV4BkDhKmnV2BmDiKmlVnBpDsKmdVPBtD_KmQVZBsELKlwUkB-ESKl2VKCPEOLm7VLCWEi"]],
+   "hearts2hearts:juun": [
+    [9089,"AUiW4BVC-KUsXlBVDLKUzXpBRDNKU4XkBTDNKU8XjBSDPKVAXjBWDWKVDXmBVDTKVCXmBWDVKU-XkBVDUKU8XlBTDUKU7XmBUDYKU8XmBVDYKU-XmBVDTKU-XoBVDUKU-XnBUDPKU9XmBTDRKU9XlBUDQKU-XlBUDRKVBXnBVDTKVEXnBUDUKVFXoBTDRKVEXmBTDQKVDXjBUDOKVDXhBUDOKVBXfBWDPKVAXZBYDQKVGXNBYDXKVQXPBbDYKVYXPBkDQKVjXhBuC-"]],
+   "hearts2hearts:stella": [
+    [8589,"AaNaCA8COKaMaoA-CRKaGapA_CXKaKacBKCiKabaIBNChKaqaaBGChKayaFBICgKa2ZaBFChKa4Y5BGCvKa-Y6BECqKa9Y6BLC3"],
+    [9069,"AdlUDBhEFKdrU3BiEBKd3WOBeD0UefXEBjEBKemWwBiD3KeoW1BdD5KesWvBhD_KetW2BeD2KenWxBhD7KegWhBpEJKecWUBoENKebWVBmEJKefWUBnEJKegWXBrEKKeiWeBqEGKejWlBpD_KeiWsBpD6KehWrBrD5KehWrBoD5KedWqBpD5KecWoBnD6KebWmBmD1KebWmBmD1KebWjBnEBKebWiBqEIKefWlBqEBKeiWqBnD8KeiWtBoD3KehWnBqD-KefWXBtEGKeMVvBoERKdnW6BpD3"]],
+   "hearts2hearts:ye-on": [
+    [9099,"AP2ZiBKChKQDZ0BQCuKQIZhBPCpKQIZaBQCyKQJZcBRCuKQLZaBPCuKQNZXBPCvKQNZeBPCzKQNZlBNCwKQJZiBKCrKQHZaBJCwKQGZcBJCwKQIZbBKCxKQJZZBNC4KQJZYBNC6KQLZVBOC-KQNZZBNC6KQRZcBKCyKQVZbBHCyKQYZeBJCvKQZZgBJCtKQZZiBLCtKQaZfBLCvKQaZdBMCyKQZZVBOC7KQUZKBOC7KQLY3BOC1KQAY3BLCrKQBZABPCyKQFZJBNC0KQNZNBNC2KQaZbBKCr"]]
+  }}
+ }
+}
