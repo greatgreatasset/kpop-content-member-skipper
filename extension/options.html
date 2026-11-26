@@ -56,6 +56,16 @@
     <button id="clear" class="secondary">Clear cache</button>
   </div>
   <p id="msg" class="status"></p>
+  <label for="requestCode">Request code</label>
+  <input type="text" id="requestCode" autocomplete="off" spellcheck="false" placeholder="xxxxx-xxxxx-xxxxx-xxxxx">
+  <p class="hint">Lets you ask for a video to be filtered: on a video that says "Not filtered yet", click
+    <b>Request filtering</b>. The request (only the video's ID) goes to the PC that runs the scanner, which
+    filters the video when it is on; the skips then show up here by themselves. Ask the person who runs the
+    scanner for the code. Not needed on the scanner PC itself.</p>
+  <div class="buttons">
+    <button id="saveCode">Save code</button>
+  </div>
+  <p id="codeMsg" class="status"></p>
   <script src="rules.js"></script>
   <script src="options.js"></script>
 </body>

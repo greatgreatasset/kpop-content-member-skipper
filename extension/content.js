@@ -2,7 +2,8 @@
 // (one per video, for whichever groups are in it), draws progress-bar markers, "Skipped" toast with Undo, and a
 // "next highlight" button / shortcut for the highlighted member(s), the
 // "Ian: 25% · Skipped: 17%" line under the video title, and progress of
-// "Filter this video" scans (run by the background script on Kirk's PC).
+// "Filter this video" scans (run by the background script on Kirk's PC) and
+// "Request filtering" (other PCs ask that PC for a scan).
 // Skips and highlights follow the user's Skip / Normal / Highlight choice per
 // member (settings page), worked out from the list's timeline by rules.js.
 "use strict";
@@ -171,16 +172,59 @@
     }
   }
 
+  // "Request filtering": on a PC without the scanner, ask the PC that has it
+  // (background.js sends the video ID there and follows the progress).
+  async function requestScan() {
+    const id = st.videoId;
+    if (!id) return;
+    let code;
+    if (!st.scan?.request?.hasCode) {
+      code = window.prompt("To ask for videos to be filtered, enter the request code you were given " +
+                           "(you only need to do this once):");
+      if (code === null || !code.trim()) return;
+    }
+    try {
+      const r = await browser.runtime.sendMessage({ type: "requestScan", id, code });
+      if (st.videoId !== id || !r) return;
+      if (r.badCode) {
+        showBanner("That request code isn't right. Check it and try again.", 8000);
+        return;
+      }
+      st.scan = r;
+      if (r.job) await onScanUpdate(r.job);
+      else renderStats();
+    } catch (e) {
+      console.warn("[kms] could not request the scan", e);
+    }
+  }
+
   const etaText = (eta) => (eta ? `, about ${fmt(eta)} left` : "");
-  const progressText = (j) =>
-    j.stage === "upload" ? `Filtering… ${j.percent}%, uploading` : `Filtering… ${j.percent}%${etaText(j.eta)}`;
+  // a request's progress on the scanner PC (the same wording as popup.js)
+  function remoteText(j) {
+    if (j.stage === "queued") {
+      return j.ahead ? `Request received · ${j.ahead} video${j.ahead === 1 ? "" : "s"} ahead of this one`
+        : "Request received · starting soon";
+    }
+    if (j.stage === "scanning") return `Being filtered… ${j.percent}%${etaText(j.eta)}`;
+    if (j.stage === "upload") return `Being filtered… ${j.percent}%, uploading`;
+    if (j.stage === "publishing") return "Filtered · getting the skip list…";
+    return j.waited > 90 ? "Requested · the scanner PC hasn't answered yet (it may be off); it will filter this video when it's on"
+      : "Requested · waiting for the scanner PC…";
+  }
+  const progressText = (j) => (j.remote ? remoteText(j)
+    : j.stage === "upload" ? `Filtering… ${j.percent}%, uploading` : `Filtering… ${j.percent}%${etaText(j.eta)}`);
 
   async function onScanUpdate(job) {
     if (!job || job.videoId !== st.videoId) return;
-    const wasRunning = st.scan?.job?.state === "running";
+    const before = st.scan?.job;
+    const wasRunning = before?.state === "running";
     st.scan = { available: true, ...st.scan, job };
     st.scanAskedAt = Date.now();
-    if (job.state === "running") {
+    if (job.state === "running" && job.remote) {
+      // a request can wait for hours: the line under the title follows it, the
+      // banner over the player only says what changed
+      if (!wasRunning || before.stage !== job.stage) showBanner(progressText(job), 6000);
+    } else if (job.state === "running") {
       showBanner(progressText(job));
     } else if (job.state === "error") {
       showBanner(`Filtering failed: ${job.error || "unknown error"}`, 8000);
@@ -246,6 +290,9 @@
       if (st.scan?.available) {
         content.push({ text: " · " });
         content.push({ text: failed ? "Try again" : "Filter this video", action: startScan });
+      } else if (st.scan?.request?.ok) {
+        content.push({ text: " · " });
+        content.push({ text: failed ? "Ask again" : "Request filtering", action: requestScan });
       }
     }
     if (!content) {

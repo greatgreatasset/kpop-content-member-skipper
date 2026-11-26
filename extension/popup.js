@@ -107,7 +107,22 @@ const fmtTime = (t) => {
   return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
 };
 
-// "Filter this video": only where the native scanner is installed (Kirk's PC)
+// a request's progress on the scanner PC (the same wording as content.js)
+function remoteText(j) {
+  const eta = j.eta ? `, about ${fmtTime(j.eta)} left` : "";
+  if (j.stage === "queued") {
+    return j.ahead ? `Request received · ${j.ahead} video${j.ahead === 1 ? "" : "s"} ahead of this one`
+      : "Request received · starting soon";
+  }
+  if (j.stage === "scanning") return `Being filtered… ${j.percent}%${eta}`;
+  if (j.stage === "upload") return `Being filtered… ${j.percent}%, uploading`;
+  if (j.stage === "publishing") return "Filtered · getting the skip list…";
+  return j.waited > 90 ? "Requested · the scanner PC hasn't answered yet (it may be off); it will filter this video when it's on"
+    : "Requested · waiting for the scanner PC…";
+}
+
+// "Filter this video": only where the native scanner is installed (Kirk's PC);
+// elsewhere "Request filtering" asks that PC
 async function initScan(videoId, scanned) {
   let state;
   try {
@@ -119,22 +134,39 @@ async function initScan(videoId, scanned) {
   const bar = $("scanBar");
   const text = $("scanText");
   $("scan").hidden = false;
-  if (!state.available && !(state.job && state.job.state === "running")) {
+  // PCs without the scanner ask the PC that has it ("Request filtering")
+  const remote = !state.available;
+  if (remote && !(state.request && state.request.ok)) {
     text.textContent = "Scanning is only available on the PC with the scanner installed.";
     return;
   }
-  btn.textContent = scanned ? "Filter this video again" : "Filter this video";
+  if (remote && scanned) {
+    $("scan").hidden = true; // only the scanner PC can filter a video again
+    return;
+  }
+  if (remote && !state.request.hasCode) {
+    text.textContent = "To ask for this video to be filtered, enter your request code in Settings.";
+    return;
+  }
+  btn.textContent = remote ? "Request filtering" : scanned ? "Filter this video again" : "Filter this video";
   const show = (job) => {
     const running = job && job.state === "running";
     btn.hidden = running;
-    bar.hidden = !running;
-    if (running) {
+    bar.hidden = !running || (job.remote && job.stage !== "scanning" && job.stage !== "upload");
+    if (running && job.remote) {
+      bar.value = job.percent || 0;
+      text.textContent = remoteText(job);
+    } else if (job && job.state === "error" && job.remote) {
+      text.textContent = `Filtering failed: ${job.error}`;
+      btn.textContent = "Ask again";
+    } else if (running) {
       bar.value = job.percent || 0;
       text.textContent = job.stage === "upload" ? `Filtering… ${job.percent}%, uploading`
         : `Filtering… ${job.percent}%${job.eta ? `, about ${fmtTime(job.eta)} left` : ""}`;
     } else if (job && job.state === "done") {
       text.textContent = `Done.${job.note ? " " + job.note : ""} Skips are applied.`;
-      btn.textContent = "Filter this video again";
+      if (job.remote) btn.hidden = true;
+      else btn.textContent = "Filter this video again";
     } else if (job && job.state === "error") {
       text.textContent = `Filtering failed: ${job.error}`;
     } else {
@@ -145,6 +177,27 @@ async function initScan(videoId, scanned) {
   browser.runtime.onMessage.addListener((msg) => {
     if (msg && msg.type === "scanUpdate" && msg.job.videoId === videoId) show(msg.job);
   });
+  if (remote) {
+    btn.addEventListener("click", async () => {
+      show({ videoId, remote: true, state: "running", stage: "sent", percent: 0 });
+      const r = await browser.runtime.sendMessage({ type: "requestScan", id: videoId });
+      if (r && r.job) {
+        show(r.job);
+        // the YouTube tab shows the progress too
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        if (tab) browser.tabs.sendMessage(tab.id, { type: "scanUpdate", job: r.job }).catch(() => {});
+      } else {
+        show(null);
+        text.textContent = "The request could not be sent.";
+      }
+    });
+    // requests are followed by asking: the scanner PC is somewhere else
+    setInterval(async () => {
+      const s = await browser.runtime.sendMessage({ type: "scanState", id: videoId }).catch(() => null);
+      if (s && s.job) show(s.job);
+    }, 5000);
+    return;
+  }
   btn.addEventListener("click", async () => {
     show({ videoId, state: "running", stage: "starting", percent: 0 });
     const r = await browser.runtime.sendMessage({ type: "startScan", id: videoId, rescan: scanned });

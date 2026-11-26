@@ -159,6 +159,22 @@ async function init() {
     $("msg").textContent = "Saved.";
   });
 
+  // Request code: lets a PC without the scanner ask the scanner PC for a scan
+  const showCode = (c) => {
+    $("requestCode").value = c ? c.match(/.{1,5}/g).join("-") : "";
+  };
+  showCode((await browser.runtime.sendMessage({ type: "requestSetup" })).code);
+  $("saveCode").addEventListener("click", async () => {
+    const r = await browser.runtime.sendMessage({ type: "setRequestCode", code: $("requestCode").value });
+    if (!r || !r.ok) {
+      $("codeMsg").textContent = "That code isn't right. Check it for typos (it has 20 letters and digits).";
+      return;
+    }
+    showCode(r.code);
+    $("codeMsg").textContent = r.code ? "Saved. Videos that aren't filtered yet now show \"Request filtering\"."
+      : "Code removed.";
+  });
+
   $("clear").addEventListener("click", async () => {
     await browser.runtime.sendMessage({ type: "clearCache" });
     $("msg").textContent = "Cache cleared.";

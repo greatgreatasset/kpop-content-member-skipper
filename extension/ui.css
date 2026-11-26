@@ -41,7 +41,7 @@ button {
 .popup button { width: 100%; }
 button.secondary { background: none; color: var(--accent); }
 .options label { display: block; margin: 14px 0 4px; font-weight: 600; }
-.options input[type="url"], .options input[type="number"], .options select {
+.options input[type="url"], .options input[type="text"], .options input[type="number"], .options select {
   width: 100%;
   box-sizing: border-box;
   padding: 6px 8px;

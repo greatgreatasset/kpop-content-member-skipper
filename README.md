@@ -164,13 +164,58 @@ The popup can be closed meanwhile; the scan keeps running even if Firefox
 closes, and clicking again for the same video shows the running scan instead of
 starting another. Scans log to `cache/jobs/<videoId>.log`.
 
-On PCs without the scanner (friends' PCs) the button is replaced by "Scanning
-is only available on the PC with the scanner installed".
+On PCs without the scanner (friends' PCs) the button is **Request filtering**
+instead: see [Requests from friends](#requests-from-friends-request-filtering).
 
 How it works: Firefox starts `native_host.bat` (venv Python, `native_host.py`)
 over native messaging; it starts a separate worker process for the scan (using
 `scan_cli.py`'s scan and publish functions) that writes its progress to
 `cache/jobs/<videoId>.json`, and relays that to the add-on.
+
+### Requests from friends: "Request filtering"
+
+Friends' PCs have no scanner, so from add-on 0.9.0 a video that says "Not
+filtered yet" has a **Request filtering** button (under the title and in the
+popup). It asks this PC to scan the video; the skips then show up on the
+friend's video by themselves, usually a minute or so after the scan ends.
+
+On this PC, double-click **watch_requests.bat** and leave the window open. It
+prints the **request code** (e.g. `abcde-fghjk-mnpqr-stuvw`) and then one line
+per request. `watch_requests.bat /install` also starts it, minimized, whenever
+you log in to Windows (`/uninstall` undoes that). Requests made while it isn't
+running wait for up to 12 hours and are scanned when it starts.
+
+Give the code to each friend once (privately: whoever has it can ask this PC
+for scans). They paste it the first time they click **Request filtering**, or
+under Settings → **Request code**. A mistyped code is refused. To cut someone
+off, `watch_requests.bat --new-code` makes a new code; the old one stops
+working and everyone else needs the new one.
+
+What the friend sees under the title: "Requested · waiting for the scanner
+PC…" (after a minute and a half: "…hasn't answered yet (it may be off)"),
+"Request received · 2 videos ahead of this one", "Being filtered… 37%, about
+0:49 left", then the usual "Ian: 52% · Skipped: 3%". They can close the tab;
+the request stays, and the video is filtered when they come back.
+
+How it works, and what it can and can't reach: there is no server and nothing
+on this PC listens for connections. The friend's add-on posts the video's ID
+to a topic on the public relay [ntfy.sh](https://ntfy.sh) (free, no account);
+the topic's name is the request code, which lives only in the gitignored
+`requests.local.json` here and in each friend's add-on settings, never in the
+add-on or this repo. `request_watcher.py` keeps an outgoing connection to
+that topic, takes nothing from it but 11-character YouTube video IDs, runs
+the same worker as "Filter this video" (one video at a time, commit + push of
+the skip list as always) and posts short statuses back (queued, percent, done,
+or a generic failure: no paths, names or error details, those stay in
+`cache/requests/watcher.log`). The add-on holds no GitHub token or any other
+secret; it reads the finished list from GitHub like every other list. Someone
+with the code can make this PC scan YouTube videos, up to 30 a day
+(`KMS_REQ_MAX_PER_DAY`) with at most 20 waiting (`KMS_REQ_MAX_QUEUE`), and see
+which video IDs were requested; nothing else. Only this PC can filter a video
+*again*; a request for a video that already has a list is answered "done".
+
+To see on this PC what friends see, set `forceRequest: true` in the add-on's
+storage (about:debugging → Inspect → `browser.storage.local.set({forceRequest: true})`).
 
 ## Scanning a whole channel
 
@@ -469,6 +514,8 @@ node tests\blur_test.js                          # blur.js: interpolation, hold,
 .venv\Scripts\python tests\browser_test.py --bundled   # the same with only the bundled lists (before pushing)
 .venv\Scripts\python tests\browser_test.py --blur-only [--bundled]   # only the blur check
 .venv\Scripts\python tests\browser_test.py --scan-video <id> [--rescan]   # "Filter this video", real scan + upload
+.venv\Scripts\python tests\request_test.py --ui-only          # "Request filtering": settings page and button
+.venv\Scripts\python tests\request_test.py --video <unscanned id>   # the whole request, real scan + upload
 ```
 
 `browser_test.py` (needs `pip install -r requirements-dev.txt`) installs the
