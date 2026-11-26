@@ -127,11 +127,15 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
     <div><h2>Two members on screen, nobody else</h2><div class="table-box"><table><thead><tr id="phead"></tr></thead><tbody id="pbody"></tbody></table></div></div>
     <div><h2>Three members on screen, nobody else</h2><div class="table-box"><table><thead><tr id="thead3"></tr></thead><tbody id="tbody3"></tbody></table></div></div>
   </div>
-  <p class="foot">"Time together" counts only the moments when exactly those members are recognized on screen. "If random" is how long they would share the screen if who appears with whom were random, given how often each member is in two-member (or three-member) shots at all. "vs random" is the first divided by the second: above 1 means they are shown together more than chance, below 1 less. "Videos" counts videos where they get at least 5 seconds together. A high number shows a pattern, not a reason: seating order, friendships, units and shared segments all push pairs together.</p>
+  <p class="foot">"Time together" counts only the moments when exactly those members are recognized on screen. "If random" is how long they would share the screen if who appears with whom were random, given how often each member is in two-member (or three-member) shots at all. "vs random" is the first divided by the second, with one minute added to both so that pairs with very little footage can't show extreme ratios by chance: above 1 means they are shown together more than chance, below 1 less. "Videos" counts videos where they get at least 5 seconds together. A high number shows a pattern, not a reason: seating order, friendships, units and shared segments all push pairs together.</p>
 </div>
 
 <script>
 const DATA = /*DATA*/null || {generated: "", members: [], videos: [], pairs: [], trios: [], months: []};
+// "vs random" with a small-sample adjustment: (together + K) / (expected + K). With
+// seconds of footage, K = 60 s pulls ratios from tiny samples (2 s vs 0.1 s = 20x)
+// toward 1x and barely moves well-measured ones. Same K as screen_time.py.
+const K = DATA.k || 60, adj = (s, e) => (s + K) / (e + K);
 const NAME = Object.fromEntries(DATA.members.map(m => [m.id, m.name]));
 const names = ids => ids.map(i => NAME[i] || i).join(" + ");
 const TAG = {skip: "on screen · set to skip", highlight: "on screen · highlighted", normal: "on screen"};
@@ -200,7 +204,7 @@ const tsort = {p: ["ratio", -1], t: ["secs", -1]};
 function combo(kind, list, headId, bodyId) {
   const cols = [["m", "Members"], ["secs", "Time together"], ["expected", "If random"], ["ratio", "vs random"], ["videos", "Videos"]];
   const [k, dir] = tsort[kind];
-  const rows = list.map(x => ({...x, ratio: x.expected > 0 ? x.secs / x.expected : 0}))
+  const rows = list.map(x => ({...x, ratio: adj(x.secs, x.expected)}))
     .sort((a, b) => k === "m" ? names(a.m).localeCompare(names(b.m)) * dir : (a[k] - b[k]) * dir);
   document.getElementById(headId).innerHTML = cols.map(([c, l]) =>
     `<th class="${c === "m" ? "t" : ""}" tabindex="0" data-k="${c}" aria-sort="${c === k ? (dir > 0 ? "ascending" : "descending") : "none"}">${l}</th>`).join("");
@@ -211,7 +215,7 @@ function combo(kind, list, headId, bodyId) {
 }
 function combos() {
   combo("p", DATA.pairs, "phead", "pbody"); combo("t", DATA.trios, "thead3", "tbody3");
-  const P = DATA.pairs.map(x => ({...x, ratio: x.expected > 0 ? x.secs / x.expected : 0})).sort((a, b) => b.ratio - a.ratio);
+  const P = DATA.pairs.map(x => ({...x, ratio: adj(x.secs, x.expected)})).sort((a, b) => b.ratio - a.ratio);
   const cy = P.find(x => x.m.includes("carmen") && x.m.includes("ye-on"));
   if (cy) document.getElementById("finding").textContent = `Carmen + Ye-on have ${clock(cy.secs)} on screen as a duo, ${cy.ratio.toFixed(2)} times what random pairing would give (${clock(cy.expected)}), across ${cy.videos} videos. That ranks ${P.indexOf(cy) + 1} of ${P.length} pairs for being shown together more than chance` +
     (P[0] !== cy ? `; the top is ${names(P[0].m)} at ${P[0].ratio.toFixed(2)}×.` : `; next is ${names(P[1].m)} at ${P[1].ratio.toFixed(2)}×.`);
@@ -228,19 +232,19 @@ function trend() {
   const W = Math.max(760, 44 * M.length + 60), H = 260, L = 40, B = 46, T = 16, pw = (W - L - 8) / Math.max(1, M.length);
   let cs = 0, ce = 0;
   const pts = M.map(m => { const [s, e] = m.pairs[key] || [0, 0]; cs += s; ce += e;
-    return {mo: m.month, n: m.videos, s, e, r: e > 0 ? s / e : 0, cum: ce > 0 ? cs / ce : 0}; });
-  const top = Math.max(2, Math.ceil(Math.max(...pts.map(p => Math.max(p.r, p.cum)), 0) * 2) / 2);
+    return {mo: m.month, n: m.videos, s, e, r: adj(s, e), cum: adj(cs, ce)}; });
+  const top = Math.min(4, Math.max(2, Math.ceil(Math.max(...pts.map(p => Math.max(p.r, p.cum)), 0) * 2) / 2));
   const y = v => T + (H - T - B) * (1 - Math.min(v, top) / top);
   let g = "";
   for (let v = 0; v <= top; v += 0.5) g += `<line class="${v === 1 ? "one" : "grid"}" x1="${L}" x2="${W - 8}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(1)}×</text>`;
   pts.forEach((p, i) => { const x = L + i * pw + pw * 0.18, w = pw * 0.64;
     g += `<rect class="${p.r >= 1 ? "hi" : "lo"}${p.e < 30 ? " thin" : ""}" x="${x}" y="${y(p.r)}" width="${w}" height="${Math.max(0, y(0) - y(p.r))}"><title>${p.mo}: ${clock(p.s)} together, ${clock(p.e)} if random, ${p.n} videos</title></rect>` +
-      `<text class="v" x="${x + w / 2}" y="${y(p.r) - 4}" text-anchor="middle">${p.e > 0 ? p.r.toFixed(1) : ""}</text>` +
+      `<text class="v" x="${x + w / 2}" y="${y(p.r) - 4}" text-anchor="middle">${p.r > top ? "▲" : ""}${p.r.toFixed(1)}</text>` +
       `<text x="${x + w / 2}" y="${H - B + 14}" text-anchor="middle">${p.mo.slice(5)}</text><text x="${x + w / 2}" y="${H - B + 27}" text-anchor="middle">${i === 0 || p.mo.slice(5) === "01" ? p.mo.slice(0, 4) : ""}</text>` +
       `<text x="${x + w / 2}" y="${H - 4}" text-anchor="middle">${p.n}v</text>`; });
   g += `<path class="cum" d="${pts.map((p, i) => `${i ? "L" : "M"}${L + i * pw + pw / 2} ${y(p.cum)}`).join(" ")}"/>`;
   const svg = document.getElementById("trend"); svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = g;
-  document.getElementById("trendnote").textContent = `Each bar is one upload month: time ${names(key.split("+"))} spent on screen as a duo, divided by what random pairing would give among that month's videos. The dashed line at 1.0× is chance. Faded bars are months with too little two-member footage to trust (under 30 seconds expected). The line is the running total since the first video. Under each month: number of videos. Hover a bar for the times.`;
+  document.getElementById("trendnote").textContent = `Each bar is one upload month: time ${names(key.split("+"))} spent on screen as a duo, divided by what random pairing would give among that month's videos. The dashed line at 1.0× is chance. Faded bars are months with too little two-member footage to trust (under 30 seconds expected); every ratio is adjusted for small samples, so those months sit near 1.0× instead of jumping to extremes. Bars above 4× are cut off at the top and marked ▲ with their value. The line is the running total since the first video. Under each month: number of videos. Hover a bar for the times.`;
 }
 { const sel = document.getElementById("pairsel");
   sel.innerHTML = DATA.pairs.map(x => x.m.join("+")).sort((a, b) => names(a.split("+")).localeCompare(names(b.split("+"))))

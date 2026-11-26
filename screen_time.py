@@ -30,6 +30,10 @@ TEMPLATE = ROOT / "screen_time.html"
 # totals and the pair analysis by default (the 8 such videos are at 98-100%, every
 # other video at 14% or less, so the exact cutoff doesn't matter).
 GROUP_SHOT = 5
+# "vs random" = (together + K) / (expected + K): seconds of footage added to both so
+# tiny samples (e.g. 2 s together vs 0.1 s expected in a 3-video month = 20x) stay
+# near 1x; well-measured pairs (thousands of seconds) barely move. The page uses the same K.
+SMALL_SAMPLE_K = 60.0
 WHOLE_GROUP = 0.5
 
 
@@ -165,14 +169,14 @@ def main():
                        [f"{r['skip'] / r['duration']:.3f}"])
     data = {"generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             "members": [{"id": m, "name": prof.names.get(m, m), "choice": prof.choice(m)} for m in members],
-            "pairs": pairs, "trios": trios, "months": by_month(split, members),
+            "pairs": pairs, "trios": trios, "k": SMALL_SAMPLE_K, "months": by_month(split, members),
             "videos": [{k: v for k, v in r.items() if k != "combos"} for r in rows]}
     with open(CACHE / "screen_time_together.csv", "w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)
-        w.writerow(["members", "seconds together (only them)", "expected if random", "ratio", "videos (5 s+)"])
+        w.writerow(["members", "seconds together (only them)", "expected if random", "ratio (small-sample adjusted)", "videos (5 s+)"])
         for x in pairs + trios:
             w.writerow([" + ".join(prof.names.get(m, m) for m in x["m"]), x["secs"], x["expected"],
-                        f"{x['secs'] / x['expected']:.2f}" if x["expected"] else "", x["videos"]])
+                        f"{(x['secs'] + SMALL_SAMPLE_K) / (x['expected'] + SMALL_SAMPLE_K):.2f}", x["videos"]])
     html = TEMPLATE.read_text(encoding="utf-8").replace(
         "/*DATA*/null", json.dumps(data, ensure_ascii=False).replace("</", "<\\/"))
     (CACHE / "screen_time.html").write_text(html, encoding="utf-8")
