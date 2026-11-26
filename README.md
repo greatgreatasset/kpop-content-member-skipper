@@ -247,9 +247,15 @@ by itself on YouTube's bot check / rate limit. Lists are committed one by one;
 `--push` uploads them every 5 lists (`--push-every N`) and at the end. The .mp4 is deleted after each
 scan (`--keep-videos` keeps it). State and log: `cache/batch/<channel id>.json/.log`.
 
-`python screen_time.py` then writes `cache/screen_time.csv` and a sortable
-`cache/screen_time.html`: per Hearts2Hearts video, how long each member is on
-screen, and how much time the default skips cut out.
+`python fetch_dates.py` then gets exact upload dates (metadata only, paced), and
+`python screen_time.py --profile <id> --channel <UC id>` writes
+`cache/screen_time_<id>.html` (a sortable page), `.csv` and `_together.csv`:
+per video, each member's on-screen and main-focus share, the default skip time,
+and which pairs/trios share the screen more than chance. Only full-group videos
+count by default (solo/duo/unit, whole-group and mostly-unrecognized videos are
+separate categories), with an estimated per-member miss rate so the margin is
+visible. The method and its cutoffs are in `screen_time.py`'s docstring; they are
+the same for every group.
 
 ## Usage (individual steps)
 

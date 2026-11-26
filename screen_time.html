@@ -1,4 +1,4 @@
-<title>Hearts2Hearts Screen Time</title>
+<title>__GROUP__ Screen Time</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -90,23 +90,32 @@ td.skip small { color: var(--muted); font-size: 11px; }
 tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
 .empty { padding: 32px; text-align: center; color: var(--muted); }
 .foot { color: var(--muted); font-size: 12px; max-width: 80ch; }
+.kind { display: inline-block; font-family: var(--body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 6px; margin-left: 4px; }
+.miss { display: block; color: var(--muted); font-size: 10px; text-transform: none; letter-spacing: 0; }
+.subset { display: grid; gap: 8px; }
+.subset table { min-width: 420px; }
+.boxes { display: flex; flex-wrap: wrap; gap: 6px 14px; }
 </style>
 
 <div class="wrap">
   <header>
-    <h1>Hearts2Hearts <span>screen time</span></h1>
-    <p class="lede">The first column is the time the add-on really jumps over in each video: only the parts where Carmen and/or Ye-on are on screen with nobody else. The member columns show each member's share of the time any member is on screen (shots with no member, like scenery, title cards or crowds, don't count), alone or with others, so a group video can show Carmen at 90% and still have almost nothing skipped. Click a column to sort.</p>
+    <h1>__GROUP__ <span>screen time</span></h1>
+    <p class="lede" id="lede"></p>
   </header>
   <div class="stats" id="stats"></div>
-  <div class="mstats-box"><h2 id="mstats-h">Total time on screen</h2><div class="stats" id="mstats"></div></div>
+  <div class="mstats-box"><h2 id="mstats-h"></h2><div class="stats" id="mstats"></div></div>
   <div class="controls">
+    <div class="seg" role="group" aria-label="Measure">
+      <button type="button" id="metric-on" aria-pressed="true">On screen</button>
+      <button type="button" id="metric-focus" aria-pressed="false">Main focus</button>
+    </div>
     <div class="seg" role="group" aria-label="Show values as">
       <button type="button" id="mode-share" aria-pressed="true">Share</button>
       <button type="button" id="mode-time" aria-pressed="false">Minutes</button>
     </div>
     <input type="search" id="q" placeholder="Filter by title" aria-label="Filter by title">
-    <label class="chk"><input type="checkbox" id="incl"> <span id="incl-l">Include whole-group videos</span></label>
   </div>
+  <div class="boxes" id="kinds"></div>
   <div class="table-box">
     <table id="main">
       <thead><tr id="head"></tr></thead>
@@ -115,6 +124,11 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
     </table>
   </div>
   <p class="foot" id="note"></p>
+  <div class="subset" id="subset-box">
+    <h2 class="big">Solo, duo and unit videos</h2>
+    <p class="finding" id="subset-lede"></p>
+    <div class="table-box"><table><thead><tr id="shead"></tr></thead><tbody id="sbody"></tbody></table></div>
+  </div>
   <h2 class="big">Who shares the screen</h2>
   <p class="finding" id="finding"></p>
   <div class="trend">
@@ -125,100 +139,136 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
   </div>
   <div class="duo">
     <div><h2>Two members on screen, nobody else</h2><div class="table-box"><table><thead><tr id="phead"></tr></thead><tbody id="pbody"></tbody></table></div></div>
-    <div><h2>Three members on screen, nobody else</h2><div class="table-box"><table><thead><tr id="thead3"></tr></thead><tbody id="tbody3"></tbody></table></div></div>
+    <div id="trio-box"><h2>Three members on screen, nobody else</h2><div class="table-box"><table><thead><tr id="thead3"></tr></thead><tbody id="tbody3"></tbody></table></div></div>
   </div>
-  <p class="foot">"Time together" counts only the moments when exactly those members are recognized on screen. "If random" is how long they would share the screen if who appears with whom were random, given how often each member is in two-member (or three-member) shots at all. "vs random" is the first divided by the second, with one minute added to both so that pairs with very little footage can't show extreme ratios by chance: above 1 means they are shown together more than chance, below 1 less. "Videos" counts videos where they get at least 5 seconds together. A high number shows a pattern, not a reason: seating order, friendships, units and shared segments all push pairs together.</p>
+  <p class="foot">Pairs and trios use only full-group videos. "Time together" counts only the moments when exactly those members are recognized on screen. "If random" is how long they would share the screen if who appears with whom were random, given how often each member is in two-member (or three-member) shots at all. "vs random" is the first divided by the second, with one minute added to both so that pairs with very little footage can't show extreme ratios by chance: above 1 means they are shown together more than chance, below 1 less. "Videos" counts videos where they get at least 5 seconds together. A high number shows a pattern, not a reason: seating order, friendships, units and shared segments all push pairs together.</p>
 </div>
 
 <script>
-const DATA = /*DATA*/null || {generated: "", members: [], videos: [], pairs: [], trios: [], months: []};
-// "vs random" with a small-sample adjustment: (together + K) / (expected + K). With
-// seconds of footage, K = 60 s pulls ratios from tiny samples (2 s vs 0.1 s = 20x)
-// toward 1x and barely moves well-measured ones. Same K as screen_time.py.
+const DATA = /*DATA*/null || {generated: "", group: "", members: [], videos: [], pairs: [], trios: [], months: [], subset: [], miss: {}, cutoffs: {}};
+// "vs random" with a small-sample adjustment: (together + K) / (expected + K), K = 60 s
+// (same K as screen_time.py): tiny samples stay near 1x, well-measured pairs barely move.
 const K = DATA.k || 60, adj = (s, e) => (s + K) / (e + K);
 const NAME = Object.fromEntries(DATA.members.map(m => [m.id, m.name]));
 const names = ids => ids.map(i => NAME[i] || i).join(" + ");
-const TAG = {skip: "on screen · set to skip", highlight: "on screen · highlighted", normal: "on screen"};
-const COLS = [
-  {k: "skip", label: "Time actually skipped", sub: "Carmen / Ye-on alone", cls: "skip", m: 1},
-  {k: "title", label: "Video", cls: "t"},
-  {k: "date", label: "Posted", cls: "n"},
-  {k: "duration", label: "Length", cls: "n"},
-  {k: "memberTime", label: "Members shown", sub: "any member on screen", cls: "n mt"},
-  ...DATA.members.map(m => ({k: m.id, label: m.name, sub: TAG[m.choice], cls: m.choice === "skip" ? "skipm" : m.choice, m: 1})),
-  {k: "pairSecs", label: "Top pair", sub: "most time as a duo", cls: "pr"},
-];
-const MCOLS = COLS.filter(c => c.m && c.k !== "skip");
-let mode = "share", sortKey = "date", sortDir = -1, q = "", incl = false;
-const NWG = DATA.videos.filter(v => v.wholeGroup).length;
-const counted = () => DATA.videos.filter(v => incl || !v.wholeGroup);
-try { mode = localStorage.getItem("st-mode") || mode; } catch (e) {}
+const SKIPM = DATA.members.filter(m => m.choice === "skip").map(m => m.id);
+const andList = a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1];
+const orList = a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and/or " + a[a.length - 1];
+const SKIPNAMES = SKIPM.map(i => NAME[i]);
+const KINDS = {
+  group: {label: "Full-group videos", tag: ""},
+  subset: {label: "Solo, duo and unit videos", tag: "solo / duo / unit"},
+  whole: {label: "Whole-group videos", tag: "whole group"},
+  unrecognized: {label: "Mostly unrecognized videos", tag: "mostly unrecognized"},
+};
+const TAG = {skip: "set to skip", highlight: "highlighted", normal: ""};
+let metric = "on", mode = "share", sortKey = "date", sortDir = -1, q = "";
+const show = {group: true, subset: false, whole: false, unrecognized: false};
+try { mode = localStorage.getItem("st-mode") || mode; metric = localStorage.getItem("st-metric") || metric; } catch (e) {}
+const count = k => DATA.videos.filter(v => v.kind === k).length;
+const counted = () => DATA.videos.filter(v => show[v.kind]);
+const mkey = id => metric === "on" ? id : "f:" + id;
+const den = v => metric === "on" ? v.memberTime : v.focusTime;
 const clock = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
   return h ? `${h}:${String(m).padStart(2, "0")}:${String(x).padStart(2, "0")}` : `${m}:${String(x).padStart(2, "0")}`; };
 const pct = f => (100 * f).toFixed(f < 0.1 ? 1 : 0) + "%";
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
-const val = (v, k) => k === "title" ? v.title.toLowerCase() : k === "date" ? (v.date || "") :
-  mode === "share" && k === "skip" ? v.skip / v.duration :
-  mode === "share" && COLS.find(c => c.k === k).m ? (v.memberTime ? v[k] / v.memberTime : 0) : v[k];
 
+function cols() {
+  return [
+    ...(SKIPM.length ? [{k: "skip", label: "Time actually skipped", sub: orList(SKIPNAMES) + " alone", cls: "skip"}] : []),
+    {k: "title", label: "Video", cls: "t"},
+    {k: "date", label: "Posted", cls: "n"},
+    {k: "duration", label: "Length", cls: "n"},
+    {k: "den", label: metric === "on" ? "Members shown" : "Member in focus", sub: metric === "on" ? "any member on screen" : "any member the main subject", cls: "n mt"},
+    ...DATA.members.map(m => ({k: m.id, label: m.name, sub: [metric === "on" ? "on screen" : "main focus", TAG[m.choice]].filter(Boolean).join(" · "), cls: m.choice === "skip" ? "skipm" : m.choice, m: 1})),
+    {k: "pairSecs", label: "Top pair", sub: "most time as a duo", cls: "pr"},
+  ];
+}
+const val = (v, k) => k === "title" ? v.title.toLowerCase() : k === "date" ? (v.date || "") :
+  k === "den" ? den(v) : k === "skip" ? (mode === "share" ? v.skip / v.duration : v.skip) :
+  DATA.members.some(m => m.id === k) ? (mode === "share" ? (den(v) ? v[mkey(k)] / den(v) : 0) : v[mkey(k)]) : v[k];
 const mt = (secs, dur) => `<td class="n mt"><div class="cell"><span>${clock(secs)}</span><small>${dur ? pct(secs / dur) : "–"} of video</small></div></td>`;
-function cell(c, secs, dur) {
-  const f = dur ? secs / dur : 0;
+function cell(c, secs, d) {
+  const f = d ? secs / d : 0;
   const txt = c.k === "skip" ? `<span>${clock(secs)}</span><small>${pct(f)}</small>` : `<span>${mode === "share" ? pct(f) : clock(secs)}</span>`;
-  return `<td class="n ${c.cls}"><div class="cell">${txt}` +
-    `<span class="bar"><i style="width:${Math.min(100, 100 * f).toFixed(1)}%"></i></span></div></td>`;
+  return `<td class="n ${c.cls}"><div class="cell">${txt}<span class="bar"><i style="width:${Math.min(100, 100 * f).toFixed(1)}%"></i></span></div></td>`;
 }
 function render() {
-  document.getElementById("mode-share").setAttribute("aria-pressed", mode === "share");
-  document.getElementById("mode-time").setAttribute("aria-pressed", mode === "time");
-  document.getElementById("head").innerHTML = COLS.map(c =>
+  for (const [id, on] of [["metric-on", metric === "on"], ["metric-focus", metric === "focus"], ["mode-share", mode === "share"], ["mode-time", mode === "time"]])
+    document.getElementById(id).setAttribute("aria-pressed", on);
+  const C = cols(), MC = C.filter(c => c.m), hasSkip = SKIPM.length > 0;
+  document.getElementById("lede").textContent = (hasSkip ? `The first column is the time the add-on really jumps over in each video: only the parts where ${orList(SKIPNAMES)} ${SKIPM.length > 1 ? "are" : "is"} on screen with nobody else. ` : "") +
+    (metric === "on" ? "The member columns show each member's share of the time any member is on screen, alone or with others (shots with no member don't count)." :
+      "The member columns show how often each member is the main subject of the frame: the largest face, clearly bigger than anyone else's, near the middle. It is closer to who is being featured than plain on-screen time.") +
+    " By default only full-group videos count, where every active member appears and has to share the screen. Click a column to sort.";
+  document.getElementById("head").innerHTML = C.map(c =>
     `<th class="${c.cls}" tabindex="0" data-k="${c.k}" aria-sort="${c.k === sortKey ? (sortDir > 0 ? "ascending" : "descending") : "none"}">${c.label}${c.sub ? `<small>${c.sub}</small>` : ""}</th>`).join("");
-  const rows = counted().filter(v => !q || v.title.toLowerCase().includes(q))
+  const all = counted();
+  const rows = all.filter(v => !q || v.title.toLowerCase().includes(q))
     .sort((a, b) => { const x = val(a, sortKey), y = val(b, sortKey); return (x < y ? -1 : x > y ? 1 : 0) * sortDir; });
   const body = document.getElementById("body");
-  if (!rows.length) {
-    body.innerHTML = `<tr><td colspan="${COLS.length}" class="empty">${DATA.videos.length ? "No video title matches that filter." : "No Hearts2Hearts videos scanned yet."}</td></tr>`;
-  } else {
-    body.innerHTML = rows.map(v => cell(COLS[0], v.skip, v.duration) + `<td class="t"><a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">${esc(v.title)}</a><small>${esc(v.id)} · ${v.skips} skip${v.skips === 1 ? "" : "s"}${v.wholeGroup ? `<span class="wg">whole group</span>` : ""}</small></td>` +
-      `<td class="n">${v.date || "–"}</td><td class="n">${clock(v.duration)}</td>` + mt(v.memberTime, v.duration) +
-      MCOLS.map(c => cell(c, v[c.k], v.memberTime)).join("") +
+  body.innerHTML = !rows.length ? `<tr><td colspan="${C.length}" class="empty">${all.length ? "No video title matches that filter." : "No videos in the ticked categories."}</td></tr>` :
+    rows.map(v => (hasSkip ? cell(C[0], v.skip, v.duration) : "") +
+      `<td class="t"><a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">${esc(v.title)}</a><small>${esc(v.id)}${hasSkip ? ` · ${v.skips} skip${v.skips === 1 ? "" : "s"}` : ""}${KINDS[v.kind].tag ? `<span class="kind">${KINDS[v.kind].tag}</span>` : ""}</small></td>` +
+      `<td class="n">${v.date || "–"}</td><td class="n">${clock(v.duration)}</td>` + mt(den(v), v.duration) +
+      MC.map(c => cell(c, v[mkey(c.k)], den(v))).join("") +
       `<td class="n pr">${v.pair ? `${esc(names(v.pair.split("+")))}<small>${clock(v.pairSecs)}</small>` : "–"}</td>`).map(r => `<tr>${r}</tr>`).join("");
-  }
-  const tot = k => rows.reduce((s, v) => s + v[k], 0), dur = tot("duration");
-  document.getElementById("foot").innerHTML = rows.length ? `<tr>${cell(COLS[0], tot("skip"), dur)}<td class="t">All ${rows.length} shown</td><td class="n"></td><td class="n">${clock(dur)}</td>` + mt(tot("memberTime"), dur) +
-    MCOLS.map(c => cell(c, tot(c.k), tot("memberTime"))).join("") + "<td></td></tr>" : "";
-  const all = counted(), D = all.reduce((s, v) => s + v.duration, 0), S = all.reduce((s, v) => s + v.skip, 0),
-    M = all.reduce((s, v) => s + v.memberTime, 0);
+  const tot = (k, list) => list.reduce((s, v) => s + (typeof k === "function" ? k(v) : v[k]), 0);
+  const dur = tot("duration", rows), D2 = tot(den, rows);
+  document.getElementById("foot").innerHTML = rows.length ? `<tr>${hasSkip ? cell(C[0], tot("skip", rows), dur) : ""}<td class="t">All ${rows.length} shown</td><td class="n"></td><td class="n">${clock(dur)}</td>` + mt(D2, dur) +
+    MC.map(c => cell(c, tot(mkey(c.k), rows), D2)).join("") + "<td></td></tr>" : "";
+  const D = tot("duration", all), S = tot("skip", all), M = tot(den, all);
   document.getElementById("stats").innerHTML = [
-    [all.length, incl || !NWG ? "videos scanned" : `videos counted (${NWG} whole-group left out)`], [(D / 3600).toFixed(1) + " h", "of video"],
-    [(M / 3600).toFixed(1) + " h", `with a member on screen (${D ? pct(M / D) : "0%"})`],
-    [clock(S), `actually skipped (${D ? pct(S / D) : "0%"} of video)`],
+    [all.length, all.length === DATA.videos.length ? "videos" : `of ${DATA.videos.length} videos counted`], [(D / 3600).toFixed(1) + " h", "of video"],
+    [(M / 3600).toFixed(1) + " h", `${metric === "on" ? "with a member on screen" : "with a member as main focus"} (${D ? pct(M / D) : "0%"})`],
+    ...(hasSkip ? [[clock(S), `actually skipped (${D ? pct(S / D) : "0%"} of video)`]] : []),
   ].map(([b, s]) => `<div class="stat"><b>${b}</b><small>${s}</small></div>`).join("");
-  document.getElementById("mstats-h").textContent = `Total time on screen, most to least, with share of the time any member is shown${incl || !NWG ? ", all videos" : ", whole-group videos left out"}`;
-  document.getElementById("mstats").innerHTML = DATA.members.map(m => ({m, t: all.reduce((s, v) => s + (v[m.id] || 0), 0)}))
-    .sort((a, b) => b.t - a.t).map(({m, t}, i) =>
-    `<div class="stat ${m.choice === "skip" ? "skipm" : m.choice}"><b><span class="mrank">${i + 1}</span>${clock(t)}</b><small>${esc(m.name)} (${M ? pct(t / M) : "0%"})</small></div>`).join("");
-  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Member shares are of "Members shown", the time at least one member is recognized on screen; shots with no member, wide shots where every face is too small to recognize, and shots of only other people don't count. Several members are often on screen together, so the member columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Whole-group videos (${NWG}: cheering guides and MV commentaries) keep almost every member on screen the whole time, so nobody has to share the screen there; they are left out of the totals and the pair analysis unless you tick "Include whole-group videos". Updated ${DATA.generated}.`;
+  document.getElementById("mstats-h").textContent = metric === "on" ? "Total time on screen, most to least, with share of the time any member is shown" : "Total time as the main focus, most to least, with share of all focus time";
+  document.getElementById("mstats").innerHTML = DATA.members.map(m => ({m, t: tot(mkey(m.id), all)}))
+    .sort((a, b) => b.t - a.t).map(({m, t}, i) => { const ms = DATA.miss && DATA.miss[m.id];
+      return `<div class="stat ${m.choice === "skip" ? "skipm" : m.choice}"><b><span class="mrank">${i + 1}</span>${clock(t)}</b><small>${esc(m.name)} (${M ? pct(t / M) : "0%"})` +
+        `${ms != null ? `<span class="miss">≈${(100 * ms).toFixed(0)}% of her faces missed</span>` : ""}</small></div>`; }).join("");
+  const cu = DATA.cutoffs || {};
+  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Shares are of the time at least one member is recognized (or, for main focus, the time any member is the main subject). Several members are often on screen together, so on-screen shares don't add up to 100%. ` +
+    (hasSkip ? `"Time actually skipped" is what the add-on jumps over with the default settings, as a share of the whole video. ` : "") +
+    `Video categories: full-group videos have every active member (${andList((cu.active || []).map(i => NAME[i]))}) on screen for at least ${cu.presentSecs || 30} seconds. Solo, duo and unit videos leave out at least one of them. Whole-group videos keep ${cu.groupShot}+ members on screen at least ${pct(cu.wholeGroup || 0.5)} of the time, so nobody has to share the screen (cheering guides, commentaries). Mostly unrecognized videos have faces that couldn't be identified at least ${pct(cu.unrecognized || 0.5)} of the time (dance practices, recording booths). ` +
+    `"Missed" is an estimate of how often the scanner fails to recognize a member whose face is clearly visible (her near-misses compared with her recognized faces, full-group videos): a member who is missed more is undercounted a little more, so differences smaller than that between members aren't meaningful. Updated ${DATA.generated}.`;
+}
+function subsetTable() {
+  const S = DATA.subset || [];
+  document.getElementById("subset-box").hidden = !S.some(x => x.videos);
+  document.getElementById("subset-lede").textContent = `${count("subset")} videos don't have every active member: solo vlogs, duo episodes and unit content. The company picks who is in them, so they're kept out of the main numbers. Here is who gets them.`;
+  document.getElementById("shead").innerHTML = ["Member", "Videos she's in", "Solo videos", "Time on screen in them"].map((l, i) => `<th class="${i ? "" : "t"}">${l}</th>`).join("");
+  document.getElementById("sbody").innerHTML = [...S].sort((a, b) => b.secs - a.secs).map(x =>
+    `<tr><td class="t">${esc(NAME[x.m])}</td><td class="n">${x.videos}</td><td class="n">${x.solo}</td><td class="n">${clock(x.secs)}</td></tr>`).join("");
 }
 const tsort = {p: ["ratio", -1], t: ["secs", -1]};
+const flagged = ids => SKIPM.length >= 2 && ids.filter(i => SKIPM.includes(i)).length >= 2;
 function combo(kind, list, headId, bodyId) {
-  const cols = [["m", "Members"], ["secs", "Time together"], ["expected", "If random"], ["ratio", "vs random"], ["videos", "Videos"]];
+  const cl = [["m", "Members"], ["secs", "Time together"], ["expected", "If random"], ["ratio", "vs random"], ["videos", "Videos"]];
   const [k, dir] = tsort[kind];
   const rows = list.map(x => ({...x, ratio: adj(x.secs, x.expected)}))
     .sort((a, b) => k === "m" ? names(a.m).localeCompare(names(b.m)) * dir : (a[k] - b[k]) * dir);
-  document.getElementById(headId).innerHTML = cols.map(([c, l]) =>
+  document.getElementById(headId).innerHTML = cl.map(([c, l]) =>
     `<th class="${c === "m" ? "t" : ""}" tabindex="0" data-k="${c}" aria-sort="${c === k ? (dir > 0 ? "ascending" : "descending") : "none"}">${l}</th>`).join("");
-  document.getElementById(bodyId).innerHTML = rows.map(x => {
-    const sus = ["carmen", "ye-on"].every(m => x.m.includes(m));
-    return `<tr class="${sus ? "sus" : ""}"><td class="t">${esc(names(x.m))}</td><td class="n">${clock(x.secs)}</td><td class="n">${clock(x.expected)}</td>` +
-      `<td class="n"><span class="ratio ${x.ratio >= 1.25 ? "hi" : x.ratio < 0.8 ? "lo" : ""}">${x.ratio.toFixed(2)}×</span></td><td class="n">${x.videos}</td></tr>`; }).join("");
+  document.getElementById(bodyId).innerHTML = rows.map(x =>
+    `<tr class="${flagged(x.m) ? "sus" : ""}"><td class="t">${esc(names(x.m))}</td><td class="n">${clock(x.secs)}</td><td class="n">${clock(x.expected)}</td>` +
+    `<td class="n"><span class="ratio ${x.ratio >= 1.25 ? "hi" : x.ratio < 0.8 ? "lo" : ""}">${x.ratio.toFixed(2)}×</span></td><td class="n">${x.videos}</td></tr>`).join("");
+}
+function focusPair() {
+  const P = DATA.pairs.map(x => ({...x, ratio: adj(x.secs, x.expected)})).sort((a, b) => b.ratio - a.ratio);
+  return {P, f: (SKIPM.length >= 2 && P.find(x => x.m.includes(SKIPM[0]) && x.m.includes(SKIPM[1]))) || P[0]};
 }
 function combos() {
-  combo("p", DATA.pairs, "phead", "pbody"); combo("t", DATA.trios, "thead3", "tbody3");
-  const P = DATA.pairs.map(x => ({...x, ratio: adj(x.secs, x.expected)})).sort((a, b) => b.ratio - a.ratio);
-  const cy = P.find(x => x.m.includes("carmen") && x.m.includes("ye-on"));
-  if (cy) document.getElementById("finding").textContent = `Carmen + Ye-on have ${clock(cy.secs)} on screen as a duo, ${cy.ratio.toFixed(2)} times what random pairing would give (${clock(cy.expected)}), across ${cy.videos} videos. That ranks ${P.indexOf(cy) + 1} of ${P.length} pairs for being shown together more than chance` +
-    (P[0] !== cy ? `; the top is ${names(P[0].m)} at ${P[0].ratio.toFixed(2)}×.` : `; next is ${names(P[1].m)} at ${P[1].ratio.toFixed(2)}×.`);
+  combo("p", DATA.pairs, "phead", "pbody");
+  document.getElementById("trio-box").hidden = !DATA.trios.length;
+  if (DATA.trios.length) combo("t", DATA.trios, "thead3", "tbody3");
+  const {P, f} = focusPair();
+  if (!f) return;
+  const i = P.indexOf(f), other = i === 0 ? P[1] : P[0];
+  document.getElementById("finding").textContent = `${names(f.m)} have ${clock(f.secs)} on screen as a duo in full-group videos, ${f.ratio.toFixed(2)} times what random pairing would give (${clock(f.expected)}), across ${f.videos} videos. That ranks ${i + 1} of ${P.length} pairs for being shown together more than chance` +
+    (other ? (i === 0 ? `; next is ${names(other.m)} at ${other.ratio.toFixed(2)}×.` : `; the top is ${names(other.m)} at ${other.ratio.toFixed(2)}×.`) : ".");
 }
 for (const [kind, id] of [["p", "phead"], ["t", "thead3"]]) {
   const go = e => { const th = e.target.closest("th"); if (!th) return; const k = th.dataset.k;
@@ -226,7 +276,6 @@ for (const [kind, id] of [["p", "phead"], ["t", "thead3"]]) {
   document.getElementById(id).addEventListener("click", go);
   document.getElementById(id).addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(e); } });
 }
-combos();
 function trend() {
   const key = document.getElementById("pairsel").value, M = DATA.months;
   const W = Math.max(760, 44 * M.length + 60), H = 260, L = 40, B = 46, T = 16, pw = (W - L - 8) / Math.max(1, M.length);
@@ -244,20 +293,24 @@ function trend() {
       `<text x="${x + w / 2}" y="${H - 4}" text-anchor="middle">${p.n}v</text>`; });
   g += `<path class="cum" d="${pts.map((p, i) => `${i ? "L" : "M"}${L + i * pw + pw / 2} ${y(p.cum)}`).join(" ")}"/>`;
   const svg = document.getElementById("trend"); svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.innerHTML = g;
-  document.getElementById("trendnote").textContent = `Each bar is one upload month: time ${names(key.split("+"))} spent on screen as a duo, divided by what random pairing would give among that month's videos. The dashed line at 1.0× is chance. Faded bars are months with too little two-member footage to trust (under 30 seconds expected); every ratio is adjusted for small samples, so those months sit near 1.0× instead of jumping to extremes. Bars above 4× are cut off at the top and marked ▲ with their value. The line is the running total since the first video. Under each month: number of videos. Hover a bar for the times.`;
+  document.getElementById("trendnote").textContent = `Each bar is one upload month (full-group videos only): time ${names(key.split("+"))} spent on screen as a duo, divided by what random pairing would give among that month's videos. The dashed line at 1.0× is chance. Faded bars are months with too little two-member footage to trust (under 30 seconds expected). Every ratio adds one minute to both sides, so a month needs real footage to move far from 1.0×. Bars above 4× are cut off and marked ▲ with their value. The line is the running total since the first video. Under each month: number of videos. Hover a bar for the times.`;
 }
 { const sel = document.getElementById("pairsel");
   sel.innerHTML = DATA.pairs.map(x => x.m.join("+")).sort((a, b) => names(a.split("+")).localeCompare(names(b.split("+"))))
     .map(k => `<option value="${k}">${esc(names(k.split("+")))}</option>`).join("");
-  const def = DATA.pairs.find(x => x.m.includes("carmen") && x.m.includes("ye-on")); if (def) sel.value = def.m.join("+");
+  const {f} = focusPair(); if (f) sel.value = f.m.join("+");
   sel.addEventListener("change", trend); if (DATA.months.length) trend(); }
+document.getElementById("kinds").innerHTML = Object.entries(KINDS).filter(([k]) => count(k)).map(([k, x]) =>
+  `<label class="chk"><input type="checkbox" id="kind-${k}"${show[k] ? " checked" : ""}> ${x.label} (${count(k)})</label>`).join("");
+for (const k of Object.keys(KINDS)) { const el = document.getElementById("kind-" + k);
+  if (el) el.addEventListener("change", e => { show[k] = e.target.checked; render(); }); }
 function sortBy(k) { if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = k === "title" ? 1 : -1; } render(); }
 document.getElementById("head").addEventListener("click", e => { const th = e.target.closest("th"); if (th) sortBy(th.dataset.k); });
 document.getElementById("head").addEventListener("keydown", e => { const th = e.target.closest("th"); if (th && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); sortBy(th.dataset.k); } });
 for (const m of ["share", "time"]) document.getElementById("mode-" + m).addEventListener("click", () => {
   mode = m; try { localStorage.setItem("st-mode", m); } catch (e) {} render(); });
-document.getElementById("incl").addEventListener("change", e => { incl = e.target.checked; render(); });
-document.getElementById("incl-l").textContent = `Include whole-group videos (${NWG})`;
+for (const m of ["on", "focus"]) document.getElementById("metric-" + m).addEventListener("click", () => {
+  metric = m; try { localStorage.setItem("st-metric", m); } catch (e) {} render(); });
 document.getElementById("q").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); render(); });
-render();
+combos(); subsetTable(); render();
 </script>
