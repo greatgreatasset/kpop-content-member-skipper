@@ -85,6 +85,7 @@ th small { display: block; white-space: nowrap; font-weight: 400; letter-spacing
 .skipm .bar, .skip .bar { background: var(--skip-soft); } .skipm .bar i, .skip .bar i { background: var(--skip); }
 .normal .bar { background: var(--other-soft); } .normal .bar i { background: var(--other); }
 td.skip span:first-child { font-weight: 500; }
+td.mt small { color: var(--muted); font-size: 11px; }
 td.skip small { color: var(--muted); font-size: 11px; }
 tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
 .empty { padding: 32px; text-align: center; color: var(--muted); }
@@ -94,13 +95,13 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
 <div class="wrap">
   <header>
     <h1>Hearts2Hearts <span>screen time</span></h1>
-    <p class="lede">The first column is the time the add-on really jumps over in each video: only the parts where Carmen and/or Ye-on are on screen with nobody else. The member columns show how much of the video each member is on screen at all, alone or with others, so a group video can show Carmen at 90% and still have almost nothing skipped. Click a column to sort.</p>
+    <p class="lede">The first column is the time the add-on really jumps over in each video: only the parts where Carmen and/or Ye-on are on screen with nobody else. The member columns show each member's share of the time any member is on screen (shots with no member, like scenery, title cards or crowds, don't count), alone or with others, so a group video can show Carmen at 90% and still have almost nothing skipped. Click a column to sort.</p>
   </header>
   <div class="stats" id="stats"></div>
   <div class="mstats-box"><h2 id="mstats-h">Total time on screen</h2><div class="stats" id="mstats"></div></div>
   <div class="controls">
     <div class="seg" role="group" aria-label="Show values as">
-      <button type="button" id="mode-share" aria-pressed="true">% of video</button>
+      <button type="button" id="mode-share" aria-pressed="true">Share</button>
       <button type="button" id="mode-time" aria-pressed="false">Minutes</button>
     </div>
     <input type="search" id="q" placeholder="Filter by title" aria-label="Filter by title">
@@ -139,6 +140,7 @@ const COLS = [
   {k: "title", label: "Video", cls: "t"},
   {k: "date", label: "Posted", cls: "n"},
   {k: "duration", label: "Length", cls: "n"},
+  {k: "memberTime", label: "Members shown", sub: "any member on screen", cls: "n mt"},
   ...DATA.members.map(m => ({k: m.id, label: m.name, sub: TAG[m.choice], cls: m.choice === "skip" ? "skipm" : m.choice, m: 1})),
   {k: "pairSecs", label: "Top pair", sub: "most time as a duo", cls: "pr"},
 ];
@@ -152,8 +154,10 @@ const clock = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math
 const pct = f => (100 * f).toFixed(f < 0.1 ? 1 : 0) + "%";
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
 const val = (v, k) => k === "title" ? v.title.toLowerCase() : k === "date" ? (v.date || "") :
-  COLS.find(c => c.k === k).m && mode === "share" ? v[k] / v.duration : v[k];
+  mode === "share" && k === "skip" ? v.skip / v.duration :
+  mode === "share" && COLS.find(c => c.k === k).m ? (v.memberTime ? v[k] / v.memberTime : 0) : v[k];
 
+const mt = (secs, dur) => `<td class="n mt"><div class="cell"><span>${clock(secs)}</span><small>${dur ? pct(secs / dur) : "–"} of video</small></div></td>`;
 function cell(c, secs, dur) {
   const f = dur ? secs / dur : 0;
   const txt = c.k === "skip" ? `<span>${clock(secs)}</span><small>${pct(f)}</small>` : `<span>${mode === "share" ? pct(f) : clock(secs)}</span>`;
@@ -172,23 +176,25 @@ function render() {
     body.innerHTML = `<tr><td colspan="${COLS.length}" class="empty">${DATA.videos.length ? "No video title matches that filter." : "No Hearts2Hearts videos scanned yet."}</td></tr>`;
   } else {
     body.innerHTML = rows.map(v => cell(COLS[0], v.skip, v.duration) + `<td class="t"><a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">${esc(v.title)}</a><small>${esc(v.id)} · ${v.skips} skip${v.skips === 1 ? "" : "s"}${v.wholeGroup ? `<span class="wg">whole group</span>` : ""}</small></td>` +
-      `<td class="n">${v.date || "–"}</td><td class="n">${clock(v.duration)}</td>` +
-      MCOLS.map(c => cell(c, v[c.k], v.duration)).join("") +
+      `<td class="n">${v.date || "–"}</td><td class="n">${clock(v.duration)}</td>` + mt(v.memberTime, v.duration) +
+      MCOLS.map(c => cell(c, v[c.k], v.memberTime)).join("") +
       `<td class="n pr">${v.pair ? `${esc(names(v.pair.split("+")))}<small>${clock(v.pairSecs)}</small>` : "–"}</td>`).map(r => `<tr>${r}</tr>`).join("");
   }
   const tot = k => rows.reduce((s, v) => s + v[k], 0), dur = tot("duration");
-  document.getElementById("foot").innerHTML = rows.length ? `<tr>${cell(COLS[0], tot("skip"), dur)}<td class="t">All ${rows.length} shown</td><td class="n"></td><td class="n">${clock(dur)}</td>` +
-    MCOLS.map(c => cell(c, tot(c.k), dur)).join("") + "<td></td></tr>" : "";
-  const all = counted(), D = all.reduce((s, v) => s + v.duration, 0), S = all.reduce((s, v) => s + v.skip, 0);
+  document.getElementById("foot").innerHTML = rows.length ? `<tr>${cell(COLS[0], tot("skip"), dur)}<td class="t">All ${rows.length} shown</td><td class="n"></td><td class="n">${clock(dur)}</td>` + mt(tot("memberTime"), dur) +
+    MCOLS.map(c => cell(c, tot(c.k), tot("memberTime"))).join("") + "<td></td></tr>" : "";
+  const all = counted(), D = all.reduce((s, v) => s + v.duration, 0), S = all.reduce((s, v) => s + v.skip, 0),
+    M = all.reduce((s, v) => s + v.memberTime, 0);
   document.getElementById("stats").innerHTML = [
     [all.length, incl || !NWG ? "videos scanned" : `videos counted (${NWG} whole-group left out)`], [(D / 3600).toFixed(1) + " h", "of video"],
-    [clock(S), `actually skipped (${D ? pct(S / D) : "0%"})`],
+    [(M / 3600).toFixed(1) + " h", `with a member on screen (${D ? pct(M / D) : "0%"})`],
+    [clock(S), `actually skipped (${D ? pct(S / D) : "0%"} of video)`],
   ].map(([b, s]) => `<div class="stat"><b>${b}</b><small>${s}</small></div>`).join("");
-  document.getElementById("mstats-h").textContent = `Total time on screen, most to least${incl || !NWG ? ", all videos" : ", whole-group videos left out"}`;
+  document.getElementById("mstats-h").textContent = `Total time on screen, most to least, with share of the time any member is shown${incl || !NWG ? ", all videos" : ", whole-group videos left out"}`;
   document.getElementById("mstats").innerHTML = DATA.members.map(m => ({m, t: all.reduce((s, v) => s + (v[m.id] || 0), 0)}))
     .sort((a, b) => b.t - a.t).map(({m, t}, i) =>
-    `<div class="stat ${m.choice === "skip" ? "skipm" : m.choice}"><b><span class="mrank">${i + 1}</span>${clock(t)}</b><small>${esc(m.name)} on screen (${D ? pct(t / D) : "0%"})</small></div>`).join("");
-  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Whole-group videos (${NWG}: cheering guides and MV commentaries) keep almost every member on screen the whole time, so nobody has to share the screen there; they are left out of the totals and the pair analysis unless you tick "Include whole-group videos". Updated ${DATA.generated}.`;
+    `<div class="stat ${m.choice === "skip" ? "skipm" : m.choice}"><b><span class="mrank">${i + 1}</span>${clock(t)}</b><small>${esc(m.name)} (${M ? pct(t / M) : "0%"})</small></div>`).join("");
+  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Member shares are of "Members shown", the time at least one member is recognized on screen; shots with no member, wide shots where every face is too small to recognize, and shots of only other people don't count. Several members are often on screen together, so the member columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Whole-group videos (${NWG}: cheering guides and MV commentaries) keep almost every member on screen the whole time, so nobody has to share the screen there; they are left out of the totals and the pair analysis unless you tick "Include whole-group videos". Updated ${DATA.generated}.`;
 }
 const tsort = {p: ["ratio", -1], t: ["secs", -1]};
 function combo(kind, list, headId, bodyId) {

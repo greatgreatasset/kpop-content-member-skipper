@@ -3,7 +3,7 @@
     .venv\\Scripts\\python screen_time.py            # -> cache/screen_time.csv + cache/screen_time.html
 
 For every scanned video with Hearts2Hearts in it: how long each member is on
-screen, and how much of the video the default skips (Carmen + Ye-on alone) take out. A member
+screen (and her share of the time any member is on screen), and how much of the video the default skips (Carmen + Ye-on alone) take out. A member
 counts as on screen in every timeline frame she is recognized in, fully shown or
 cut off by the frame edge; several members can be on screen at once, so the
 shares don't add up to 100%. Whole-group videos (see WHOLE_GROUP) are flagged
@@ -74,6 +74,7 @@ def video_row(d):
             **{m: round(v, 1) for m, v in secs.items()},
             "skip": round(skip, 1), "skips": len(d.get("skips", [])),
             "combos": {k: round(v, 1) for k, v in combos.items()},
+            "memberTime": round(seen, 1),  # s with at least one member recognized on screen
             "groupShare": round(crowd / seen, 3) if seen else 0.0,
             "wholeGroup": seen > 0 and crowd / seen >= WHOLE_GROUP}
 
@@ -154,13 +155,14 @@ def main():
         r["pair"], r["pairSecs"] = (top[1], top[0]) if top else (None, 0.0)
     split = [r for r in rows if not r["wholeGroup"]]
     pairs, trios = together(split, members, 2), together(split, members, 3)
-    cols = ["id", "date", "title", "duration", *members, "skip", "skips", "wholeGroup"]
+    cols = ["id", "date", "title", "duration", "memberTime", *members, "skip", "skips", "wholeGroup"]
     with open(CACHE / "screen_time.csv", "w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)
-        w.writerow(cols + [f"{c} share" for c in (*members, "skip")])
+        w.writerow(cols + [f"{c} share of member time" for c in members] + ["skip share of video"])
         for r in rows:
             w.writerow([r[c] for c in cols] +
-                       [f"{r[c] / r['duration']:.3f}" for c in (*members, "skip")])
+                       [f"{r[c] / r['memberTime']:.3f}" if r["memberTime"] else "" for c in members] +
+                       [f"{r['skip'] / r['duration']:.3f}"])
     data = {"generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             "members": [{"id": m, "name": prof.names.get(m, m), "choice": prof.choice(m)} for m in members],
             "pairs": pairs, "trios": trios, "months": by_month(split, members),
