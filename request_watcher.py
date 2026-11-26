@@ -1,11 +1,17 @@
 """Scan the videos friends ask for with the add-on's "Request filtering" button.
 
-    watch_requests.bat                 listen and scan (leave the window open)
-    watch_requests.bat /install        also start it (minimized) when you log in to Windows
-    watch_requests.bat /uninstall      stop starting it at login
-    python request_watcher.py --code       show the request code to give to friends
-    python request_watcher.py --new-code   make a new code (the old one stops working)
+    watch_requests.bat                 set it up: listens hidden in the background, now and after
+                                       every login (no window); shows the request code for friends
+    watch_requests.bat /status         is it listening, the code, the last requests
+    watch_requests.bat /stop           stop listening until the next login (or the next run)
+    watch_requests.bat /uninstall      stop listening and don't start at login any more
+    watch_requests.bat /window         listen in this window instead (to watch it work)
+    watch_requests.bat --new-code      make a new code (the old one stops working)
     python request_watcher.py --once       handle what is waiting, then exit
+
+In the background it runs as pythonw.exe (no console window), started at login
+from the per-user "Run" registry key (no admin needed). What it does is logged
+to cache/requests/watcher.log.
 
 Friends' PCs have no scanner, so their add-on can't scan. Instead it posts the
 video's ID to a topic on a public relay (ntfy.sh, no account needed), and this
@@ -61,7 +67,12 @@ CODE_LEN = 20
 PROGRESS_MARKS = (35, 65)   # a status at these percents; the relay allows ~250 messages a day
 FAIL_KEEP = 30 * 60         # answer a repeated request for a failed video from memory for this long
 STALL = 45 * 60             # a scan with no progress for this long is stopped
-STARTUP_NAME = "K-pop skipper scan requests.bat"
+STARTUP_NAME = "K-pop skipper scan requests.bat"  # what /install made before it ran hidden
+RUN_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
+RUN_NAME = "KpopSkipperScanRequests"
+TESTING = bool(os.environ.get("KMS_REQ_CODE"))
+MUTEX_NAME = "Local\\KpopSkipperScanRequests" + ("Test" if TESTING else "")
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
 MSG_DOWNLOAD = ("The video couldn't be downloaded (it may be private, members-only, "
                 "age-restricted or a live stream).")
@@ -142,7 +153,7 @@ def write_state(st):
 
 def git(*args):
     return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True,
-                          creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+                          stdin=subprocess.DEVNULL, creationflags=NO_WINDOW)
 
 
 def ensure_pushed():
@@ -344,7 +355,8 @@ class Watcher:
                 return self.fail(vid, MSG_SCAN)
             if time.time() - job.get("updated", time.time()) > STALL:
                 say(f"{vid}: no progress for {STALL // 60} minutes, stopped")
-                subprocess.run(["taskkill", "/PID", str(job.get("pid")), "/T", "/F"], capture_output=True)
+                subprocess.run(["taskkill", "/PID", str(job.get("pid")), "/T", "/F"], capture_output=True,
+                               stdin=subprocess.DEVNULL, creationflags=NO_WINDOW)
                 return self.fail(vid, MSG_SCAN)
             pct = job.get("percent") or 0
             if marks and pct >= marks[0] and job.get("stage") == "scan":
@@ -394,69 +406,220 @@ def summary(res):
         return ""
 
 
-# ------------------------------------------------------------ start at login
+# ------------------------------------------------------------ running in the background
 
-def startup_file():
-    return (Path(os.environ["APPDATA"]) / "Microsoft" / "Windows" / "Start Menu" / "Programs"
-            / "Startup" / STARTUP_NAME)
+def _kernel32():
+    import ctypes
+    k = ctypes.WinDLL("kernel32", use_last_error=True)
+    k.CreateMutexW.restype = k.OpenMutexW.restype = ctypes.c_void_p
+    k.CreateMutexW.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_wchar_p]
+    k.OpenMutexW.argtypes = [ctypes.c_uint32, ctypes.c_int, ctypes.c_wchar_p]
+    k.CloseHandle.argtypes = [ctypes.c_void_p]
+    return k, ctypes
 
 
-def install():
-    f = startup_file()
-    f.write_text(f'@echo off\r\nstart "K-pop skipper scan requests" /min "{ROOT / "watch_requests.bat"}"\r\n',
-                 encoding="mbcs")
-    print("Installed: scan requests are listened for (in a minimized window) whenever you log in.")
-    print("Start it now by double-clicking watch_requests.bat.")
+def hold_mutex():
+    """Become the one listener on this PC. Returns a handle to keep, or None if
+    another one is running. (A mutex, not the pid file: Windows frees it when the
+    process ends however it ends, and a pid can be reused after a restart.)"""
+    k, ctypes = _kernel32()
+    h = k.CreateMutexW(None, False, MUTEX_NAME)
+    if h and ctypes.get_last_error() == 183:  # ERROR_ALREADY_EXISTS
+        k.CloseHandle(h)
+        return None
+    return h
+
+
+def is_running():
+    k, _ = _kernel32()
+    h = k.OpenMutexW(0x00100000, False, MUTEX_NAME)  # SYNCHRONIZE
+    if h:
+        k.CloseHandle(h)
+    return bool(h)
+
+
+def running_pid():
+    if not is_running():
+        return None
+    try:
+        return int(PIDFILE.read_text().strip())
+    except (OSError, ValueError):
+        return None
+
+
+def venv_python(windowless=False):
+    """The venv's python.exe (or pythonw.exe), next to whichever of the two runs this."""
+    return Path(sys.executable).with_name("pythonw.exe" if windowless else "python.exe")
+
+
+def background_cmd():
+    return [str(venv_python(windowless=True)), str(ROOT / "request_watcher.py"), "--background"]
+
+
+def start_background():
+    """Start the hidden listener unless one is running. True when one is listening."""
+    if is_running():
+        return True
+    flags = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
+    kw = dict(cwd=ROOT, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+              close_fds=True)
+    try:  # outside the job of the window that started it, so closing that window doesn't end it
+        subprocess.Popen(background_cmd(), creationflags=flags | subprocess.CREATE_BREAKAWAY_FROM_JOB, **kw)
+    except OSError:
+        subprocess.Popen(background_cmd(), creationflags=flags, **kw)
+    for _ in range(100):
+        if is_running():
+            return True
+        time.sleep(0.1)
+    return False
+
+
+def stop():
+    """Stop the listener (a scan it started finishes and uploads on its own). True if one was running."""
+    if not is_running():
+        return False
+    pid = running_pid()
+    if pid:
+        subprocess.run(["taskkill", "/PID", str(pid), "/F"], capture_output=True, stdin=subprocess.DEVNULL,
+                       creationflags=NO_WINDOW)
+    for _ in range(50):
+        if not is_running():
+            break
+        time.sleep(0.1)
+    if not is_running():
+        PIDFILE.unlink(missing_ok=True)
+        say("Stopped.", False)
+    return True
+
+
+def autostart(set_to=None):
+    """Read (or set: True/False) whether the hidden listener starts at login."""
+    import winreg
+    if set_to is None:
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, RUN_KEY) as k:
+                return bool(winreg.QueryValueEx(k, RUN_NAME)[0])
+        except OSError:
+            return False
+    with winreg.CreateKey(winreg.HKEY_CURRENT_USER, RUN_KEY) as k:
+        if set_to:
+            winreg.SetValueEx(k, RUN_NAME, 0, winreg.REG_SZ, subprocess.list2cmdline(background_cmd()))
+        else:
+            try:
+                winreg.DeleteValue(k, RUN_NAME)
+            except FileNotFoundError:
+                pass
+    try:  # the minimized-window entry an earlier version made
+        (Path(os.environ["APPDATA"]) / "Microsoft" / "Windows" / "Start Menu" / "Programs" / "Startup"
+         / STARTUP_NAME).unlink(missing_ok=True)
+    except (KeyError, OSError):
+        pass
+    return bool(set_to)
+
+
+def status(code):
+    print("Scan requests:   " + ("LISTENING, hidden in the background (no window needed)" if is_running()
+                                 else "NOT listening"))
+    print("Starts at login: " + ("yes" if autostart() else "no"))
+    print(f"Request code for friends: {pretty(code)}")
+    try:
+        lines = LOG.read_text(encoding="utf-8", errors="replace").splitlines()[-8:]
+    except OSError:
+        lines = []
+    if lines:
+        print("\nLatest:")
+        for line in lines:
+            print("  " + line)
     return 0
+
+
+def install(code):
+    autostart(True)
+    ok = start_background()
+    status(code)
+    print()
+    if ok:
+        print("All set. You can close this window: it keeps listening, and starts by itself")
+        print("when you log in to Windows. Requests made while the PC is off wait up to 12 hours.")
+    else:
+        print("!! It is set to start at login, but it did not start now. See cache\\requests\\watcher.log,")
+        print("   or run:  watch_requests.bat /window")
+    return 0 if ok else 1
 
 
 def uninstall():
-    startup_file().unlink(missing_ok=True)
-    print("Uninstalled: it no longer starts at login. Close its window to stop it now.")
+    autostart(False)
+    was = stop()
+    print("Removed: it no longer starts at login" + (", and it has stopped listening." if was else "."))
     return 0
+
+
+def trim_log(keep=200_000, limit=1_000_000):
+    try:
+        if LOG.stat().st_size > limit:
+            data = LOG.read_bytes()[-keep:]
+            LOG.write_bytes(data[data.find(b"\n") + 1:])
+    except OSError:
+        pass
 
 
 # ------------------------------------------------------------ main
 
-def already_running():
-    try:
-        pid = int(PIDFILE.read_text().strip())
-    except (OSError, ValueError):
-        return False
-    return pid != os.getpid() and nh.pid_alive(pid)
-
-
 def main():
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    windowless = sys.stdout is None  # pythonw.exe: nothing to print to
+    if windowless:
+        sys.stdout = sys.stderr = open(os.devnull, "w", encoding="utf-8")
+        # scans run in the console python (hidden), exactly as "Filter this video" starts them
+        sys.executable = str(venv_python())
+    else:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description="Scan the videos friends ask for with 'Request filtering'.")
+    ap.add_argument("--install", action="store_true",
+                    help="listen hidden in the background, now and after every login")
+    ap.add_argument("--uninstall", action="store_true", help="stop, and don't start at login")
+    ap.add_argument("--status", action="store_true")
+    ap.add_argument("--stop", action="store_true", help="stop the background listener")
     ap.add_argument("--code", action="store_true", help="show the request code and exit")
     ap.add_argument("--new-code", action="store_true", help="make a new request code (the old one stops working)")
-    ap.add_argument("--install", action="store_true", help="start at Windows login")
-    ap.add_argument("--uninstall", action="store_true")
+    ap.add_argument("--background", action="store_true", help="(what --install starts, with pythonw.exe)")
     ap.add_argument("--once", action="store_true", help="handle the requests that are waiting, then exit")
     a = ap.parse_args()
     os.chdir(ROOT)
-    if a.install:
-        return install()
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
     if a.uninstall:
         return uninstall()
+    if a.stop:
+        print("Stopped listening (until the next login, or until you run watch_requests.bat again)." if stop()
+              else "It was not listening.")
+        return 0
     code = os.environ.get("KMS_REQ_CODE") or load_code(replace=a.new_code)  # KMS_REQ_CODE: tests
     if not valid_code(code):
         print("!! KMS_REQ_CODE is not a valid request code.")
         return 1
-    if a.code or a.new_code:
-        print(f"Request code: {pretty(code)}")
-        if a.new_code:
-            print("The old code no longer works: give friends the new one (add-on Settings > Request code),")
-            print("and restart watch_requests.bat if it is running.")
+    if a.new_code:
+        restarted = stop() and start_background()  # the listener must switch to the new code
+        print(f"New request code: {pretty(code)}")
+        print("The old code no longer works: give friends the new one (add-on Settings > Request code).")
+        if restarted:
+            print("The background listener was restarted with it.")
         return 0
-    STATE_DIR.mkdir(parents=True, exist_ok=True)
-    if already_running():
-        print("Scan requests are already being listened for (another window). Nothing to do.")
+    if a.code:
+        print(f"Request code: {pretty(code)}")
+        return 0
+    if a.status:
+        return status(code)
+    if a.install:
+        return install(code)
+
+    mutex = hold_mutex()  # kept until this process ends
+    if not mutex:
+        print("Scan requests are already being listened for on this PC (see: watch_requests.bat /status).")
         return 0
     PIDFILE.write_text(str(os.getpid()))
-    print("Listening for \"Request filtering\" from friends' add-ons. Leave this window open;")
-    print("close it (or Ctrl+C) to stop. Requests made while it is closed wait up to 12 hours.")
+    trim_log()
+    say("Listening" + (" in the background." if a.background or windowless else " in a window."), False)
+    print("Listening for \"Request filtering\" from friends' add-ons. Close this window (or Ctrl+C)")
+    print("to stop. Requests made while nothing is listening wait up to 12 hours.")
     print(f"\n    Request code for friends: {pretty(code)}\n")
     w = Watcher(Relay(code))
     try:
@@ -468,6 +631,9 @@ def main():
         w.work()
     except KeyboardInterrupt:
         print("\nStopped.")
+    except Exception as e:  # in the background nobody sees a traceback
+        say(f"Stopped by an error: {nh_one_line(repr(e))}", False)
+        raise
     finally:
         PIDFILE.unlink(missing_ok=True)
     return 0

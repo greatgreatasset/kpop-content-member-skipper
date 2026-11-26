@@ -179,11 +179,24 @@ filtered yet" has a **Request filtering** button (under the title and in the
 popup). It asks this PC to scan the video; the skips then show up on the
 friend's video by themselves, usually a minute or so after the scan ends.
 
-On this PC, double-click **watch_requests.bat** and leave the window open. It
-prints the **request code** (e.g. `abcde-fghjk-mnpqr-stuvw`) and then one line
-per request. `watch_requests.bat /install` also starts it, minimized, whenever
-you log in to Windows (`/uninstall` undoes that). Requests made while it isn't
-running wait for up to 12 hours and are scanned when it starts.
+On this PC, double-click **watch_requests.bat** once. It starts listening
+hidden in the background (no window to keep open; the one that appears can be
+closed), sets it to start by itself whenever you log in to Windows, and shows
+the **request code** (e.g. `abcde-fghjk-mnpqr-stuvw`). Requests made while the
+PC is off wait for up to 12 hours and are scanned when it is on again.
+
+```
+watch_requests.bat /status      is it listening, the request code, the last requests
+watch_requests.bat /stop        stop listening until the next login (e.g. to keep the GPU free)
+watch_requests.bat              start listening again (and at every login)
+watch_requests.bat /uninstall   stop listening and don't start at login any more
+watch_requests.bat /window      listen in this window instead, to watch it work
+```
+
+In the background it is a `pythonw.exe` process (no console), started at login
+from the per-user registry key `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`
+(value `KpopSkipperScanRequests`; no admin needed). What it does is logged to
+`cache/requests/watcher.log`, which `/status` shows the end of.
 
 Give the code to each friend once (privately: whoever has it can ask this PC
 for scans). They paste it the first time they click **Request filtering**, or
