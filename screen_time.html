@@ -34,6 +34,10 @@ h2 { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06
 #mstats .stat b { font-size: 17px; }
 #mstats .highlight b { color: var(--ian); } #mstats .skipm b { color: var(--skip); }
 .stat small { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+.chk { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); cursor: pointer; }
+.chk input { accent-color: var(--accent); }
+.wg { display: inline-block; font-family: var(--body); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 6px; margin-left: 4px; }
+.mrank { color: var(--muted); font-family: var(--mono); font-size: 11px; margin-right: 4px; }
 .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface); }
 .seg button { font: inherit; font-size: 13px; border: 0; background: none; color: var(--muted); padding: 5px 14px; border-radius: 999px; cursor: pointer; }
@@ -93,13 +97,14 @@ tfoot td { font-weight: 600; border-bottom: 0; background: var(--bg); }
     <p class="lede">The first column is the time the add-on really jumps over in each video: only the parts where Carmen and/or Ye-on are on screen with nobody else. The member columns show how much of the video each member is on screen at all, alone or with others, so a group video can show Carmen at 90% and still have almost nothing skipped. Click a column to sort.</p>
   </header>
   <div class="stats" id="stats"></div>
-  <div class="mstats-box"><h2>Total time on screen, all videos</h2><div class="stats" id="mstats"></div></div>
+  <div class="mstats-box"><h2 id="mstats-h">Total time on screen</h2><div class="stats" id="mstats"></div></div>
   <div class="controls">
     <div class="seg" role="group" aria-label="Show values as">
       <button type="button" id="mode-share" aria-pressed="true">% of video</button>
       <button type="button" id="mode-time" aria-pressed="false">Minutes</button>
     </div>
     <input type="search" id="q" placeholder="Filter by title" aria-label="Filter by title">
+    <label class="chk"><input type="checkbox" id="incl"> <span id="incl-l">Include whole-group videos</span></label>
   </div>
   <div class="table-box">
     <table id="main">
@@ -138,7 +143,9 @@ const COLS = [
   {k: "pairSecs", label: "Top pair", sub: "most time as a duo", cls: "pr"},
 ];
 const MCOLS = COLS.filter(c => c.m && c.k !== "skip");
-let mode = "share", sortKey = "date", sortDir = -1, q = "";
+let mode = "share", sortKey = "date", sortDir = -1, q = "", incl = false;
+const NWG = DATA.videos.filter(v => v.wholeGroup).length;
+const counted = () => DATA.videos.filter(v => incl || !v.wholeGroup);
 try { mode = localStorage.getItem("st-mode") || mode; } catch (e) {}
 const clock = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
   return h ? `${h}:${String(m).padStart(2, "0")}:${String(x).padStart(2, "0")}` : `${m}:${String(x).padStart(2, "0")}`; };
@@ -158,13 +165,13 @@ function render() {
   document.getElementById("mode-time").setAttribute("aria-pressed", mode === "time");
   document.getElementById("head").innerHTML = COLS.map(c =>
     `<th class="${c.cls}" tabindex="0" data-k="${c.k}" aria-sort="${c.k === sortKey ? (sortDir > 0 ? "ascending" : "descending") : "none"}">${c.label}${c.sub ? `<small>${c.sub}</small>` : ""}</th>`).join("");
-  const rows = DATA.videos.filter(v => !q || v.title.toLowerCase().includes(q))
+  const rows = counted().filter(v => !q || v.title.toLowerCase().includes(q))
     .sort((a, b) => { const x = val(a, sortKey), y = val(b, sortKey); return (x < y ? -1 : x > y ? 1 : 0) * sortDir; });
   const body = document.getElementById("body");
   if (!rows.length) {
     body.innerHTML = `<tr><td colspan="${COLS.length}" class="empty">${DATA.videos.length ? "No video title matches that filter." : "No Hearts2Hearts videos scanned yet."}</td></tr>`;
   } else {
-    body.innerHTML = rows.map(v => cell(COLS[0], v.skip, v.duration) + `<td class="t"><a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">${esc(v.title)}</a><small>${esc(v.id)} · ${v.skips} skip${v.skips === 1 ? "" : "s"}</small></td>` +
+    body.innerHTML = rows.map(v => cell(COLS[0], v.skip, v.duration) + `<td class="t"><a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">${esc(v.title)}</a><small>${esc(v.id)} · ${v.skips} skip${v.skips === 1 ? "" : "s"}${v.wholeGroup ? `<span class="wg">whole group</span>` : ""}</small></td>` +
       `<td class="n">${v.date || "–"}</td><td class="n">${clock(v.duration)}</td>` +
       MCOLS.map(c => cell(c, v[c.k], v.duration)).join("") +
       `<td class="n pr">${v.pair ? `${esc(names(v.pair.split("+")))}<small>${clock(v.pairSecs)}</small>` : "–"}</td>`).map(r => `<tr>${r}</tr>`).join("");
@@ -172,16 +179,16 @@ function render() {
   const tot = k => rows.reduce((s, v) => s + v[k], 0), dur = tot("duration");
   document.getElementById("foot").innerHTML = rows.length ? `<tr>${cell(COLS[0], tot("skip"), dur)}<td class="t">All ${rows.length} shown</td><td class="n"></td><td class="n">${clock(dur)}</td>` +
     MCOLS.map(c => cell(c, tot(c.k), dur)).join("") + "<td></td></tr>" : "";
-  const all = DATA.videos, D = all.reduce((s, v) => s + v.duration, 0), S = all.reduce((s, v) => s + v.skip, 0);
+  const all = counted(), D = all.reduce((s, v) => s + v.duration, 0), S = all.reduce((s, v) => s + v.skip, 0);
   document.getElementById("stats").innerHTML = [
-    [all.length, "videos scanned"], [(D / 3600).toFixed(1) + " h", "of video"],
+    [all.length, incl || !NWG ? "videos scanned" : `videos counted (${NWG} whole-group left out)`], [(D / 3600).toFixed(1) + " h", "of video"],
     [clock(S), `actually skipped (${D ? pct(S / D) : "0%"})`],
   ].map(([b, s]) => `<div class="stat"><b>${b}</b><small>${s}</small></div>`).join("");
-  document.getElementById("mstats").innerHTML = DATA.members.map(m => {
-    const t = all.reduce((s, v) => s + (v[m.id] || 0), 0);
-    return `<div class="stat ${m.choice === "skip" ? "skipm" : m.choice}"><b>${clock(t)}</b><small>${esc(m.name)} on screen (${D ? pct(t / D) : "0%"})</small></div>`;
-  }).join("");
-  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Updated ${DATA.generated}.`;
+  document.getElementById("mstats-h").textContent = `Total time on screen, most to least${incl || !NWG ? ", all videos" : ", whole-group videos left out"}`;
+  document.getElementById("mstats").innerHTML = DATA.members.map(m => ({m, t: all.reduce((s, v) => s + (v[m.id] || 0), 0)}))
+    .sort((a, b) => b.t - a.t).map(({m, t}, i) =>
+    `<div class="stat ${m.choice === "skip" ? "skipm" : m.choice}"><b><span class="mrank">${i + 1}</span>${clock(t)}</b><small>${esc(m.name)} on screen (${D ? pct(t / D) : "0%"})</small></div>`).join("");
+  document.getElementById("note").textContent = `A member counts as on screen whenever the scanner recognizes her face, fully shown or cut off by the frame edge. Several members are often on screen together, so the columns don't add up to 100%. "Time actually skipped" is what the add-on jumps over with the default settings: the parts where only Carmen and/or Ye-on are on screen. It always shows minutes and seconds, with the share of the video under it. Whole-group videos (${NWG}: cheering guides and MV commentaries) keep almost every member on screen the whole time, so nobody has to share the screen there; they are left out of the totals and the pair analysis unless you tick "Include whole-group videos". Updated ${DATA.generated}.`;
 }
 const tsort = {p: ["ratio", -1], t: ["secs", -1]};
 function combo(kind, list, headId, bodyId) {
@@ -239,6 +246,8 @@ document.getElementById("head").addEventListener("click", e => { const th = e.ta
 document.getElementById("head").addEventListener("keydown", e => { const th = e.target.closest("th"); if (th && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); sortBy(th.dataset.k); } });
 for (const m of ["share", "time"]) document.getElementById("mode-" + m).addEventListener("click", () => {
   mode = m; try { localStorage.setItem("st-mode", m); } catch (e) {} render(); });
+document.getElementById("incl").addEventListener("change", e => { incl = e.target.checked; render(); });
+document.getElementById("incl-l").textContent = `Include whole-group videos (${NWG})`;
 document.getElementById("q").addEventListener("input", e => { q = e.target.value.trim().toLowerCase(); render(); });
 render();
 </script>

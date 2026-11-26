@@ -6,7 +6,8 @@ For every scanned video with Hearts2Hearts in it: how long each member is on
 screen, and how much of the video the default skips (Carmen + Ye-on alone) take out. A member
 counts as on screen in every timeline frame she is recognized in, fully shown or
 cut off by the frame edge; several members can be on screen at once, so the
-shares don't add up to 100%. Dates come from the batch scan's channel listing
+shares don't add up to 100%. Whole-group videos (see WHOLE_GROUP) are flagged
+and left out of the totals and the pair analysis by default. Dates come from the batch scan's channel listing
 (cache/batch/), so they are approximate (YouTube shows "3 weeks ago").
 
 The HTML page is self-contained (sortable table, no network) and only contains
@@ -22,6 +23,14 @@ from common import CACHE, ROOT, SKIPLISTS, Profile
 
 GROUP = "hearts2hearts"
 TEMPLATE = ROOT / "screen_time.html"
+# A "whole-group video" (cheering guides, MV commentaries) keeps (nearly) everyone on
+# screen the whole time, so nobody has to share the screen with anyone: it makes the
+# members' screen time look more equal than it is. Such a video has GROUP_SHOT+ members
+# on screen for at least WHOLE_GROUP of the time anyone is. They are left out of the
+# totals and the pair analysis by default (the 8 such videos are at 98-100%, every
+# other video at 14% or less, so the exact cutoff doesn't matter).
+GROUP_SHOT = 5
+WHOLE_GROUP = 0.5
 
 
 def dates():
@@ -48,11 +57,15 @@ def video_row(d):
     keys = {m["key"]: m["member"] for m in tl["members"] if m["profile"] == GROUP}
     secs = {m: 0.0 for m in keys.values()}
     combos = {}  # "a+b" / "a+b+c" (sorted ids) -> s with exactly those members on screen
+    crowd = seen = 0.0  # s with GROUP_SHOT+ members on screen / with any member on screen
     for s in tl["segments"]:
         n = s["end"] - s["start"]
         on = sorted(keys[k] for k in (set(s.get("members", ())) | set(s.get("partial", ()))) & keys.keys())
         for m in on:
             secs[m] += n
+        if on:
+            seen += n
+            crowd += n * (len(on) >= GROUP_SHOT)
         if len(on) in (2, 3):
             combos["+".join(on)] = combos.get("+".join(on), 0.0) + n
     dur = d.get("duration") or tl["frames"] / tl["fps"]
@@ -60,7 +73,9 @@ def video_row(d):
     return {"id": d["videoId"], "title": d.get("title") or d["videoId"], "duration": round(dur),
             **{m: round(v, 1) for m, v in secs.items()},
             "skip": round(skip, 1), "skips": len(d.get("skips", [])),
-            "combos": {k: round(v, 1) for k, v in combos.items()}}
+            "combos": {k: round(v, 1) for k, v in combos.items()},
+            "groupShare": round(crowd / seen, 3) if seen else 0.0,
+            "wholeGroup": seen > 0 and crowd / seen >= WHOLE_GROUP}
 
 
 def expected(obs, members, size):
@@ -137,8 +152,9 @@ def main():
     for r in rows:
         top = max(((v, k) for k, v in r["combos"].items() if "+" in k and k.count("+") == 1), default=None)
         r["pair"], r["pairSecs"] = (top[1], top[0]) if top else (None, 0.0)
-    pairs, trios = together(rows, members, 2), together(rows, members, 3)
-    cols = ["id", "date", "title", "duration", *members, "skip", "skips"]
+    split = [r for r in rows if not r["wholeGroup"]]
+    pairs, trios = together(split, members, 2), together(split, members, 3)
+    cols = ["id", "date", "title", "duration", *members, "skip", "skips", "wholeGroup"]
     with open(CACHE / "screen_time.csv", "w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)
         w.writerow(cols + [f"{c} share" for c in (*members, "skip")])
@@ -147,7 +163,7 @@ def main():
                        [f"{r[c] / r['duration']:.3f}" for c in (*members, "skip")])
     data = {"generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             "members": [{"id": m, "name": prof.names.get(m, m), "choice": prof.choice(m)} for m in members],
-            "pairs": pairs, "trios": trios, "months": by_month(rows, members),
+            "pairs": pairs, "trios": trios, "months": by_month(split, members),
             "videos": [{k: v for k, v in r.items() if k != "combos"} for r in rows]}
     with open(CACHE / "screen_time_together.csv", "w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)
