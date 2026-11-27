@@ -1,0 +1,59 @@
+{
+ "format": 6,
+ "videoId": "aFNxGemp8LM",
+ "title": "ILLIT (아일릿) ‘Perfect Night’ @GLITTERDAY ENCORE",
+ "duration": 125,
+ "scannedAt": "2026-11-27T13:17:01+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 374,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":2.33,"state":"none"},
+   {"start":2.33,"end":4.0,"state":"wide"},
+   {"start":4.0,"end":4.33,"state":"none"},
+   {"start":4.33,"end":4.67,"state":"wide"},
+   {"start":4.67,"end":5.0,"state":"none"},
+   {"start":5.0,"end":16.67,"state":"wide"},
+   {"start":16.67,"end":17.0,"state":"none"},
+   {"start":17.0,"end":26.33,"state":"wide"},
+   {"start":26.33,"end":26.67,"state":"unknown"},
+   {"start":26.67,"end":27.0,"state":"wide"},
+   {"start":27.0,"end":27.67,"state":"unknown"},
+   {"start":27.67,"end":30.33,"state":"wide"},
+   {"start":30.33,"end":30.67,"state":"unknown"},
+   {"start":30.67,"end":41.67,"state":"wide"},
+   {"start":41.67,"end":42.0,"state":"unknown"},
+   {"start":42.0,"end":43.33,"state":"wide"},
+   {"start":43.33,"end":43.67,"state":"unknown"},
+   {"start":43.67,"end":117.33,"state":"wide"},
+   {"start":117.33,"end":124.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[],"tracks":{
+   "illit:minju": [
+    [6739,"AuxfNBaDXKu0fHBaDYKujdpBeDdKuLc7BeDgKtkc8BeDjKtFcsBeDeKsucbBeDbKsOcSBlDdKrpcWBgDPKq9cwBhDJKqTc8BjDZKqDc1BiDeKp7dLBiDQKpudKBkDOKpndLBrDaKpodVBrDUKpodZBqDQKpkdZBqDLKpfdUBpDQKpZdVBqDRKpWdWBrDWKpVdWBsDYKpWdZBqDVKpWddBqDUKpVdgBnDQKpUdjBoDRKpUdkBoDQKpVddBqDWKpXdeBpDOKpZdlBlDE"]],
+   "illit:moka": [
+    [4549,"AbTe-BgDLKbTeUBcDdKbReoBbDMKbPehBaDQKbMeqBcDSKbKd7BeDXKaydsBfDO"]]
+  }}
+ }
+}
