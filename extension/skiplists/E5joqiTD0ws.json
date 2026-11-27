@@ -1,0 +1,58 @@
+{
+ "format": 6,
+ "videoId": "E5joqiTD0ws",
+ "title": "ILLIT (아일릿) ‘jellyous’ Dance Practice",
+ "duration": 172,
+ "scannedAt": "2026-11-27T16:55:08+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 515,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":0.67,"state":"none"},
+   {"start":0.67,"end":1.0,"state":"wide"},
+   {"start":1.0,"end":2.67,"state":"none"},
+   {"start":2.67,"end":3.0,"state":"wide"},
+   {"start":3.0,"end":4.33,"state":"none"},
+   {"start":4.33,"end":4.67,"state":"wide"},
+   {"start":4.67,"end":5.0,"state":"none"},
+   {"start":5.0,"end":9.67,"state":"wide"},
+   {"start":9.67,"end":10.0,"state":"none"},
+   {"start":10.0,"end":13.33,"state":"wide"},
+   {"start":13.33,"end":13.67,"state":"none"},
+   {"start":13.67,"end":86.33,"state":"wide"},
+   {"start":86.33,"end":86.67,"state":"none"},
+   {"start":86.67,"end":100.0,"state":"wide"},
+   {"start":100.0,"end":100.33,"state":"none"},
+   {"start":100.33,"end":127.0,"state":"wide"},
+   {"start":127.0,"end":127.33,"state":"none"},
+   {"start":127.33,"end":154.0,"state":"wide"},
+   {"start":154.0,"end":154.33,"state":"none"},
+   {"start":154.33,"end":164.33,"state":"wide"},
+   {"start":164.33,"end":171.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[],"tracks":{
+
+  }}
+ }
+}
