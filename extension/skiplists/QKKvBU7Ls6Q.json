@@ -1,0 +1,165 @@
+{
+ "format": 6,
+ "videoId": "QKKvBU7Ls6Q",
+ "title": "[말차와 강아지 출입 금지] 효과 주의❗️ | 귀여움을 강하게 밀어내는 inst | LYRICS MODE 🪼🍵🎵",
+ "duration": 44,
+ "scannedAt": "2026-11-27T12:35:16+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 44
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [
+  {
+   "start": 19.83,
+   "end": 23.5
+  },
+  {
+   "start": 33.17,
+   "end": 35.17
+  }
+ ],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 131,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":2.67,"state":"unknown"},
+   {"start":2.67,"end":3.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":3.67,"end":5.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":5.33,"end":6.0,"state":"none"},
+   {"start":6.0,"end":7.67,"members":["illit:iroha","illit:moka","illit:yunah"]},
+   {"start":7.67,"end":8.0,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":8.0,"end":8.67,"members":["illit:iroha","illit:yunah"],"focus":"illit:iroha"},
+   {"start":8.67,"end":9.0,"members":["illit:iroha","illit:moka","illit:yunah"],"focus":"illit:moka"},
+   {"start":9.0,"end":10.0,"members":["illit:iroha","illit:moka"]},
+   {"start":10.0,"end":10.67,"state":"unknown"},
+   {"start":10.67,"end":11.0,"state":"none"},
+   {"start":11.0,"end":13.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":13.33,"end":15.33,"state":"wide"},
+   {"start":15.33,"end":17.67,"state":"none"},
+   {"start":17.67,"end":19.0,"state":"wide"},
+   {"start":19.0,"end":19.67,"state":"none"},
+   {"start":19.67,"end":20.0,"state":"unknown"},
+   {"start":20.0,"end":20.67,"partial":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":20.67,"end":21.33,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":21.33,"end":22.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":22.67,"end":24.67,"state":"unknown"},
+   {"start":24.67,"end":25.33,"state":"none"},
+   {"start":25.33,"end":25.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":25.67,"end":27.33,"state":"none"},
+   {"start":27.33,"end":28.33,"state":"unknown"},
+   {"start":28.33,"end":28.67,"state":"none"},
+   {"start":28.67,"end":31.0,"state":"wide"},
+   {"start":31.0,"end":31.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":31.67,"end":33.67,"state":"unknown"},
+   {"start":33.67,"end":35.0,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":35.0,"end":35.67,"state":"none"},
+   {"start":35.67,"end":36.33,"state":"unknown"},
+   {"start":36.33,"end":36.67,"state":"wide"},
+   {"start":36.67,"end":38.0,"state":"none"},
+   {"start":38.0,"end":39.0,"state":"wide"},
+   {"start":39.0,"end":39.33,"state":"unknown"},
+   {"start":39.33,"end":43.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[83,163,223,315,450,480,513,520,561,593,656,791,928,1066,1136,1239,1286,1364,1486,1567,1594,1622,1649,1692,1939,2215,2240,2285,2365,2367,2377,2435],"tracks":{
+   "illit:iroha": [
+    [358,"AbQgzExKJKa6gXEzKwKaygsEyKoKaqgkEzK1KasgqExKqKaqgnEwKsKatgmEvKpKaxg0EsKNKa0ghEuKqKavgUEyKl"],
+    [458,"AboYYElKJKb-YYEnKbKcZYcEmKk"],
+    [488,"AdaY2EsK0KefZyE3KrKfCZbEmLM"],
+    [518,"AfPZCElK7"],
+    [528,"AfLXcEoMvKfDY0EiLyKf1YKEoMWKgJYPEiMC"],
+    [568,"AfiZJEmLaKfOYTEwLxKemYiE0MB"]],
+   "illit:minju": [
+    [1239,"AS1IqOOfWKSyIwOViBUTDNnQAftKUJKcQbh1"]],
+   "illit:moka": [
+    [168,"AdsMDLXhJKdvM0LHg7KdsM9LUg7KdvNKLghFKd4M3LMglKdGM9K4go"],
+    [358,"AUdg9EMK3KUrhfEPK8KU0hwEVLKKU9iTEPK6KU_iHEPK0KU2h7ETK6KU1h-EOLEKU4h9EULbKVOiEETLaKVZh4EcLL"],
+    [518,"AQeWdF7NT"],
+    [528,"AQNWDGCO6KQeXBF3NjKRWXhFkNAKSjYQFEMX"],
+    [568,"ATIZRE2MCKTrZEEvLvKTKYsE5Lu"],
+    [1519,"AgvJzRiyFKeKGtS90lKcZFiWD4m"],
+    [1869,"ApvVoEXJmKpnV8EYJnKo6V3EkJeKodVrELJW"]],
+   "illit:wonhee": [
+    [658,"AqTIFKeYVKrGJ8KfYVKq1JgKqZKKpXIBLCaTKnxJBL6bDKnlMeMRcvKnlOBM1dyKnrNhNWgJKmYNENmg3KkxN2OBggKkENMOZhkKjyMfOcihKjxN1Ojh4KkBPrOzig"]],
+   "illit:yunah": [
+    [228,"AgGQNE2MkKgDQHE-MiKf7P_FLMeKf-P5E4MdKf7PnFGMpKfyPdFeM2Kf_QDFHMbKf4PHFVM7Kf8OzE5Mc"],
+    [358,"AjDgmD_JyKisghEHKEKiPhgEUJcKh1iXEXIkKhVjCEvIzKhQjLEmIkKhQjhEoIIKhUjWEnIdKhbjfEmIXKhejaElIc"],
+    [478,"AnyYODLHf"],
+    [488,"AnUYKDdI5KmrYFDgJaKmhXvDXJ9"],
+    [518,"AmcXuDcKC"],
+    [528,"AmGXWDTJp"],
+    [1189,"ABMAAPNX0KHuAAOzZ1KJfAAPbahKMSAAPiblKL7AAPXdT"],
+    [1289,"ANvW0DwJuKOBW_DvJpKOHXADsJwKOCXDDsJ0KN_XYDpJpKOfXhDuJ0KO2X8DlJYKPBX7DmJQ"],
+    [2010,"AOAZuEKKbKNRXgD9J1KNDXJDrI8KMeYJDZI_KNJZeDNIZKOYXgDRHdKOjWpCqHCKOxWcCeGwKPOYHCVGPKPsYOCQF8"]]
+  }}
+ }
+}
