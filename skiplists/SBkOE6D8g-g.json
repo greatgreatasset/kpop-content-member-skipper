@@ -1,0 +1,47 @@
+{
+ "format": 6,
+ "videoId": "SBkOE6D8g-g",
+ "title": "습관성 친절 근절 캠페인 #1편 | ILLIT (아일릿)",
+ "duration": 41,
+ "scannedAt": "2026-11-27T03:13:59+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 123,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":8.0,"state":"none"},
+   {"start":8.0,"end":8.33,"state":"unknown"},
+   {"start":8.33,"end":8.67,"state":"none"},
+   {"start":8.67,"end":9.0,"state":"unknown"},
+   {"start":9.0,"end":15.33,"state":"none"},
+   {"start":15.33,"end":34.33,"state":"unknown"},
+   {"start":34.33,"end":34.67,"state":"wide"},
+   {"start":34.67,"end":36.67,"state":"unknown"},
+   {"start":36.67,"end":38.0,"state":"wide"},
+   {"start":38.0,"end":41.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[155,766,926,1381,1952,2282],"tracks":{
+
+  }}
+ }
+}
