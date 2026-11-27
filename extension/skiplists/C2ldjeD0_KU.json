@@ -1,0 +1,112 @@
+{
+ "format": 6,
+ "videoId": "C2ldjeD0_KU",
+ "title": "‘포토부스’ 편 10s | It’s Me | ILLIT (아일릿)",
+ "duration": 10,
+ "scannedAt": "2026-11-27T07:54:06+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 7
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 31,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":4.33,"state":"unknown"},
+   {"start":4.33,"end":4.67,"state":"wide"},
+   {"start":4.67,"end":5.0,"members":["illit:minju"]},
+   {"start":5.0,"end":5.33,"state":"none"},
+   {"start":5.33,"end":5.67,"state":"unknown"},
+   {"start":5.67,"end":6.0,"state":"wide"},
+   {"start":6.0,"end":6.33,"partial":["illit:yunah"]},
+   {"start":6.33,"end":6.67,"state":"none"},
+   {"start":6.67,"end":8.0,"members":["illit:wonhee"]},
+   {"start":8.0,"end":10.33,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[25,48,63,153,265,305,375,378,488,526,563],"tracks":{
+   "illit:iroha": [
+    [398,"AISjQBvDfKISjNBuDgKISjRBvDeKIRjNBwDjKISjOByDiKIUjNBsDbKISjNBvDgKISjPBvDfKIUjNBsDc"]],
+   "illit:minju": [
+    [278,"AVee7DDI1KVvfBDOJEKVxe8DRI3"],
+    [278,"AmxfDDLI5KnAfIDKI_KnEfDDLI4"],
+    [398,"A1KDbBvDtK1KDbBuDtK1KDbBvDtK1KDbBvDtK1KDbBvDtK1KDbBvDtK1KDbBvDtK1KDbBvDtK1KDbBvDt"],
+    [398,"AkGo_BACRKkGo8BACTKkGo9BACSKkGo-BACSKkGo-BACTKkGo9BBCUKkGpABACQKkGo-BBCTKkGo-BACS"]],
+   "illit:wonhee": [
+    [398,"Av9vxBWDCKv9vxBVDCKv9vwBWDDKv-vyBVDAKv-vxBVDBKv9vyBVDAKv-vxBVDBKv9vyBVDAKv9vwBVDC"],
+    [398,"AWk8CCLD1KWk8BCLD1KWk8BCLD2KWk8CCLD1KWk8CCLD0KWk8BCLD1KWk8BCMD1KWk8CCLD0KWk8BCLD1"]],
+   "illit:yunah": [
+    [368,"AAADRB_H0"]]
+  }}
+ }
+}
