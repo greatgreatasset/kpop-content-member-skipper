@@ -1,0 +1,58 @@
+{
+ "format": 6,
+ "videoId": "bmbPy3tjpj8",
+ "title": "날 가두지 마 진흙밭 I #잇츠미 #TEASER2",
+ "duration": 38,
+ "scannedAt": "2026-11-27T06:03:55+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 113,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":4.67,"state":"none"},
+   {"start":4.67,"end":5.0,"state":"wide"},
+   {"start":5.0,"end":5.33,"state":"unknown"},
+   {"start":5.33,"end":7.67,"state":"wide"},
+   {"start":7.67,"end":10.33,"state":"none"},
+   {"start":10.33,"end":12.67,"state":"unknown"},
+   {"start":12.67,"end":14.33,"state":"wide"},
+   {"start":14.33,"end":16.67,"state":"none"},
+   {"start":16.67,"end":19.33,"state":"unknown"},
+   {"start":19.33,"end":19.67,"state":"none"},
+   {"start":19.67,"end":22.67,"state":"unknown"},
+   {"start":22.67,"end":23.0,"state":"none"},
+   {"start":23.0,"end":23.67,"state":"unknown"},
+   {"start":23.67,"end":24.0,"state":"wide"},
+   {"start":24.0,"end":27.0,"state":"none"},
+   {"start":27.0,"end":27.67,"state":"wide"},
+   {"start":27.67,"end":28.33,"state":"none"},
+   {"start":28.33,"end":29.0,"state":"wide"},
+   {"start":29.0,"end":29.33,"state":"none"},
+   {"start":29.33,"end":29.67,"state":"wide"},
+   {"start":29.67,"end":37.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[282,456,859,999,1125,1385,1451,1522,2118],"tracks":{
+
+  }}
+ }
+}
