@@ -1,0 +1,119 @@
+{
+ "format": 6,
+ "videoId": "LHqHISCNcYQ",
+ "title": "‘잇츠米’ 편 15s | It’s Me | ILLIT (아일릿)",
+ "duration": 15,
+ "scannedAt": "2026-11-27T08:01:41+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 17
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 46,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":5.0,"state":"unknown"},
+   {"start":5.0,"end":5.67,"state":"none"},
+   {"start":5.67,"end":6.0,"state":"wide"},
+   {"start":6.0,"end":6.33,"members":["illit:wonhee","illit:yunah"]},
+   {"start":6.33,"end":7.0,"members":["illit:moka","illit:wonhee","illit:yunah"]},
+   {"start":7.0,"end":7.67,"state":"none"},
+   {"start":7.67,"end":8.33,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":8.33,"end":9.33,"state":"none"},
+   {"start":9.33,"end":9.67,"members":["illit:iroha","illit:minju","illit:wonhee"]},
+   {"start":9.67,"end":10.0,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":10.0,"end":11.33,"state":"none"},
+   {"start":11.33,"end":13.0,"state":"wide"},
+   {"start":13.0,"end":15.33,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[75,263,410,455,503,551,603,678,781],"tracks":{
+   "illit:iroha": [
+    [458,"AumXIDbIoKuoWpDZI1KunWoDZIzKuiW3DdIwKupWdDUIq"],
+    [558,"AqbSoFsR3KttPZHnWTKwENHI6ZrKv-NPJQZtKv8NpJAZd"]],
+   "illit:minju": [
+    [458,"AjKU5DbIBKjIUQDjIRKjJUwDeIFKjKUpDfIMKjIUeDhIP"],
+    [558,"AefOYGUPaKfiK0IXS_KgBJLI4VOKgNJXIqVQKgJJzIsVJ"]],
+   "illit:moka": [
+    [378,"AuzytCzFfKuiyfC0FqKupyoC5F0KunylC0Fl"]],
+   "illit:wonhee": [
+    [368,"AcEezCYFaKa4fAC9GVKamfCDAGSKaxfIC8GXKavfAC7GT"],
+    [458,"AYXWbDTHoKYUWFDVHxKYTWZDXHuKYPWTDXHyKYPWODWHy"],
+    [558,"AVQToFaNEKTpQxHbQ8KSOQbINSrKSQQqISSfKSNQwIQSf"]],
+   "illit:yunah": [
+    [368,"AU4dUCNFfKSIdLCqGrKR7dBCtG4KSFdNCqG-KSHc5CjGu"],
+    [458,"ANZSjDHIHKNXSrDFIJKNYSlDGIJKNYSoDGILKNbSaDIIK"],
+    [558,"AN_OGECNNUHkHhHRSOKHoIUHPR4KHoIUG5SS"]]
+  }}
+ }
+}
