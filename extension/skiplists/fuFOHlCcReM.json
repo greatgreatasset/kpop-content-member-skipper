@@ -1,0 +1,141 @@
+{
+ "format": 6,
+ "videoId": "fuFOHlCcReM",
+ "title": "SUPER ILLIT TRIP LOG : FUKUOKA Teaser",
+ "duration": 35,
+ "scannedAt": "2026-11-27T04:47:04+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 96
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 104,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":2.0,"state":"wide"},
+   {"start":2.0,"end":3.67,"members":["illit:iroha","illit:yunah"]},
+   {"start":3.67,"end":6.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":6.33,"end":8.67,"members":["illit:minju","illit:wonhee"]},
+   {"start":8.67,"end":9.67,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":9.67,"end":10.67,"members":["illit:minju","illit:wonhee"]},
+   {"start":10.67,"end":12.0,"members":["illit:iroha","illit:wonhee","illit:yunah"]},
+   {"start":12.0,"end":15.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":15.33,"end":16.67,"members":["illit:yunah"]},
+   {"start":16.67,"end":18.0,"members":["illit:iroha","illit:yunah"]},
+   {"start":18.0,"end":19.33,"members":["illit:minju","illit:wonhee"]},
+   {"start":19.33,"end":19.67,"state":"unknown"},
+   {"start":19.67,"end":21.33,"state":"none"},
+   {"start":21.33,"end":22.33,"members":["illit:iroha","illit:yunah"]},
+   {"start":22.33,"end":23.33,"state":"unknown"},
+   {"start":23.33,"end":24.67,"partial":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":24.67,"end":25.33,"members":["illit:iroha","illit:yunah"]},
+   {"start":25.33,"end":25.67,"members":["illit:iroha","illit:wonhee","illit:yunah"]},
+   {"start":25.67,"end":26.0,"members":["illit:iroha","illit:yunah"],"partial":["illit:wonhee"]},
+   {"start":26.0,"end":27.33,"members":["illit:iroha","illit:yunah"]},
+   {"start":27.33,"end":27.67,"members":["illit:yunah"]},
+   {"start":27.67,"end":34.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[120,224,388,510,581,647,725,851,929,1073,1167,1271,1349,1487,1668,1872],"tracks":{
+   "illit:iroha": [
+    [128,"AvDOBFBM0KuONCFDMiKuDMOFTLsKuwNeFHMpKuZNxFLM5KtsL-FXM4Kt5MVFcMiKuFOdFZM6KttM1FcNDKt4MYFdMo"],
+    [649,"AazRKEfK3Ka7Q6EeK5KbCQxEcK2KbCQyEYK0Ka8QwEWLRKa2QoESMHKa9QyEMMRKbJRSEMLV"],
+    [929,"AraP4EmNIKq2PMEdNhKqGPjEZNHKpGPOEnNnKovPQEfNmKpcP2EKM6Kq-PtEEMyKsuPzEKNEKuNPvEWNaKu6QKEfM4KvDQVEoMsKu7Q_EfMdKuqROEbMqKu4RsEdNDKvTR3EfNC"],
+    [1279,"AtmJ-GRNzKtjJxGQNkKthJJGRN3KtmIvGPOAKuJImGDNgKuxIQF5NWKu7H8GBNf"],
+    [1389,"AGlAAJ4OsKJEAAKcQLKM5AAJmSLKQAAAJ7UBKS4AALDWGKYxAALcSUKbJAAKlT5KbnAAKqS_KaOAALpSEKZ8AALTRc"],
+    [1489,"AukM6GQNyKuWNUGMOhLuDNdGEO0KtaNeGGO8KtBNnGCOpKstNkGJOiKsqNoGIOcKszNlGHNsKs2NYGhN0KtvNnGMOpKuSNhFbN2KuwNXFrNtKvLM4FqOIKvdMLFnOSKvZLiFmOeKvQL_FlNwKu5LjFvODKvJLXFIN9"]],
+   "illit:minju": [
+    [388,"AqeMZF6OeKqkMzF2OXKquNDFxOJKrQNBF2OGKrmMsF5OgKr0MaF2OWKr2MgF5OZKsUMfF6N-KsYMxF2ObKsBMyF5OZKrdNLF9OJKrENAF9OILq1M8F1OH"],
+    [519,"Af3LrIDToKfMLuITS7KelLvIRTVKeTNHIZS5KfeNHISSdKgOLuIQTWKgEMAIPTH"],
+    [589,"AsVMhFwObKsmMmF2OGKs_NAFwNmKtLNAFrNqKtQNEFmN5KtTM-FmN8"],
+    [1079,"AoSN6FzNQKnpNqFxNcKnFNbF2NaKnMNPFuNZKnANIFkNCKmtNJFoNHKmlNSFpM-KmNNaFyNRKlRN9F4NQ"]],
+   "illit:wonhee": [
+    [228,"Ad-L4HjTOKd_LyHlTJKeBLoHpTHKeALzHzTZKd-MKHzTZKd4MMHyTiKdwMTH2TQKddIhJAWTKeDEoJuW8KfjE3JnUbKgnJGJVUSKikIbJjVqKjFFMJYVCKe8EbKFULKZ_FrKPV_KYTG3KAXB"],
+    [388,"AOJT2F9OBKOLUAF6NJKOIUBF7NQKN7T_GDNrKN3T3GBNLKNxT3GANbKNtTaGBOgKNoTQGAOaKNdTXGAOMKNbTRGAODKNhTkGCN7KNkTmGEN3LNkT6GDNu"],
+    [589,"APRUuF4MkKPeUIF5M3KPWUTF5MaKPSUCF6MiKPXUQF7MnKPoUUF6Mx"],
+    [649,"Ax2RqD3KlKxfRxD3KrKxhRTD5KYKxjRFD0KUKxeRID0KgKxKRKD6KeKwyRbD1KgKwcRtD4KY"],
+    [729,"AcgMIH4StKcnMhH5SJKcqMdHvSQKcbMKHqSUKcaMZHgR4KcuMaHrSOKcxMXHoR5Kc8MNHrSNKdnK9IFRvKdUMWH1R-KdUM-H8R_KdWNhH6ScKdYNlH7Si"],
+    [859,"AbSKiLudYKb4KOMBbyKb5NjLqazKcJLiL7bfKcgLlL9bpKc_LhLubzKdGLzLpbt"],
+    [1079,"AS4YaFyNPKSJVMFqNhKQ3SqF4NMKP2RLFzM6KPFQ4FzM2KOpRDFxNFKOcQ_FyNLKO-RFFkNIKPbQ2FbNT"],
+    [1349,"Ao2AANTOzKqXAANbPAKtkAANxQy"],
+    [1520,"A7SQYEtNkK5iQ3FpNtK5xQsFiNqK71PrEKNW"]],
+   "illit:yunah": [
+    [8,"APraBBPC3KPtaBBQC3KP0aDBPC1KQAaKBMCzKQIaGBMC4KQJaIBNC4KQNaLBMC1KQSZ8BLC9KQSZ9BJC8KQRZ_BMDBKQTZ8BJC-KQTaABLC-"],
+    [128,"AN8I0E0MjKOBI5E3MzKOGItE8M7KOJIrE8M-KOWI0E7NEKOrI6FAMtKO5JFFDM6KPjJNFFM_KQMJWE8M2KQPJYE9NC"],
+    [649,"AIhQhEFKWKIjQaEDJ-KIlQOEEKMKIkQKEFKhKIjQMEEKGKIqQeEAJ_KIqQbEDKhKI0QdEBKX"],
+    [929,"ARQM6FENCKRCM1ExNYKQqMsEyM8KQaMiEuMzKQPMiElNOKPwMiE2M5KPbMkFAM6KPpMlE3MzKPfMyFCNRKPhMyE9NlKPnM-FAMjKPjM4FDMvKPnNBFEMpKPoNGE-MjKPZNHE_M1"],
+    [1279,"ARcHdFZOIKRbHOFbN2KRYG6FgNpKRWGsFdNhKRSGXFaNqKRQGgFVOGKRCGoFYNy"],
+    [1489,"AO6KZFfN7KP9KrFcN3LRXLMFcNOKSpMCFbNRKTuMhFVOMKUOMvFUOVKUNM2FcOOKT4MnFaN1KTAL5FgN_KR_LUFhN9KQ8LPFUNbKP9KtFZNvKPhKgFXNkKPeJlFSNbKPmJOFLNkKP3JXFIM8KQDJdFUNuKQWJEFiOH"]]
+  }}
+ }
+}
