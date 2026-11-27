@@ -1,0 +1,149 @@
+{
+ "format": 6,
+ "videoId": "tGSz_yE3GYs",
+ "title": "ILLIT (아일릿) 'I’LL LIKE IT! 2' TEASER 아일릿의 겨울방학",
+ "duration": 46,
+ "scannedAt": "2026-11-27T23:23:39+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 51
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [
+  {
+   "start": 8.17,
+   "end": 9.83
+  }
+ ],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 139,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":0.33,"state":"unknown"},
+   {"start":0.33,"end":2.0,"state":"wide"},
+   {"start":2.0,"end":3.33,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":3.33,"end":4.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":4.67,"end":6.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":6.33,"end":7.67,"state":"wide"},
+   {"start":7.67,"end":10.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":10.33,"end":11.33,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":11.33,"end":13.0,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":13.0,"end":13.67,"state":"wide"},
+   {"start":13.67,"end":15.0,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":15.0,"end":16.33,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":16.33,"end":18.33,"state":"wide"},
+   {"start":18.33,"end":18.67,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":18.67,"end":19.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":19.0,"end":19.67,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":19.67,"end":20.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":20.0,"end":21.33,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":21.33,"end":22.67,"state":"wide"},
+   {"start":22.67,"end":24.67,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":24.67,"end":27.33,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":27.33,"end":28.67,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":28.67,"end":29.33,"state":"unknown"},
+   {"start":29.33,"end":30.0,"state":"wide"},
+   {"start":30.0,"end":32.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":32.0,"end":34.0,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":34.0,"end":36.0,"state":"unknown"},
+   {"start":36.0,"end":37.67,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":37.67,"end":46.33,"state":"wide"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[128,386,452,689,775,829,977,1199,1289,1355,1714,1796,2038,2156,2250],"tracks":{
+   "illit:iroha": [
+    [909,"Ae_L2IOUJKgoLRIcUoKguLZIhT7KfvLHIfUqKd8MAITUoKbSMeIRUoKZhMbIUUh"],
+    [1359,"AdiJzI3UMKckJuI5UJKb5KGI5T6KbxJ_I1UHKb5JYI3UTKcFJNI6UsKcPJwJZU-KcIIdI0UYKcYHuIeUdKcHIAItUkKb7IdIxUxKcjH_IjUn"],
+    [2158,"AaeKPJ1XRKajKIJSXQKbBKZJTWpKbXKTJcYYKbaKAJkYZKbXJ7JhXvKbSKHJUWkKbJJfJYW3Ka4JWJOXMKalJIJKXf"]],
+   "illit:minju": [
+    [128,"AbRKfJgW3KbfKaJsWfKbjKmJyWZKbdKmJrXGKbgKyJsW9KbiK-JyW5KbfLcJzWnKbUK5J1W1"],
+    [619,"Aa2OOJlV3Ka0OPJnV8Ka7OLJgWLKa2OLJpWKKa0OxJxVhKazOZJrVzKa3O9JrVM"],
+    [1109,"AbrKGIsUoeaWKwIzUEKa-KTItUrKb6KfImVGKciLDI5UjKddKxJCUr"],
+    [1199,"AaINOJMUzKaUMuJDVUKazM_JEUQKbSNHJCUaKbtNII7UWKb7NOJCUeKbtNUJAUaKbWNRI9UOKa6M-I4UR"],
+    [1640,"AaFOHJHUqKZ_N_JUVIKaDN4JPVAKaANsJNU8KaEN1JQUoKaEOIJMUmKaCN5JSVeKZ-OTJSVh"]],
+   "illit:moka": [
+    [1119,"AayKGIhUZKaaKhIrUU"],
+    [1189,"AeHK9JAUo"],
+    [1479,"AfUJPIsUTKfIImI5UeKfUIzIuU_LfnJ6IgUxKfnKRIhUnKfhKHIhUdKfQKfInTyKe5J8IyT9KeQJoI-UaKeAJsIqT5KdOJXIqUgKc7JyIqUBKc2KEIpUCKc5J_IlUXKc7J2ImUDKc6JiIrUN"],
+    [1800,"AdmLgJUU6KeNKWJJVTKeIKuJYVpKeML6JGVSKeLMcJSViKeKLnJVVhKdXKGJeViKcmKFJQVyKcAKmJJWMKbtK-I5WBKbfK0JCWJKb0LBI_WE"]],
+   "illit:wonhee": [
+    [288,"AZ8LmIHVnKZ_LRIRVuKZ8LiIHVhKZ3LmIJVVKZ0LkIMVRKZ3LnIKVGKaALRIGUZKZ-LXITT-KZ9LZILT-KZ-LuH_T4"],
+    [689,"AaiKGIbUIKa9K6IbUIKbSK9IUTzKbjKzILT_KbnK9ITUWKcNLcIRUrKdCMBIZUVKdOLzIpUjKdOL3IfUT"],
+    [829,"Ab9LLIjTjKb_K9ImUOKcmKXIkUPKciLUIkUNKcSLDIjUIKb5LBIrT8Kb3LKIrT6KcBLXIqTz"],
+    [1289,"Af9cABeDaKf9cABeDaKf-cBBdDaKf-cEBcDZKf7cEBdDaKf9cEBcDaKgCb8BcDd"],
+    [1920,"AZsKkIxVlKa8JEI6VvKc3HzI3U5KdkIHI5VNKdyJrJMVXKdtKCJDVmKdhJTJTVcKc4KiJUWBIdAKKJRVlKcfKaJdVeKblJzJZViKaYKLJcVv"],
+    [2038,"Af4cMBtDvKf4cMBuDwKf6cJBwDzKgGcABsDzKgrb9BgD0Kg9cABeDyKhAb9BfD9KhBb_BfD7Kg_cCBgD4Kg8cEBgD3Kg7cKBgD1Kg5cHBfD5"]],
+   "illit:yunah": [
+    [208,"AcFLfIeUTKcDLNIgU1KcDKoIwVFKcNKpInUmKckKdInUTKcLK4IvUdKbuLWIxUzKbbL6IuUw"],
+    [458,"AcpLXKLXMKccLSKWXbKcYLGKVXpKcOMVKYXYKcHL2KiXrLcKL3KiXhKcWLrKmXjKcOLpKtXnKcgLXKgXlKc-KFKYYcKdaKgKKX_KdeLaKPXWKdiLMKTXaKd2K_KdXVKekLGKZXeKe8L3KSXW"]]
+  }}
+ }
+}
