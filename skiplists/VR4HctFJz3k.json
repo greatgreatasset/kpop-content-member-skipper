@@ -1,0 +1,146 @@
+{
+ "format": 6,
+ "videoId": "VR4HctFJz3k",
+ "title": "ILLIT 2027 SEASON'S GREETINGS Mood Film (A ver.)",
+ "duration": 27,
+ "scannedAt": "2026-11-27T02:12:14+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 75
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [
+  {
+   "start": 2.17,
+   "end": 6.17
+  }
+ ],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 81,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":0.67,"state":"none"},
+   {"start":0.67,"end":1.67,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":1.67,"end":3.0,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":3.0,"end":3.33,"state":"none"},
+   {"start":3.33,"end":5.0,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":5.0,"end":6.0,"members":["illit:yunah"]},
+   {"start":6.0,"end":6.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":6.33,"end":7.0,"state":"none"},
+   {"start":7.0,"end":8.0,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":8.0,"end":8.33,"state":"none"},
+   {"start":8.33,"end":11.0,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":11.0,"end":11.33,"state":"unknown"},
+   {"start":11.33,"end":12.33,"state":"none"},
+   {"start":12.33,"end":12.67,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":12.67,"end":13.0,"partial":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":13.0,"end":14.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":14.33,"end":15.67,"members":["illit:wonhee"]},
+   {"start":15.67,"end":16.67,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":16.67,"end":18.67,"state":"none"},
+   {"start":18.67,"end":19.0,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":19.0,"end":20.0,"members":["illit:iroha"]},
+   {"start":20.0,"end":23.0,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":23.0,"end":25.0,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":25.0,"end":27.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[102,186,300,378,420,654,744,822,936,1008,1056,1110,1200,1284,1374,1494],"tracks":{
+   "illit:iroha": [
+    [48,"AmbggC_HAGmugYDLHLMm3giDNHGMnTgpDLHBGnkg5DSG_Mnzg0DaHK"],
+    [1128,"AKpXWGKOZGKoYsGPPnMKxZ7F_O8MKLbdGRQXGJ2c1GJPXMJzdRGKPbMJ3dpGLPU"],
+    [1194,"AbvOXFqNs"],
+    [1206,"AblOuFrNwMatPNGpPZGZtQeHkR_MZGRzIQS1MYRR9JYVpGX3TQJ3VmMXyTfJ3VzMXvTnJ4Ve"],
+    [1284,"AfyXEWzVrMfEVDZlZxMfgTbYzaEGfJRVZ1bXMfURMZjbpMevVDbEaAGfTUBbdbEMf7Ttb5bdMhYUwbnaj"],
+    [1374,"AnIJPCJFNMm8IgCTFeMnQGgChGGGnhEUC4G7MntDjC_HVMoVC6DJH5GoUD4DQHwMoQD5DNHzMoYE0DRHpGonFnDMHmMolF5DMHrMohGcDPHh"]],
+   "illit:minju": [
+    [48,"AjtN1DDG0Gj4NxDGGyMkANtDEG4MkON6DDGsGkdN7DGGyMknOBDBGp"],
+    [414,"ARAMRNpmw"],
+    [426,"AQ-MDNwnNMRdKUOio0GSpKYObpZMSeKBOmp8MNjFQPYrmkgcR4HJSkMgfSVHNSmMfuU6HiSVGfOV7HpSJMe2WVH2SSMeuWYHvSVGh1N4IcSwMhpN9InS6MhWOZI5TOGhMO5JGTLMhGO3JMToMhEPWJQT7Gg5PkJaUTMgwPZJhU7MgcPVJxVX"],
+    [1374,"ATGOIC4G6MSJNqC5HOMQQMWDQH3GOKKwDmIyMM8KLD0JYML5J9D4KBGMDK7DzJxML7K0D2J8MMCLoD6JzGMQMSD3J2MMKMcD9J6MMGMiEAKB"]],
+   "illit:wonhee": [
+    [48,"Aaod7DCGjGazdzDFG1Ma8d8DDGoMbNeCDBGjGbeeBDBGjMbmeEC_Gk"],
+    [744,"AdZAAUvwRMZPAAVQvmMRIAAVZq-GYqHxR3dkMZXIsRwaOMZ9InSWcIGYSIKSbbZMXGIGRzaD"],
+    [828,"Au5KaE_ISGuVKrFHI9MuJKYFLJYMuOKXFTJgGvfLvFHJIMv_LVFHJUMv0MVFdI2GvkOLFnIgMvXPBFaITMuXQAFwHqGuVP7FrIL"],
+    [864,"AdYbGE2JBMdDbIFEJeMctbuE6JNGc0b1FJJQMdXcUE9JbMehc3FHJOGeSesFYHy"],
+    [894,"ALPsiFCJRMLdsnE5JOMK_teE5I9GLItcExJZ"],
+    [936,"ANfRfVjdvMNOQXUwc5GNRQoT5cKMNeQZTocDMN5P8TEcIGNaQ6Sxa-MNiRLSYab"],
+    [1374,"AtcjDC1F8MtjjuC8GJMujkkDQG4Gvml5DqHwMwImvDzIiMxMoGEAJYGxGpLEEJRMw-pIEEJeMxDp9EKJfGxNrFEDI2MxIrGEFJMMxGrVEHJV"]],
+   "illit:yunah": [
+    [48,"ASFcsCtGmGSTclCvGpMSYcmCyGoMSlcqCxGoGSzcrCxGtMTBcpCsGr"],
+    [108,"AgGLuHES-Gf_LhHjTiMf6LnHrTmMfyLRH5UOGfnLSIFUeMfjLTIKUvMffLRIVVNGfYLSIeVb"],
+    [204,"AbCQhIRSTMbaQ0IASeMbIR8IMS7GbpUPIQTCMcWU8INTLMcSWCIETSGcOX2H-TSMcLYhH8TSMbgXwH3TG"],
+    [294,"AwDOdH_Pt"],
+    [306,"AwPPGHwPrMwWPhHrQKGw4P6H-RdMw1RPIGQ4MvhRdIpRcGukRwIqR0MuSRbIpSO"],
+    [1374,"AdIL0CYF0McfLLChGKMbtJgCzGyGaxH5DHHeMaSHPDPH-MZ-HEDbIUGaDH4DfIPMaCH8DdIXMaPIoDdIXGaaJSDdIfMaYJWDcImMabJrDdIi"]]
+  }}
+ }
+}
