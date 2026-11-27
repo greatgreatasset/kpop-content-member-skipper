@@ -1,0 +1,133 @@
+{
+ "format": 6,
+ "videoId": "MMVF8RfAWMk",
+ "title": "아.진.짜.신.박.해. I #어디갔슈일릿 #티저1",
+ "duration": 32,
+ "scannedAt": "2026-11-27T05:57:44+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 162
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 95,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":2.67,"state":"none"},
+   {"start":2.67,"end":5.67,"members":["illit:iroha","illit:wonhee","illit:yunah"]},
+   {"start":5.67,"end":6.33,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"],"focus":"illit:iroha"},
+   {"start":6.33,"end":6.67,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":6.67,"end":7.67,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"],"focus":"illit:iroha"},
+   {"start":7.67,"end":9.0,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":9.0,"end":9.33,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"],"focus":"illit:iroha"},
+   {"start":9.33,"end":10.0,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":10.0,"end":11.33,"members":["illit:iroha","illit:minju","illit:wonhee"],"partial":["illit:yunah"]},
+   {"start":11.33,"end":13.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":13.33,"end":13.67,"members":["illit:minju","illit:wonhee"]},
+   {"start":13.67,"end":14.0,"members":["illit:minju","illit:wonhee"],"focus":"illit:minju"},
+   {"start":14.0,"end":14.67,"members":["illit:minju","illit:wonhee"]},
+   {"start":14.67,"end":15.0,"members":["illit:minju","illit:wonhee"],"focus":"illit:minju"},
+   {"start":15.0,"end":15.33,"members":["illit:minju","illit:wonhee"]},
+   {"start":15.33,"end":16.0,"members":["illit:minju","illit:wonhee"],"focus":"illit:minju"},
+   {"start":16.0,"end":20.67,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":20.67,"end":21.33,"members":["illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":21.33,"end":26.33,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":26.33,"end":27.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":27.67,"end":31.67,"members":["illit:iroha","illit:minju","illit:wonhee"]}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[156,683,807,961,1231,1586,1662],"tracks":{
+   "illit:iroha": [
+    [158,"AG-g-FKLTKGNg8FNLOKF9fgFbK7KF2e1FiLMKFXecFbK_KFBdGFfLXKFKcfFaK_KFmc3FTK8KGUdGFNK6KG3cfFTLJKHUcZFVLBKHwcgFQK9KHsbxFTK2KIEbeFHK9KIqbFFHLDKJEbgFCK2KJZbeFDKoKJ3bDE-KzKKRa-FBKrKK4avE8KrKLWaAE4KoKMBZ4EyKfKMWZ7ExKlKMIaOEqKjKLpZ_EyKxKLeaJEyKqKLYZ5EvKwKLdZyE6KtKLlZuE2KpKLvY7E1KpKLyYVEyK5KMEYTE2KXKMLYFE2KZKMbYHEyKQKMlX-EuKTLM4X9EuKUKNEX3EsKVKNBXgEsKUKM4XmEoKXKMZXiEyKjKMSXnEzKYKMjXnEuKSKMzXgEsKfKMxXvEqKXKMLXsEyKeKLeXuFEKXKLjXwE6KIKL0X1E3J4KMKX-EjJ8KMFYJEjJ4KL2XlEfJ6KLKXfEcKKKKJYFEoKW"],
+    [1289,"ACja7EFKbKCGbTEOK2KBca7EWLZKA0a4EOMJKApbcETMFKBEcXENLFKBWbrEWLVKBpa4ERLgKCDa3EYLTKCuacEcLWKDaaJEYLgKECaVEWLhKEUadEWLmKEcaFEgLsKEyZwEYLgKEyZHEaLvKEYYlEZLqKDyYXEgLpKCwY2EsLiKCNZkEjLqKCDaBEuLpKCAahE2LqLCKaqEwMHKCGaTE1MPKCpZgE3MNKDaZJE5MAKEZZBFELtKFfY_E1LUKGeYlE5LSKHoYhEqK4"],
+    [1670,"AJVPLHNTEKJGPPHMS4KIpPGHdTCKIfPhHJS3KIaPnHNS6KIVPaHaS2KISPaHeSYKICPZHrSfKH6PjHdSXKHuPsHHSEKHcPvHGRnKHPP3HPQoKHYRMGrOYKHaRFG1OvKHbRLG7OjKHbQzG1PBKHSRlGkOVKHERqGYOfKGiSAGOO1KGRSfGDOiKGISjF8OeKGHSnF5OcKGFSvF5OTKGFSqF9OZ"]],
+   "illit:minju": [
+    [268,"AcoVZDRGQKc9UjDPGxKdbTsDLG1KeCTtDNGXKegT9DGGeKeyT4DKGIKfESzDJGOKf5RzDIHWKgzRZDAHuKhlQ0C-HxKh7QhDAHmKiAQuC8HWKhyQ4C3HRKheQwC6HTKhKQjDAHiKhEQPDBHcKhLQXC-HcKhXQaC3HgKhsQIC4HOKh-P_C7HLKiRPvC8HTKikPtC5HRKiwPsC5HLKi0PzC4HPLi-P0C6HbKjFP7C1HSKjEPwC4HWKi9P3C7HRKi0P1C4HYKi0P0C4HUKi8P7C1HRKjLQHC4HKKjYQHC0HHKjdP0C4HbKjwPtC8HdKkIP2C2HRKkTPvC6HVKkWQAC9HNKkXQGC9HLKkMP2C4HQKjxQEC6HMKjGQuC2HL"],
+    [809,"ApNVBIETbKpPVBIFTjKqCVOIBTyKrOWGIDThKrpXOICTcKrBWoH4TIKqvWBH2TJKqDVzHyTPKpNV5H0TXKpNWxHtTIKpnXSHvTCKqAXQHzTOKqGXUHuTHKpjXzHvTXKpLXxHzTmKpHX1H1Tq"],
+    [969,"AfFPrD9KbKf9P6C_KJKfqP3DoJ4KfMPtDuKaKfBPbDyKZKemPdEAKpKfEPbD3KhKfnPQDxK3efnOCEBL9KfxOOD4LsKfwNiEFMBKflNiEFMYKf5NOD0MPKf7NHEDMWKf_MtEIMkKf5MgEMM2Kf4MqEFM9Kf_MSESM3KgZL_EJMwKgULuEOM3KgOLrEWNNKg0MdD3NEKg0MREUNNKhFMEEXNNKhQMyEMM1"],
+    [1239,"AeqPfDCHqKeXPADBHwKeIO6C_HwKdlPPDFH0KdTPMDAHkKcyPMDCHtKcUPbDEH7KcCPtDBHfKbqPxDCHVKbtPrDBHwKblPwDFH0KbgP6C-HZKbjPUC9HbKbwPJC0G_Kb3POCwGxKcCPfCxG8KchPdCwG4Kc2PVC2G_KdVO4C3HJKdzOrC1HAKeFOrC3HFKeMOmCxHLKeLORCxG8KdlOdCxG5KdHOwC0G_KdDOzC0HIKdEOtC4HJLdMPAC7HPKdZO8C1HLKdvOdC8HYKeNOTC5HPKefORC7HLKe_OOC1HAKfgOMC5HPKf8OaC4HR"],
+    [1670,"A0TQUHGQpK0SQYHBQXK0KQIHHQYK0TQQHAP_K0TQPHIP3K0gQXHEPvK0cQfHHPpK0XQYHHPuK0QQQHFQDK0NQdHCQUK0KQfHEQnK0NQkHGQnK0QQnHIQtK0aQVHFQ0K0iQ1HGQpK0iQ1HGQqK0hQtHDQwK0fQpHFQ1K0gQkHHQ8K0iQlHHQ7K0mQiHEQ0K0iQjHGQ5K0jQqHEQwK0iQtHEQu"]],
+   "illit:wonhee": [
+    [158,"AVCXQCsGrKUVXECvGkKUDWHCvGlKTmVyC1GxKTVVPCzGyKTFUeC0GjKTJTwC1GiKTjT0C1GxKULT4C0G1KU1TlCwG4KVETTCwG0KVQTQCsGwKVZSpCuGpKVeSHC3G9KV9SDC3G2KWHSEC9HCKWNR8C8HCKWiR6C8G1KW4R4C9G6KXSR-C6G8KXlRcC9HBKXyRYC6G9KX3RUC3HCKXuRrC1G2KXmRkC3G3KXmRdC1G_KXtRPC0G_KX5RMCvG_KYCRHCyG5KYLQsCxG5KYQQnCzG0KYgQKC1G_KY1QGCzG7KZIQRCwGwKZPQRCyGvLZgQQCxG1KZpQSCvGxKZpQLCwGuKZmQDCyG7KZfQGCvG4KZeQGCxG1KZlQKCzGuKZ7QOCtGnKaKQGCxGoKaPQDCsGxKacQJC0GmKazQOCsGeKa3P1C1GnKa7PqCzGqKa8PsCyGmKazPiCyGpKaeP2CzGjKZ-QUCxGt"],
+    [809,"AUMQlGqQpKUZQIGqQTKVBQMGqP1KVuQQGwP2KVgROGjP8KUxQdGePyKU2P0GVQAKUKPtGZPjKTYQHGTPbKSxQjGpPaKTSP4G1PdKUdQnG4OUKUwQ3GqOgKUeR0GfPgKTqUIGaPmKTJUgGZPo"],
+    [969,"APrPlHBS8KOvPUHBSNKOfPHG1R6KOqOjHTTTKPVNEIQV1KOOJNJSX2KNHHULSZSKQ9KNMbcnKVkJkLYc0KXANPKmZNKU0NGKoYoKSvODKyY5KR_LHLDaNKRdKfLcbvKRgH3L2cJKS4IvK2aZKS1JJKsaGKRhH5LQbWKP2JaL_cNKPUINMYcNKRFJ6LTarKQtIMLbbSKPYHyLhbzKPpDkLLatKPBEOJXY_KOfG9ILZeKOFKLHfX_"],
+    [1239,"AUFO_CwHQKUGOsCuHBKUCO2CsHAKTqPTCtHHKTRPQCxHTKS-PlCrHIKSoQGCxHPKSWQbCwHdKSHQvCtHUKR_QvCxHZKSEQ0CvHdKSIQtCvHmKSIP8CyHnKSRPtCqHVKSNPmCxHMKSYPrC0HPKScP9C9HbKSzQKC0HZKS6P3C5HEKTHPyC3HGKTKPiC6HFKTHOyC-HOKTHOVC7HRKSlOYC_HSKSVOyC-HRKSdOxC9HXKSqPFC5HSLSbPdC-HbKSiPOC9HHKTIO-C5GxKT5OvC3G9KUYOvC3G7KU5O_C0G1KVeO5C1HHKV_PaCvG5"],
+    [1670,"AcvP7HMRLKcxPqHMQ7KcpPZHSQ_KclPbHTQ2KclPbHTQ9KcePhHPRWKcXQDHQRuKcRQPHSRzKcVQVHQRvKcaQTHQRjKccP6HORmKceP1HMRkKcdP1HORnKcfP5HQRiKcyQsHRRPKc8QjHVRWKdOQmHRRKKdUQkHXROKdVQsHYRDKdJQuHWREKdBQ7HPQ2Kc_Q5HSQyKdFQ6HQQtKdGQ5HTQw"]],
+   "illit:yunah": [
+    [158,"A0QTBDWH4K0ISfDKHzK0TSCDAH3Kz1SbDBH7KzdSjC6H_KziR8C6H9KzoRcDIIKK0DRiDGIGK0zRmDEIIK1URFDSIEK1JQ5DbIDK1HQ4DfIHK1lQeDfIGK19QaDkIOK2rQcDsISK3MQ5DrIXK3aRADvIXK30RUDwIQK4QRPD3IeK41RWD3IlK5URLD6IqK5ZRWD5IlK5QRfD2IkK42RlD4IcK4mRXD1IdK4XRED6IrK4XQ-D7IcK4fQwD4IgK4sQxD1IgK5JQxD9IgK5fQ7D-IkK50RCECIiK6GRLEAIuK6SRUEBInK6URgEAIgL6RR6D-ISK6PSID5IPK6PR8D5IVK6MSQD2IRK6DSTD-IbK6GScD_IYK6RS7D8IaK6tTMEAIPK7QS1EDIgK71SzEKIZK8aSuDlIpK8zTADMIRK9CTKC9IXK9DTdC8IRK9GTlC5IRK89ThDCIYK8WUFDpIFK7RUkEKIY"],
+    [689,"Ae6L_F_TcKddL_GUTLKcxMOGtRtKbZMMG9SlKbmMYG8RyKcCMsHDSDKcTMmG7SaKciNiHNSyKcBNjHCSlKczMVG9SpKdPLrG4SOKdWL2GzR_"],
+    [969,"Ap3PyB9FTKp6PsCAFiKp_P2CAFmKqFP2B7FeKqBP1B6FbKp8PvB8FgKqMPaCAF2KqiPVCCGCKqxPKCEF5Kq_O5CCF5KrJOvCDGRKrZOkCCGBKrrOOCFGJKr1ONCFGeKsJNtCJGjKsdN1CFGPKslNcCIG0KsxNOCKG7Ks5NJCPGkKtXM7CFG7KtgMiCKGzKtoMCCIGwKt4MACNGnKuFMOCMGqKuNMZCBGYKuQMTCAGhKuTMhB9Gb"],
+    [1239,"A2QQ_DQIOK17QMDWIYK1cP7DSIZK0wQIDPIJK0SPkDNILKz4PsDFH8KzTP7DFH7KzCPmDCH-KyvPWC5IGKylPWC6IrKx2PoDJIBKxFPkC_HpKwlO0DCIKKwXOhDDIdKwiOxC_IBKw9PMC_HuKxrPKDGHtKy4PSDBHwKzzO3DBH-K0fPQC6IAK0sPmC6HyK05PfC6H9K1EPbC5H7K0gPhC_IHK0APpDFIWK0NPcDDIjK0gPcDBIML0rPjDAIPK05PPDBIVK1WO5DFIPK2IPBDCIKK2lPEDOIYK3RPKDGIdK3sPWDLIaK4CQADLIY"],
+    [1590,"AedJhIraPKeCJQJLa7KdlJ4JJbRKcuKPJ4cRKcSLSKQcZKb4MEKkcUKbuMYKqcHKbzMWKwb7"]]
+  }}
+ }
+}
