@@ -1,0 +1,38 @@
+{
+ "format": 6,
+ "videoId": "duVo5yBG1qc",
+ "title": "DEARLIT ＜Dear My Winter Fairy＞",
+ "duration": 34,
+ "scannedAt": "2026-11-27T02:14:48+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 103,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":34.33,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[185,285,375,1062,1070,1075,1080,1102,1113,1130,1225,1445,1698,1702,1932],"tracks":{
+
+  }}
+ }
+}
