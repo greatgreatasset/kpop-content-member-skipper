@@ -1,0 +1,42 @@
+{
+ "format": 6,
+ "videoId": "opIls8lYCQY",
+ "title": "ILLIT (아일릿) Official Light Stick User Guide (공식 응원봉 사용 안내)",
+ "duration": 475,
+ "scannedAt": "2026-11-27T18:39:27+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 1425,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":318.0,"state":"none"},
+   {"start":318.0,"end":318.33,"state":"unknown"},
+   {"start":318.33,"end":465.67,"state":"none"},
+   {"start":465.67,"end":466.0,"state":"wide"},
+   {"start":466.0,"end":475.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[316,420,426,682,934,1234,2858,3296,3716,4338,4668,5388,6064,8132,8516,8986,9552,9944,10602,11044,13144,18858,19606,19928,20208,20426,22480,22800,23040,23418,23924,25920,26180,27208,27524,27628,27634,27890,28142],"tracks":{
+
+  }}
+ }
+}
