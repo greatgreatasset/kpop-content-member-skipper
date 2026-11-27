@@ -1,0 +1,54 @@
+{
+ "format": 6,
+ "videoId": "pkGVFzvFibA",
+ "title": "ILLIT (아일릿) ‘oops!’ @GLITTER DAY IN JAPAN",
+ "duration": 208,
+ "scannedAt": "2026-11-27T15:01:42+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 624,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":6.0,"state":"none"},
+   {"start":6.0,"end":7.0,"state":"wide"},
+   {"start":7.0,"end":7.33,"state":"none"},
+   {"start":7.33,"end":64.33,"state":"wide"},
+   {"start":64.33,"end":65.0,"state":"none"},
+   {"start":65.0,"end":71.67,"state":"wide"},
+   {"start":71.67,"end":72.0,"state":"unknown"},
+   {"start":72.0,"end":108.67,"state":"wide"},
+   {"start":108.67,"end":109.33,"state":"none"},
+   {"start":109.33,"end":109.67,"state":"wide"},
+   {"start":109.67,"end":110.0,"state":"none"},
+   {"start":110.0,"end":191.33,"state":"wide"},
+   {"start":191.33,"end":191.67,"state":"none"},
+   {"start":191.67,"end":192.33,"state":"wide"},
+   {"start":192.33,"end":192.67,"state":"unknown"},
+   {"start":192.67,"end":200.67,"state":"wide"},
+   {"start":200.67,"end":208.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[],"tracks":{
+
+  }}
+ }
+}
