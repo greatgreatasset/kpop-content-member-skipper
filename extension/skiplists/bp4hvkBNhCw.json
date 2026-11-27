@@ -1,0 +1,127 @@
+{
+ "format": 6,
+ "videoId": "bp4hvkBNhCw",
+ "title": "호루라기를 불면 아일릿이 온다 | 절찬 스트리밍 중 |  ILLIT (아일릿)",
+ "duration": 31,
+ "scannedAt": "2026-11-27T03:03:15+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 28
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 94,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":0.33,"state":"wide"},
+   {"start":0.33,"end":0.67,"state":"none"},
+   {"start":0.67,"end":1.33,"state":"wide"},
+   {"start":1.33,"end":4.67,"state":"unknown"},
+   {"start":4.67,"end":7.0,"state":"none"},
+   {"start":7.0,"end":8.67,"state":"unknown"},
+   {"start":8.67,"end":9.67,"state":"none"},
+   {"start":9.67,"end":11.0,"state":"wide"},
+   {"start":11.0,"end":12.33,"partial":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":12.33,"end":14.33,"state":"wide"},
+   {"start":14.33,"end":14.67,"partial":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":14.67,"end":15.0,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":15.0,"end":15.67,"partial":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":15.67,"end":16.67,"state":"unknown"},
+   {"start":16.67,"end":17.33,"state":"none"},
+   {"start":17.33,"end":19.0,"state":"wide"},
+   {"start":19.0,"end":20.33,"partial":["illit:minju"],"focus":"illit:minju"},
+   {"start":20.33,"end":21.0,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":21.0,"end":24.33,"state":"none"},
+   {"start":24.33,"end":24.67,"members":["illit:iroha","illit:minju","illit:wonhee"]},
+   {"start":24.67,"end":26.0,"members":["illit:iroha","illit:minju"]},
+   {"start":26.0,"end":26.33,"members":["illit:iroha","illit:minju","illit:wonhee"]},
+   {"start":26.33,"end":26.67,"members":["illit:iroha","illit:wonhee"]},
+   {"start":26.67,"end":27.0,"members":["illit:iroha","illit:minju","illit:wonhee"]},
+   {"start":27.0,"end":27.33,"members":["illit:wonhee"]},
+   {"start":27.33,"end":31.33,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[125,415,448,581,666,743,818,843,863,901,933,1026,1134,1259,1304,1354,1406,1451,1749],"tracks":{
+   "illit:iroha": [
+    [868,"AJaAAbe3BKODAATbsRKOjBBRlqwKP3G8Q2sG"],
+    [1459,"AeTbvCYGJKeGZ1CYGCKeIYZCVF1KeRYGCRFvKeTXlCSF4KeWXjCUF1KeUXoCTFvKeSXqCRFrKePXgCRFxKeMXgCQF0KeMXgCPF1KeMXcCQF0KeFXbCRFsKeCXOCTFyKeGWrCUF-KeCWpCYGFKeKW5CXFx"]],
+   "illit:minju": [
+    [1139,"AQzAAWf4sKOHAAWs1fKKzAAbN_pKMwAAb__lKPGAAdr_YKUKAAd375KUeAAcM9wKTlAAZW8cKXiCgRlw4KZKJwMGiLKZRO9J_agKZpP_IZWj"],
+    [1459,"AmTXfCCF2KmgXlCFF5KmpYFCAFdKmkYQCBFeKmgYZB-FcKmZYNCCFhKmWYQB9FWKmPYICCFdKmQX-CCFhKmQX5CBFcKmUX1B9FjKmQX2CEFhKmNX3CCFfKmKXUB-FaKmKWqB_FuKmHWWCBFrKmGWGCCF1"]],
+   "illit:wonhee": [
+    [668,"AJCAAcDw1KJaAAcbyoKJkAAcmxIKKuAAbfySKL9AAaYwDKN1AAYsvDKO7AAX8vkKQkAAXdtg"],
+    [1459,"AT9igCFGNKUDinCDGGKT7iYCMGQKT_iVB-GEKTsiNB6GFKTriTB2GBKTyicBsF3KToiPB2GHKT8iQCJGdKVojwCJGZKWhkhCGGlKWqk5CIGWKW6kyCGGVKWpkZCSGhKWpkVCXGWKWnkUCXGYUV3iLCdGXKXBiECXGG"]],
+   "illit:yunah": [
+    [908,"AXvAAS6kpKWxAAVryWKSSAAaY1D"]]
+  }}
+ }
+}
