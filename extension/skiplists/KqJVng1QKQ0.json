@@ -1,0 +1,105 @@
+{
+ "format": 6,
+ "videoId": "KqJVng1QKQ0",
+ "title": "ILLIT 2027 SEASON'S GREETINGS Mood Film #IROHA",
+ "duration": 24,
+ "scannedAt": "2026-11-27T02:04:38+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 79
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 72,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":8.0,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":8.0,"end":8.33,"state":"none"},
+   {"start":8.33,"end":12.67,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":12.67,"end":13.0,"state":"unknown"},
+   {"start":13.0,"end":21.67,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":21.67,"end":24.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[401,577,1307],"tracks":{
+   "illit:iroha": [
+    [9,"AvXpvCRFPKvTpcCTFUKvTo4CWFrKvSonCZFwKvPofCdFyKvHoVChF5Ku8oSCnGCKu0oOCuGRKuxoNCyGmKuvodCzGxKupovC6G7Kupo6C-HHKumo8DCHSKuhovDGHfKubofDMHtKuVoiDOHyKuQorDMH5KuIo4DOHzKuCo6DKHv"],
+    [199,"AYbPMGEPHKYbPIGDPKKYYO8GDPWKYSO1GJPWKYNOsGJPgKYLOqGJPmKYAOrGTPtKX3OlGZP8KX0OjGbQBKXsOaGfQOKT6MpGjSiKTrMOGvSmKThMBG3SeKTeL7HCSeKTVL5HHScKTJL7G_SeKTBMCG2S1KTEMUGtS8KS-MXGsTGKS9MiGsTKKTBMYGqTb"],
+    [349,"AviabDwJSKvPaQDzJkKu-aCD6JgKu6ZxD9JoKu4ZVD9JqKuyZGEFJu"],
+    [409,"AcSR5L6dvKcCRxMQeWKbcRWM8fMKbPReNHfZKbEQ_NVgLKa8QpNhgvKatP-NyhcpgVN7LZbjKgDLTNDiMKgnLiMZeIKgkLxMZdfKgMLUM1htKgELMM7h7KgbLeMaeS"],
+    [580,"AaOJgOOgiKZUJLO8iNKXoL3PwjMKW_RGQsjUKX-S8QsjnKY3TdQrivKZkSKQGjCKX6MkQyoWKYVMgSEoHKYWMnSAnUKXyMnR5nEKWgOaTElxKWhQATvk9KYuN_SpmfKZ4MlSFnhKZ6NORSmuKZ0NoRIl9KZ3MeRSmoKZ2M5RclyUcxNUEPKSKcsMzETKVKcLMWEkKjKcLMWEkKjKbmNcEwKOKbdOVEtJfKbiN-EpJwKb3NjEeJ_KcaNSEMKFKcaNSEMKFKc2NnEQJ9KdANfETJ_KdGNOEQJ-KdHNcEPJyKdJNWEUJyKdJNWEVJzKdJNiEZJnKdCNtEhJjKdDNrEfJqKdCNoEgJwKdBNsEhJqKdBNsEhJqJdCN0EgJxKdKN7EXJ1KdkOEEQKKKdwOkEWJxKdwOlEWJwKdiO_ExJbKdNO_E7JWKdIO0E3JYKdJOqEyJiKdJOnEvJkKdJOnEvJkKcvQfF4OSKcPOtFtOVKbuLHGEOwKbtQ6FuOHKblKcGFOPKblKcGEOPKb1QXFzN3KcZKLF9OHKdiNnF9NhKeBM1F_NlKdkMbF7NbKdkMfF7NWKb7MVF5NYKaBNZFoN4KZ_OEFnNXKa_NnFkNLKb3NMFnNUKb4NOFnNSKcENOFoNeKb_OuFwM1"],
+    [830,"AMyQYCGFQKMwQQCGFVKMhQHCJFjKMWQHCQFsKMWQHCQFrKMhQJCOFqKMjQDCVF4KMtQGCZGAKMuQHChGMKMoP_CmGaKMoP_CnGZKMnPyCpGbKMvPeCwGyKM1PpC3G4KMwPrC9HPKMYPqDAHYKMZPrDAHYJMGPjC_HiKMKPUC3HsKMOO-C7H8KMKOwDCIIKMKOwDCIIKMEOvC_IEKL0OqDFILKLzOvDCIFKMDO6C_H1KMUPNC4HwKMUPNC4HwKJ7MvCyHn"],
+    [910,"AyIZiCJFYKxxZ9CJFBKxwZ9CKFCKxFZMCJFHKwkZqCBE1KxcZ3B6EeKxiYpBzD-KwjY1BoDaKwjY1BoDaJwoY7BcDGKw3XqBXDGKxaW6BVDJKxZWzBSDBKxZWzBSDCKxaWuBOCxKxOWpBUC6KxJWGBVCrKxKWFBLCWKxLV_BMCYKxLV_BMCZ"],
+    [1119,"AAAA0CAHe"]]
+  }}
+ }
+}
