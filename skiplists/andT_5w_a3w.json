@@ -1,0 +1,195 @@
+{
+ "format": 6,
+ "videoId": "andT_5w_a3w",
+ "title": "⚠️좀비 출몰⚠️ 생존자 윤아 & 모카가 보내온 영상.mp4 | Cherish (My Love) 음악방송 대기실 상황극 | ILLIT (아일릿) [BESIDE-IT]",
+ "duration": 90,
+ "scannedAt": "2026-11-27T22:44:29+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 298
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [
+  {
+   "start": 34.5,
+   "end": 38.17
+  },
+  {
+   "start": 55.83,
+   "end": 61.5
+  }
+ ],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 271,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":0.67,"members":["illit:moka","illit:yunah"],"focus":"illit:yunah"},
+   {"start":0.67,"end":1.0,"members":["illit:moka"],"partial":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":1.0,"end":3.67,"members":["illit:moka","illit:yunah"]},
+   {"start":3.67,"end":4.0,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":4.0,"end":9.33,"members":["illit:moka","illit:yunah"]},
+   {"start":9.33,"end":10.67,"members":["illit:moka"],"partial":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":10.67,"end":11.0,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":11.0,"end":11.67,"members":["illit:moka","illit:yunah"]},
+   {"start":11.67,"end":12.0,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":12.0,"end":12.67,"members":["illit:moka","illit:yunah"]},
+   {"start":12.67,"end":13.33,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":13.33,"end":14.0,"partial":["illit:moka","illit:yunah"]},
+   {"start":14.0,"end":14.67,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":14.67,"end":15.0,"partial":["illit:moka","illit:yunah"]},
+   {"start":15.0,"end":15.33,"members":["illit:yunah"],"partial":["illit:moka"]},
+   {"start":15.33,"end":15.67,"members":["illit:moka","illit:yunah"]},
+   {"start":15.67,"end":16.33,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":16.33,"end":18.33,"members":["illit:moka","illit:yunah"]},
+   {"start":18.33,"end":18.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":18.67,"end":19.0,"members":["illit:moka","illit:yunah"]},
+   {"start":19.0,"end":19.33,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":19.33,"end":19.67,"members":["illit:moka","illit:yunah"],"focus":"illit:yunah"},
+   {"start":19.67,"end":20.33,"members":["illit:moka","illit:yunah"]},
+   {"start":20.33,"end":20.67,"members":["illit:moka","illit:yunah"],"focus":"illit:yunah"},
+   {"start":20.67,"end":21.0,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":21.0,"end":21.33,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":21.33,"end":22.0,"partial":["illit:moka","illit:yunah"]},
+   {"start":22.0,"end":22.67,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":22.67,"end":23.0,"members":["illit:moka","illit:yunah"]},
+   {"start":23.0,"end":23.33,"members":["illit:yunah"],"partial":["illit:moka"]},
+   {"start":23.33,"end":24.33,"members":["illit:moka","illit:yunah"]},
+   {"start":24.33,"end":25.33,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":25.33,"end":28.67,"members":["illit:moka","illit:yunah"]},
+   {"start":28.67,"end":29.33,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":29.33,"end":29.67,"state":"none"},
+   {"start":29.67,"end":30.0,"members":["illit:moka","illit:yunah"]},
+   {"start":30.0,"end":30.33,"members":["illit:moka","illit:yunah"],"focus":"illit:yunah"},
+   {"start":30.33,"end":31.0,"members":["illit:moka","illit:yunah"]},
+   {"start":31.0,"end":31.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":31.33,"end":34.0,"members":["illit:moka","illit:yunah"]},
+   {"start":34.0,"end":35.0,"members":["illit:yunah"]},
+   {"start":35.0,"end":36.0,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":36.0,"end":38.67,"members":["illit:yunah"],"partial":["illit:moka"]},
+   {"start":38.67,"end":40.0,"members":["illit:moka","illit:yunah"]},
+   {"start":40.0,"end":40.33,"members":["illit:yunah"],"partial":["illit:moka"]},
+   {"start":40.33,"end":41.0,"members":["illit:moka","illit:yunah"]},
+   {"start":41.0,"end":41.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":41.67,"end":42.33,"members":["illit:moka"]},
+   {"start":42.33,"end":42.67,"partial":["illit:moka"]},
+   {"start":42.67,"end":43.33,"members":["illit:moka"]},
+   {"start":43.33,"end":43.67,"partial":["illit:moka"]},
+   {"start":43.67,"end":44.0,"state":"none"},
+   {"start":44.0,"end":44.67,"partial":["illit:moka"]},
+   {"start":44.67,"end":49.67,"members":["illit:moka","illit:yunah"]},
+   {"start":49.67,"end":51.67,"state":"unknown"},
+   {"start":51.67,"end":52.0,"state":"none"},
+   {"start":52.0,"end":52.67,"state":"unknown"},
+   {"start":52.67,"end":53.0,"state":"none"},
+   {"start":53.0,"end":55.33,"state":"unknown"},
+   {"start":55.33,"end":58.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":58.33,"end":60.33,"partial":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":60.33,"end":61.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":61.33,"end":62.0,"members":["illit:yunah"]},
+   {"start":62.0,"end":62.33,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":62.33,"end":63.67,"members":["illit:moka","illit:yunah"]},
+   {"start":63.67,"end":64.0,"members":["illit:yunah"],"partial":["illit:moka"]},
+   {"start":64.0,"end":67.0,"members":["illit:moka","illit:yunah"]},
+   {"start":67.0,"end":67.33,"partial":["illit:moka","illit:yunah"]},
+   {"start":67.33,"end":67.67,"members":["illit:moka"],"partial":["illit:yunah"]},
+   {"start":67.67,"end":68.0,"partial":["illit:yunah"]},
+   {"start":68.0,"end":68.33,"state":"none"},
+   {"start":68.33,"end":68.67,"state":"unknown"},
+   {"start":68.67,"end":90.33,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[374,424,474,1449,1764,1768,1770,1776,1780,1786,2681,3720,4028,4362,4364,4366],"tracks":{
+   "illit:moka": [
+    [8,"Ak8SfSKtIKjAUGTMrYKhbVMSrqAKhXSBSlrWKg-GnSytZKi5C5SwrsKj8SQRJlxKkbZLPbiXKkbgDOPeoKkTd5NsdiKg7UkObeOKfeOkObf3KeUUBO3fRKePV9N9epKecadN5eHKfucGN1e0KgiefN_eWKhCeyNweVKgYgCN-eRKgFiaODdlKfggUOkedKeEXcPmgTKhuRiPVhpKh7VEPRhHKiPXaPYghKjtciPCg2KkefOPWglKlehRO3euKk6jEO3c7Kjlg7PJfEKivcrPhi1KjyWKPSkgKl8SrPGjzKn5QMPiibKpsMJPviyKqfMEP_iYKqbLcQFkU"],
+    [378,"Ak6VbSQqHKkgUMSRriKkqT4SMrmKlOS0SbsFKl6R0SUs1"],
+    [428,"AmbR9SLsIKmaR4SMo2KmvR7SFnVKnFRsSFnzKnbSQSMnS"],
+    [478,"AnuQGSQpLKnwPsSOo_KoCQ4SNoGLojQ_SGniKoUQ8SMn7Kn3TAR8nuKnfSnSQpLKm7SfSepVKl1TNSbn3KlePXSlpUKlwLOSfrDKl3M8R6ndKk_NkRkmRKkONtRlmyKjjO3RSmuKjEQrRemXKktRXRWnPKjqV0Q7lNKjLdJPQh3KivhVOQenKildfPXiOKj0YcQJkWKkrTGRao3Kp4PYS5sAKqbP_THrZKq8PSTDs3KoQOUSysqKmsPlSDqVKmuLaRwpEKmmKiRRmSKoRJ_RdmtKrCG5SRnyKuQIlRvn0KxBJ6O-nBKx5IbOGoOKwUKwProRKtuQRRVk_KswP7RglcKtAOkR9mtKtDNlScnIKtPNiSwnuKu_Q3RArhKwMVGPzq5KuqUERVr7Kn0OOUCq_KkILaTRohKeWKtSUmgKgOLuSIoIKj-PMSJozKmxQvSDngKn6UBRGljKnQW9QMj1Kn8TGRAl7KqAPHRimkKqPNoR7mfKqvVLRclmKuDYlQ1lvKuHT4RsmiKsAULQhlBKqERKRVobKoyTPRQl-KozR6R5nOKqKQlScmverHOHRSlWKqqKsSDowKqRLaR8jsKqQNXQRj7KoTN8QMhBKmCTEQpkCKlSXkQrkrKkJYiRRlfKkDYTRbmIKjNZ4SMlrKlWb3TLkIKm7aHSil4KkxN4YfyHKiIGobX5XKgTB6cM-FKiHDEdO87KldD_ai8AKofFsXg6TKqAGvV_5QKqoHSVX4tKqJHpV22SKouIwWoypKnjKsVGu-Kn1O2UYs7KqHSRUltZKsrYBTUn-Kt0XOSLoxKrSSOUttxKonOnXYxYKnNM7YyzEKppS3WWtIKnmQWUptQ"],
+    [1449,"AiZNXPVhtKmDFiQZkdKoGDxQ9lYKoUEzROmEKn8GXQzmKKnfJAQdlMLnOKyQnlIKnxM-QslHKoqN_QxkrKpaOtQcj4KqGQGQQjVKqoRPQdkIKqiR9Quk6KqBRUQtlRKp2QrQVkfKqcRGP9jyKpuTIPwjkKoRUSP9jJKoWT_QNjiKnbUKQAiqKnST3P5iRKpIV9P0iYKsfVyQgkkKrGV0QakgKpjU9Qmj1Ko7TWQlkWKoiSBQglbKo3PzQ-lYKqbLqRimeKrNPVQzlYKqfOaQplpKn2QZQBkO"],
+    [1790,"AizWzPmkKKg-Z6PDicKmIhlNCcPKp7dYPxhNKr0daQwfoKq-aYQxisKpTaRRHiDKqJauRUizU1xQQKOvvKpZQGRXn9Kk0UbQIkUKjLYcPfjAKiVZqP3jSKlpVTQbkSKnnSZQ-mTKqaSAR-nMKofUNSDmdKowXmRPkLKoQYOQtjpKoWXxQ7kHIoSU1RGl2KpDRaRPmuKrONvRVnmKlCKAQaobKj3LpQHoI"],
+    [2168,"AybVKNkq1Ky3UYNIrnKx3UGOIr5KxdUoOirXKwVXoPqoXKuMWzRzpMKuwZBRPm-KvZWvQmpQKwVS7PqroKvEPaQ7sYKvFPsQ6rwKwtRPPSqdKxnQeOYrmKxfQuOgtPKyMQ1NzuTKtVTaSqpfKsgT6SWoOKrdSrRanIKqzSmRSmSKpBRkRAm9Kn_TgRDm9KnFWDRcmbKq5VqUzqVKqgX2VfoJKofUQVnrvKm5SlU1r2KlJSuUCqYKjzRTUwsPKiAJ_VkxPKjBGOW5xTKjOE1YnxGKivDHZ_yKKlEDBY_xMKl4DXYkwtLnqD8YQv_KpTF1WsupKqmGMVZuaKqnGyVYvfKqLG1V0wxKo6G1XFyKKnHF2Y4y5KmiE9Zdz7KncGSYjzgKpxG7WO0jKtEFfS76gKtgFZSf6meoZD2Xm8JKm8DeZD8hKl_CraA9UKkoFbbX6k"],
+    [2689,"AnlMAVDteKnePlT_rwKkoPKTmrmKh4MRTDtaKgKR-SSpfKheTwSioRKjdU1SnoEKmmT7TnplKo6NkVPuQKqlLrVawSKr6NaUFu6KrQSBUvsiKpoS4UBqfKnhQ6VMq9KniK_VKv7KnaKSVNwAKnYKPVAv8Km9KgVFvcKmuKCVHvoKmqJEVKwBKleJMU8xHKnSQ3WZtxKpvN5WQveKn-NGVpuSKlxMbVduPKkhLvVbu_Kk0LUVIudKlEKFWYwSKmNJ0VHwfKj_HpUuvO"],
+    [3059,"AqsBYVTrVKoaGKUyuEKlKIqWcwQKe4K9UpuuKcEJPVhxuUaSJlVzxWKZ5MMU7u0KZGL-Vzu7KZaIVWYxhKY3I7VxwcUXrGeUmyaKXgGLVjyZKXZGoVqyMKX5HAVpyIKY5HTR7q-KW3LgQonDKU1OuRupZKX8I9TGtuKaZJcSgt3KcFFmTPvzKcIE5TVtTKcTGrSarHKccLjSGrYKdHRWSNpyKegWqRmm0Kf-asQ7lTKgzbzQ4kM"],
+    [3720,"AmqLMVawnKoJLKVcxdKptL6WSxaKqgM0VfxuKqPOjVwwDKqMOJVdu0KqyOAVNuCKqlPqVasjKqRRxVPrsKqITLVcs0KqWUcVprjKqBTrV-sUKqhR2VeuJKrNOYUyvZKruNKURu0KrXNQUouaKqtLkVSviKpmLdVRu_Kn7LLVQuvKnBLBVEvCKnDM1U2uKKnIO8UjsdKnkQiUbsBKoNR0VKseKo1SUU7smKo3SGVFsRKozSHUsrJKo3RoU3rOKo1R4U0qwIovRhU5q6Ko2RbU2rC"],
+    [4028,"AoMFFXz3kKoOF3Xx4VKm5E-ZG5tKjYCTYA59KdGAATg21olLFgVh2LKleF2ah6J"]],
+   "illit:yunah": [
+    [8,"AIcAAXQ1pKHzAAWy1oKIGAAWP0OKJxAAVavHKHmAAXcjEKMSAAUtdFKQTAASImNKTvExPYlSKW3MGNWjIKX9JVMzggKThAFNzhKKQlAAO3dCKP8AAOghhKP8CuN3hRKP7GpN4iYKRmH_Nzi8KSiKQNuiGKTYKbNfiDKTQK_NWiZKS3PLNbh2KRKNYOQi_KOzCnPpljKTZAAPdhnKTGBPPAkLKT-DLOpk3KWiHQN0joKXpKzOCipKY-MVN8jSKYMN0OPjhKWKKVOpmEKULH3O-mCKR_FyPXm3KQTFQQGmbKPaErQGmSKO4DVQgnQKPJCwQXm8KPTCLQlnU"],
+    [378,"AK-CtT7v2KKoCrUdv0KK9CEUywlKLrBsU9w7KMSBKUwwM"],
+    [428,"ANpAAUvvaKOkAAUKvLKPFAAUYuuKO9ALUav1KO0AAUivc"],
+    [478,"APTAEUOuvKQHAHT0t2KQuAATsuJLRrAITmuJKRkAATytqKR0A0T2vXKQ5AFUvx0KO6AAV8xRKNNAAWdvVKMwAAWXuAKNkAAWWsGKOVAAWDq6KOBAAVWpjKNRAAVUpbKMmAAVVpxKLKAAVXqMKLTAATsnzKLVAASjofKOdDmQFpAKQaMEOokbKQIG_PUmTKO6AAQvoHKOHAARom0KRwAARnnmKSFAARpovKSNAARzpSKOpAAR4o-KNnAARZpHKNtAARQmOKNoAAQ3kBKOoAARDi3KQ_AARPgkKUuAARUeuKZRAARGcnKa4AAQzcBKaEAAQ0dzKYaAAQff7KW3AAQ5htKVtAARliWKVZAARlikKVgAARbilKYHAARukhKZkAASEoPKXTAAShreKNHAATqrTKIKAAU3q0KBOAAWWrLKEJAAVUoqKJrAAUFoEKOWAATKnNKRAAASQpBKQ_BORmrUKRNBwRwrEKSQAGSEqqKR5AASEpXKT4DDRFrPKYtFBQapdKYbCPQwoxKVhB-Q3pFKSwBnRxp1KRCBaSQrAKP-BFSxsaKPcACTHsoKPeAATUrNKPTAATVqPKPwAATPpUKQEAATToUKQQAATMnPKQSAAS2nGKO8AASloDKNUBJSQrpKL-GNSIqdKLJH_SXrLKJqHQTStAKH6I5UCvUKHnHwV_ziKF-B4Yf7lKBNAAb65wKAAAAav4VeAAAAe530KCMAAhC5AKGBAAeA3uKI-AAbt0jKKtAAZ3yQKMpAAXcvJKNtAAVjtiKP3AAUcuFKS6AAUtymKV5BCV432KV2AhYF4sKRNAAY833KL7AAaM3uKJiAAaL3CKOJAAW22GKNgACUnwc"],
+    [1449,"AMLASQrn3KM8AASZkKKN4AATJizKOCAASxi0KN7AAScjdKOHAASIlJLOEAASDmqKPUAAR-npKRVAARhoAKS8AARInrKUkAAQToJKU7AeQrpyKUeB1Q5piKTJCQRKpHKTSA9Q1o7KUcAAQqpPKTeCPQ0pdKRUBsRlsGKRfB4RurOKRXBiRhqfKSMB9Qro9KUSCiQPpwKXvDWQapvKVHCoRDqjKSZCXRapVKRVBXRsqUKQ-A-RyqdKQ8AASVobKS9AASQj2KWXAARijKKVJAARLkqKSQAAQ-mf"],
+    [1790,"AM5HNRBmMKLxHuROngKUwGIQEnbKXnGqQZmhKYTHFP3mjKXVIPP7lzKWFHqQHmkKXFG6QYmkKm1FVSFkCKkYDXSmjSKYmAzRpiBKTYDtQrhzKRyHFPlkCKQeJjPhkXKTWE_P5j8KUvDXQmjFKYUB-QvjWKWPD9Q9kPKW9E-QhkrKWUFaQXlfKWUFyQTlsIU3GNQcmYKUkF4QrmbKV4FLQhlRKOjFLREmHKMPFiRojaKSQEbSooAKT2D0SQnuKT5EDSXoJKUeEjSLoyKU4EwRzoXKUMEhSOpIKWAE8SQoyKVTErSlpsKWHFISkqeKWlFsSyq8KW-F8SbruKXVFtSnrBKWuF7S0r2KWdGbS2sGKVJGzS1sgKUBGrTLsNKToGxTKsmKSZGqS9s1KTMGhTKs_KSVFxT2s5KSCEIT_r1KP8DoUMqRKQkDJT8p_KTlDVTPpgKUrDlTPqMKUxDbTZq3KWMEBTPqQKR0ExS3qYKSKEVSXo8KRoEQSMn0KQ6DASSnwKPIDFSXl6KOYEZSToBKO3GARwpVKRNHORyqnKPzIXSJqvKN1HxSYrbKN_GGSCq1KNCFySNqbKK9FUTPrbKHtDbUaqhKFdAAWgoD"],
+    [2689,"APmDOUpouKQkDqT4puKMLFaTsrRKIrGAT1r_KHUH0TWshKJqHvS7tIKL1H_Srt_KO4H9SvraKPpEvUJqMKQ3C8UfqsKSWEFUdpsKTeFYT2riKRjFGTosvKPNFbUFrKKOhEGURqoKOHDkUYqLKNtDBUoqjKNkChUnq1KNhCqUxqJKNvCuUhptKNqCvUmp4KM4C_U1qgKMsCsU6q-KMyC5UxqkKMkDMU2rFKMRDdUvqxKMLDZU3qTKMmC7UyqVKMWBiU0sbKG5AAWQqm"],
+    [3319,"AIjAAXiuLKJmAEXRvlKJRBOX3wJKI2CIXbvDKIaCZXsupKJQAuW9wqKJZCNXlvaKJmCgYDwTKJHCaYBwjKJABiXUwOKHlCtXIuUKGjCGYcySKGnC7Zx0aKI3A9ZX0EKJRAlaly7KKfAAa5y6KKnAAa-yLKKNAAaex5KJ3AAa-xkLKYAAZuwlKLBAAZnu6KK1AAZdwAKKjAAZ0vGKKjAAZutsKI2AAa2qfKJCAAZBoXKHcAAZKqmKItAAWhqHKH-AAVwpfKHLAAVEqMKGHAAVdrwKEeAAVsuvKCoAAWdx2KCqC6WIyUKCkDeXKyhKDXCEW6yxKBuEhYryiKAUDdY60YKAACqY81FKAADGZUzT"],
+    [3720,"AAAAAV0sZKAAAAWLr_KA4AAV8sYKCXAAVNs4KD9BtUurgKF3CxTeqWKG0ERS_pBKFZEPTWqXKEXEdTmr2KD9FZTrsRKD3FvUGtUKCmF9UetBKCbEvUrsWKC8EXUzqvKEVDqUPqnKE1DvTwqDKDlDNUXpGKCXCBUFpaKBpCcTnpBKAnEETdoFKA5EgTbo_KBSFZTKqmKBPGgTirMKByHoTdrtKCgHSTLtPKCvHfTAtEKC4G8S_thKDNHSSpsxKDUHHSksdIDbHDSdsJKDgHBSssR"],
+    [4028,"AAAAAQPviKAAAAQqxXKAAB5QzxxKAABhQfy9KAAAAQQy4KAAAAOM0V"]]
+  }}
+ }
+}
