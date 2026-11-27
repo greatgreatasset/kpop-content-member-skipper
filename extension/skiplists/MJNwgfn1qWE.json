@@ -1,0 +1,42 @@
+{
+ "format": 6,
+ "videoId": "MJNwgfn1qWE",
+ "title": "‘기침’ 편 6s | It’s Me | ILLIT (아일릿)",
+ "duration": 6,
+ "scannedAt": "2026-11-27T08:00:38+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 19,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":2.0,"state":"unknown"},
+   {"start":2.0,"end":2.33,"state":"none"},
+   {"start":2.33,"end":4.0,"state":"wide"},
+   {"start":4.0,"end":4.33,"state":"none"},
+   {"start":4.33,"end":6.33,"state":"wide"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[110,170,240,255],"tracks":{
+
+  }}
+ }
+}
