@@ -1,0 +1,169 @@
+{
+ "format": 6,
+ "videoId": "kgOVTqYA0WU",
+ "title": "ILLIT 2027 SEASON'S GREETINGS SPOT",
+ "duration": 41,
+ "scannedAt": "2026-11-27T02:00:34+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 184
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 121,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":5.67,"state":"none"},
+   {"start":5.67,"end":6.67,"members":["illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":6.67,"end":8.0,"members":["illit:iroha","illit:yunah"],"partial":["illit:wonhee"]},
+   {"start":8.0,"end":9.67,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":9.67,"end":10.0,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":10.0,"end":10.33,"members":["illit:minju"],"partial":["illit:wonhee"]},
+   {"start":10.33,"end":10.67,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":10.67,"end":12.0,"members":["illit:iroha"]},
+   {"start":12.0,"end":13.67,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":13.67,"end":14.67,"members":["illit:iroha","illit:yunah"]},
+   {"start":14.67,"end":16.33,"members":["illit:wonhee","illit:yunah"]},
+   {"start":16.33,"end":18.33,"members":["illit:iroha","illit:wonhee"]},
+   {"start":18.33,"end":19.67,"members":["illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":19.67,"end":21.0,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":21.0,"end":22.67,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":22.67,"end":23.33,"state":"wide"},
+   {"start":23.33,"end":24.67,"state":"none"},
+   {"start":24.67,"end":25.33,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":25.33,"end":26.0,"members":["illit:minju","illit:wonhee"]},
+   {"start":26.0,"end":27.67,"members":["illit:iroha","illit:minju","illit:wonhee"]},
+   {"start":27.67,"end":29.67,"state":"none"},
+   {"start":29.67,"end":30.67,"members":["illit:iroha","illit:yunah"]},
+   {"start":30.67,"end":31.67,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":31.67,"end":32.0,"members":["illit:iroha","illit:wonhee","illit:yunah"]},
+   {"start":32.0,"end":33.0,"members":["illit:iroha","illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":33.0,"end":33.33,"members":["illit:minju","illit:wonhee","illit:yunah"],"partial":["illit:iroha"]},
+   {"start":33.33,"end":34.0,"members":["illit:minju","illit:wonhee","illit:yunah"]},
+   {"start":34.0,"end":40.33,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[332,400,486,575,631,715,821,889,979,1103,1169,1269,1568,1654,1722,1782,1848,1900,2030],"tracks":{
+   "illit:iroha": [
+    [408,"AGVOgFfQxKGsOdFTQ0KG1OmFPQuKG7OvFRQnKG_O7FSQeKHHO7FRQkKHNPAFUQbKG7OlFhQt"],
+    [488,"AIuTEDRKiKH6SvDIKZLGvS5DLJ4KFjS9DKJ3KEOTMDiJ9KDWUMDzKBKDTUlD1KFKDzUeD6KJKE1UbD5J6"],
+    [639,"AdkJrGmPeKdOKgGxPsKdALIG4PqKc1L4G8QHKcyMjHEQWKcsNvHEPMKcxO7HHPFKccQ2HFN-"],
+    [719,"AIGVdDcJyKICVTDcJ8KH8VUDgJ_KH0VfDhJuKHrVEDpKOKHgU-DqKWKHVU1DuKbKHJUxDxKiKG5UwD3KjKGnU7D1KbKGYU1DyKe"],
+    [829,"AcZLUGhPYKcQKtGpPlKcSKhGmP_KcNKsGtP6KcFLZGwPxKcHLaG2Po"],
+    [979,"ANnLpHKSOKNkLxHMSNKNoMPHLR9KNtMGHRSRKN3MAHTSPKN5L6HdStKOILzHaSPKOXL2HVSNKOOL3HdSCKOILuHeR8KONL2HeR_KOWLqHcR9KOYLuHcR6"],
+    [1169,"ANeYRDJKMKMkW2DMKLKLZV0DQKCKKWVZDFJ1KJPVPDMJzKIaVgDUJoKIHV0DNJQKIDVsDGJKKIJWDDCI3KINWNDBI1"],
+    [1359,"AfaamBqDeKfZaoBqDdKfWamBqDfKfUakBqDdKfSalBrDb"],
+    [1479,"AZJLSFMRnKZKK5FbRwKZUKrFdR_LZaKsFhR4KZeKaFdSJ"],
+    [1570,"AKnYnEULIKKTYlEXLRKKBYfEdLbKJ3YWEcLhKJoYTEhLeKJVYaEhK_KJFYKEjLEKIvYQEpLMKIXYJErLi"],
+    [1790,"APPNXElPZKPJNYEoPSKPHNfErPXKPCNfEuPAKO-NnEyO5KPENuEuOz"],
+    [1900,"AP4Q_F-N_KNsRAGCNyKLTQjGcNzKI9O-GhOOKF9PJHANtKEWOsHBOfKDSPcG2OYKB_PYGjOlKALPyGpOhKAAP7E6Od"]],
+   "illit:minju": [
+    [338,"AxtJSGiQIKx-I-GhQIKyjI8GXQEKzGI3GOP-KzvIaGDQcK0UISGBQeK0qH3GXQx"],
+    [488,"AzxR8ElKvKzFSHERKTLyITEEHJuKw8UPD3J3KvgWODxJ0KvBW8DrJ4KvpWwDwJrKwzVnEXJ4KyKUiEdJq"],
+    [579,"AbVRWK3ZgKbPRTK2aCKbiQ8KqaoKcLQ1KqawKcoRTK_ZZKd1QULCY_"],
+    [719,"A01UfEXJhK0-UdEYJhK1FUTEZJlK1IUAEdJzK1KT_EdJ5K1PUAEaJxK1VT3EdJ3K1MT8EPJ4K1GUMD8JpK1PUID-JrK1gUHD-Jx"],
+    [1109,"AuOOFHdQiKuNOJHbQeKuTOSHeQbKuWOiHiQSKuXOqHhQPKuZOtHhQO"],
+    [1169,"AstZlEDJKKs-ZSEGI6KtbYdD_JQKtlYiECJJKtpYhEBJIKtjYoD_JGKteYyEAJBKtkYwEHJEKt6YYEEI9KuQXQEQJm"],
+    [1359,"AxQZsBqDvKxQZoBqDyKxRZmBqDxKxSZkBpDwKxTZiBqDx"],
+    [1530,"Ac6MKHzRSKc5L8H4RcKc4LxH8RoKc6LnH_Rx"],
+    [1570,"AxyX-D7I1Kx8X2EFI7KyPXtEFJJKyaXfEIJUKyoXQENJZKy4W6EVJzKzKXCETJsKzZW5EaJwKznWtEbJ7"],
+    [1850,"AecIQHGN5KehIXHKN4KelI2HBNmKemJjHANWKenKqG2M4"],
+    [1920,"A6pIsFWSTK4yIxHNSNK2pI1IMSiK0yIsIOSuKzJI9IJSMKxYJFIKSFKvcJGISSQKtlJJIKSBIriJDIOSIKp4JQILRxKn8JcIRR1KmKJcIQRz"]],
+   "illit:wonhee": [
+    [338,"AccMCGNPaKcUL3GUPmKcPL1GUPnKcKLwGdPyKcMLsGcPyKcOLlGcP5KcOLZGkQF"],
+    [408,"A6uPOFRPqK63PFFIPwK66PJFFPvK69PKFCPsK7APGE_PuK7EPBE7PxK7GO5E5P2K7HO0E4QH"],
+    [488,"AoMTlD2JJKn3TKD6JfLnqTBD8JcKnhTFD8JVKnaTQD-JPKnXTcD5JDKnUTrD3I2KnOT0D0IwKnOUQDzIj"],
+    [609,"AAASnFtYIKAASWFvYC"],
+    [719,"ApPVeDsITKpRVUDuIZKpQVKDxIkKpQVADyIlKpRU6DzIhKpTUpD0IsKpTUqD1IwKpZUpD3ItKpfUnD7IsKpkUkD8IyKppUVD7I5"],
+    [889,"A55OnFUOqK6GOkFVOgK6XOYFSO0K6cOrFSOvK6bOzFYOyK6WPIFcOvK6TPIFdPGK54PwFbOmK6HPkFqOt"],
+    [979,"AsKJ0HORyKsVKGHQRqKsjKeHRRUKtGK-HQQ9KtqLQHAQxKttLBHAQ4KtaKhG5RJKs8KVHKQ_KsoKQHHQ8KsIJuHRRHKr4JzHSRFKsXJ6HPRLKtWKEHDRW"],
+    [1109,"Ac9RIGgQKKdLQvGfQKKdTQGGgQMKdkP_GeP0KdqQIGcQGKddQSGWQC"],
+    [1169,"Ak-YkDjIvKk_YaDnI3KlLYFDhI7KlWXpDyJBKlrXtDuI0KmAXWDvIuKmYWlDvI_KmrWUDwIiKm6V_DwIjKnDWIDwIZ"],
+    [1269,"AY1LbGmPsKYgJaGqP3KYTIZGnPfKYVIYGkPgKYSI1GsPsKY_KVGnQSKZ0MLG5QUKaDMnG5QMKaVM1G1P3"],
+    [1530,"ADESMHmQiKCxSIHsQiKChSBHvQvKCNRyH3RB"],
+    [1570,"AlfasDcH6KllakDiIDKlqalDkH_KlsacDqIJKluaYDuISKlwaUDxIZKl3aRDxIZKl-aEDyImKmCaID3In"],
+    [1900,"AquSbGmPeKo_SHGhPeKnWSJGYPUKlXSSGfPQKjRSRGhPQKhdSjGcPGKfyScGePNKeJSjGYPOKcZScGcPOKanSdGWPJIYzSSGSPSKXNSfGPPLKVFSfGgPRKTLSdGkPZ"]],
+   "illit:yunah": [
+    [338,"AAKGYGoREKAAGRGkRJKAAGQGeRKKAAGFGXRWKAAFdGnSFKBKFIGXRuKBlE-GNRp"],
+    [408,"AcUHHGsQYKcRHEGrQSKcDHOGwQYKbwHYG1QMKbtHjGwQiKbqHvGvQVKboH3GxQbKbxH_GxQW"],
+    [488,"AV0P6EGKCKV5QMEAJ7LV1QeEAJuKV6QyD6JxKWJQ5D5JfKWWRHD8JXKWjRLD0JgKWeRdD3JNKWeRiDzJA"],
+    [719,"AWSR6DtIsKWTR6DuIqKWWR-DvIrKWXR7DxI0KWVR5D0IvKWLRuDzI2KWDRiD3I9KV-RaD5I_KV9RQD6JFKV7RKD8JEKV3Q8D8JK"],
+    [829,"A3OEkGxQ_K3fETG7RZK30ELG6RaK3_EIG9RTK4ID1HARjK4KDjHGR3"],
+    [889,"AcRI2GPPwKbVI9GUPIKa_IpGWO5Ka1IlGVO9Ka2IkGaO7KbEIlGXO0KbWIrGXO0KbqJDGZPLKcEJFGPPu"],
+    [1109,"AJiQ5HSQtKJjQ3HTQtKJiQ1HVQuKJuQmHTQ1KJ2QsHbQuKJ7QmHeQu"],
+    [1169,"AbbVfDxJPKbTVeDxJZKbOViDzJSKbCVLDvJVKawU9D1JOKanUoDyJJKaaUQD0JLKaFT_DzJTKZ0TqDxJFKZjTMDwJF"],
+    [1359,"AmyZUBkDfKmyZTBkDgKmxZPBlDjKmyZPBjDlKmwZUBhDl"],
+    [1790,"AvWOoG9OgKviOlHFOrKv1PGG4OUKv8PbG9OUKv4PmG_OTKv2P8G5N-"],
+    [1900,"AfXPzG5PcKdrPfG9P2Kb-PjGyPbKaKPrGuO3KYHPgG4POKWRPhG3PXKUoPpG4PQKS9PeG0PTKRLPxG0PUKPLPsG4PaINYQJGuPAKLwQBG3PfKJ6P8GyPSKIPP7G5Pk"]]
+  }}
+ }
+}
