@@ -1,0 +1,54 @@
+{
+ "format": 6,
+ "videoId": "EYmA1tShKik",
+ "title": "ILLIT (아일릿) 'It's Me' @서울 어린이대공원 페스티벌",
+ "duration": 155,
+ "scannedAt": "2026-11-27T07:44:15+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 465,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":26.33,"state":"wide"},
+   {"start":26.33,"end":26.67,"state":"unknown"},
+   {"start":26.67,"end":63.33,"state":"wide"},
+   {"start":63.33,"end":63.67,"state":"none"},
+   {"start":63.67,"end":68.67,"state":"wide"},
+   {"start":68.67,"end":69.0,"state":"none"},
+   {"start":69.0,"end":93.67,"state":"wide"},
+   {"start":93.67,"end":94.0,"state":"unknown"},
+   {"start":94.0,"end":131.0,"state":"wide"},
+   {"start":131.0,"end":131.33,"state":"unknown"},
+   {"start":131.33,"end":134.33,"state":"wide"},
+   {"start":134.33,"end":134.67,"state":"unknown"},
+   {"start":134.67,"end":148.0,"state":"wide"},
+   {"start":148.0,"end":155.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[3078,8889],"tracks":{
+   "illit:minju": [
+    [148,"AZkUyBlDnKZpUqBrDjKZqUqBqDqKZRUmBqDtKZIU5BmDmKZRU8BiDpKZdVJBmDiKZpVCBlDnKZ1VCBiDrKZ1VEBiDqKZzVABjDwKZtU6BlDtKZrU6BkDrKZoU-BkDsKZkVBBmDoKZjVCBlDmKZlVOBmDjKZoVMBnDjKZsVPBlDhKZuVgBkDeKZrVXBkDbKZpVRBlDaKZqVQBjDYKZoVOBkDfKZpVKBkDiKZrVHBkDiKZsVFBkDlKZuU_BkDoKZsU7BlDqKZtU2BlDtKZqU4BlDpKZiU4BlDnKZaU1BmD3KZaUyBoDyKZjU1BmDqKZWU2BqD5KZfUwBrDsKZ9VIBfDYKaGVOBeDqKaFVVBdDqKZ8VdBhDjKZ3VlBbDXKZzVlBcDZKZ0VjBcDZKZyVdBgDgKZzVkBgDWKZ0ViBiDYKZ0VjBiDZKZ1VlBhDZKZ0VpBiDZKZ0VsBgDVKZvVnBlDZKZtVlBkDaKZvVlBjDZKZzVuBfDXKZyVuBhDVKZyVvBhDTKZyVvBiDUKZyVwBjDVKZzVuBiDXKZzVvBiDYKZyVyBhDTKZyVuBhDTKZpWTBiDdKZhWTBkDdKZZVEBsDU"]],
+   "illit:wonhee": [
+    [8,"Af4WdBdDZKfaWRBhDZKfXWLBfDbKflWIBgDjKf9WHBiDjKgSWKBfDiKgUWHBiDjKgIWFBjDpKfwWGBiDrKfNWCBkDnKenV8BlDmKeWV2BiDjKeTV5BhDjKelV_BiDtKfSWHBgDmKgDWFBhDhKgYWDBiDjKgKWHBfDoKfsWHBiDnKfWWIBhDoKfUWGBfDhKfmWNBiDiKf8WRBjDpKgGWQBjDoKfzWTBiDnKfXWPBiDnKfJWNBiDmKfSWPBiDnKfnWVBeDhKf0WZBgDkKf3WpBgDdKfvWyBgDbKflWuBgDiKfcWgBhDiKfSWgBhDhKfSWiBhDhKfZWcBhDkKffWlBhDgKfjWlBdDiKfkWcBeDkKfeWZBgDgKfcWYBiDgKfbWcBkDnKfeWYBhDgKfZWXBjDhKfYWPBkDlKfZWMBiDsKfWWLBpD2KfeWNBkDjKfeWSBiDsKfaWJBjDlKfJWjBgDdKfFWjBeDpKfNWYBfDuKfTWYBaDsKfPWXBbDnKfLWYBeDjKfMWZBbDlKfOWbBbDlKfPWaBaDnKfPWcBbDlKfPWcBbDmKfPWcBbDmKfQWbBcDnKfRWdBcDlKfQWdBcDmKfRWdBaDmKfQWfBbDjKfNWcBXDjKfMWYBXDkKfKWZBZDlKfKWYBXDoKfKWYBZDwKfKWWBbDqKfJWXBdDvKfIWbBdDsKfMWmBbDl"]]
+  }}
+ }
+}
