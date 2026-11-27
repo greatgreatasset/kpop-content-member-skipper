@@ -1,0 +1,121 @@
+{
+ "format": 6,
+ "videoId": "zNjM_W48HxU",
+ "title": "누가 꽃이게＞_＜ I #어디갔슈일릿 #티저2",
+ "duration": 55,
+ "scannedAt": "2026-11-27T05:56:23+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 14
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 165,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":6.67,"state":"none"},
+   {"start":6.67,"end":7.0,"state":"wide"},
+   {"start":7.0,"end":7.33,"state":"none"},
+   {"start":7.33,"end":9.0,"state":"wide"},
+   {"start":9.0,"end":12.33,"state":"unknown"},
+   {"start":12.33,"end":12.67,"state":"wide"},
+   {"start":12.67,"end":19.0,"state":"unknown"},
+   {"start":19.0,"end":19.33,"state":"wide"},
+   {"start":19.33,"end":22.0,"state":"unknown"},
+   {"start":22.0,"end":22.67,"state":"none"},
+   {"start":22.67,"end":30.0,"state":"unknown"},
+   {"start":30.0,"end":31.67,"members":["illit:minju"]},
+   {"start":31.67,"end":37.0,"state":"unknown"},
+   {"start":37.0,"end":37.33,"state":"wide"},
+   {"start":37.33,"end":40.33,"state":"unknown"},
+   {"start":40.33,"end":41.67,"state":"wide"},
+   {"start":41.67,"end":42.33,"state":"unknown"},
+   {"start":42.33,"end":42.67,"state":"wide"},
+   {"start":42.67,"end":45.67,"state":"unknown"},
+   {"start":45.67,"end":46.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":46.33,"end":46.67,"members":["illit:wonhee"]},
+   {"start":46.67,"end":47.33,"state":"unknown"},
+   {"start":47.33,"end":47.67,"members":["illit:wonhee"]},
+   {"start":47.67,"end":55.0,"members":["illit:iroha","illit:wonhee"]}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[170,384,545,1133,1369,1522,1638,1798,1894,2054,2230,2428,2747],"tracks":{
+   "illit:iroha": [
+    [989,"AO3KpGTNgKOHI-GcNqKNQHPGkNlKMZGrGaMmKLOFiGrM1KJ-E2GvNHKI2FXGrNAKHnGFG5NUKGkGpG2N2KFaHKG8OGKEcHRHBOCKDfGFHLOqKCuFnG9NuKBqDFHOOqKArADHPPz"],
+    [2849,"AwGGvFWMeKtyHwFVMVKrtIPFIMoKqeI3FUNCKqUKYFWM7KqqMPFWM0KqpNDFbNAKqPOQFPMrKpbPjFQMXKn5QqFWMqKmuRjFVMuKmUR3FTMdKmzRnFRMsKn3RzE-L9Ko3RoE-LuKpIRfE5LZKpOSIEwLPKowSFEwLMKnlRfEwLHKnGRGEuK9Km9QnEoLLKnIP-ErLIKnSPyErK9KnVPvErK3KnePnEpK-KniPcEjK3KnlPgEoK3KnrPtEoK2Kn4QHEeKxKn9QAEoLFKoGPyEvK9KoqPJEiLIKo8O5EsLOKpRPWEmLLKpgPTEkLJKpnO6ExK6KpkOxE3KzKpoO6E1KvKpoOpE3KuKpqOSE0KwKpfOTE6K3KpdN9E9K_KpjNjE5LIKpqNhE0LDKppNdE2LAKpnNmExK9"]],
+   "illit:minju": [
+    [1800,"AgfNTE9LxKgcNSFDMLKgPNKFCLvKgyNNE9LvKg_MdFELyKhoMEE1L0Kh5L6E8LzKiILvExLYKiFLZEwLYKh_KtEuLS"]],
+   "illit:wonhee": [
+    [2749,"AYOQuFRLkKYZR0FYMZKYwUFFeL_KYMUNF0MbKY7T2FsMiKaJUtFxNCKbmVvFoNLKcMV9FaNMKbqXcFeNiKaKZSFuNgKY7auFjNHKYDaxFuN9KX0bjFlNYKX7b_FgNIKYAb2FbMxKX6cDFYMtKXlb-FTM7KXFbHFaMwKWtahFZM1KWbabFiM4KWdZ8FhNCKXAZYFeM0KYXZaFNMRKZiZNFFMDKanY6FCLWKbEYFE1LqKbSX8EzLBKbKXEEyLZKabWiEiLAKZnWLEqLKKZdV6EwLNKZwUrExLeKaSTNElLgKadTUEsLoKabT8E2LQKacTyEtLCKaeTyEzLIKalUOEoKtKazUbElK8Ka3UdEqLMKa9UgEoLIKbIUUEvLUKbeT2E0LxKcCTcEpLbKcUTvE9L9KchUAE0L5KclT_EzLaKcuT9EmLIKcfUGEcK6KcIUYEiKxKcAUlEiKnKcCUSEmKyKcGT_EZKlKcGToEdKnKcHTdEbKgKcDTGEeK1"]]
+  }}
+ }
+}
