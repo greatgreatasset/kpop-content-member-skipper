@@ -1,0 +1,130 @@
+{
+ "format": 6,
+ "videoId": "pII49xbzGdU",
+ "title": "ILLIT (아일릿) 2024 SBS 가요대전 Summer ‘첫 만남은 계획대로 되지 않아’ Dance Practice (원곡: TWS)",
+ "duration": 117,
+ "scannedAt": "2026-11-28T03:48:56+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 90
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 350,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":0.33,"members":["illit:wonhee"]},
+   {"start":0.33,"end":11.67,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":11.67,"end":13.67,"state":"none"},
+   {"start":13.67,"end":23.33,"state":"wide"},
+   {"start":23.33,"end":24.0,"state":"none"},
+   {"start":24.0,"end":40.33,"state":"wide"},
+   {"start":40.33,"end":40.67,"state":"none"},
+   {"start":40.67,"end":41.33,"state":"wide"},
+   {"start":41.33,"end":41.67,"state":"none"},
+   {"start":41.67,"end":47.0,"state":"wide"},
+   {"start":47.0,"end":47.33,"state":"none"},
+   {"start":47.33,"end":51.33,"state":"wide"},
+   {"start":51.33,"end":51.67,"state":"none"},
+   {"start":51.67,"end":57.33,"state":"wide"},
+   {"start":57.33,"end":57.67,"state":"none"},
+   {"start":57.67,"end":94.67,"state":"wide"},
+   {"start":94.67,"end":95.0,"state":"unknown"},
+   {"start":95.0,"end":95.67,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":95.67,"end":96.0,"state":"unknown"},
+   {"start":96.0,"end":97.0,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":97.0,"end":97.67,"members":["illit:moka","illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":97.67,"end":98.0,"members":["illit:moka","illit:wonhee","illit:yunah"]},
+   {"start":98.0,"end":98.33,"members":["illit:iroha","illit:minju","illit:moka","illit:yunah"]},
+   {"start":98.33,"end":101.67,"members":["illit:iroha","illit:minju","illit:moka","illit:wonhee","illit:yunah"]},
+   {"start":101.67,"end":116.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[6094],"tracks":{
+   "illit:iroha": [
+    [5880,"AabU9DsH_KZtRID1JHKZ7Q5EAJRKaKQGEDJ5KZzQjEFJ7KZ-QbEIKRKaQP5EQKZKZ9PsEWKTKZ7PxEUKAKZzPqEWKLKZkPlEZKbKZMQKEaKTKZHQVEaKJIZUQHEZKLKZuQDEVKCKZrQIEUKIKZlQcEYKXKZuQrEUKYKaDQdERKeKaGQiEPKZKZtQfEbKZKZyQeEVKb"]],
+   "illit:minju": [
+    [5880,"AlJVTDGGXKlMUQDRHoKk1S5DkHcKk-SaDmIBKk4PQD1JBKkuOiD-JaKlAN5EJJuKlWMmEbJ2KkcMUEXJXKjdNPExJnKjLN7E7JcKjdN0EvJhKjdN5EvJcIjnN3EwJmKjzNxEwJvKjuOBEyJqKjuN1EwJyKjtNfEwKMKjwN4EsJzKj1NlEyJ_Kj5NuEwKBKj4OSElJ2"]],
+   "illit:moka": [
+    [5790,"AqUXNB_EVKqNVqCKEbKqWWRCUE0KrNU-CgFHKr6U7CeFsKr_U5C2GEKr0UUDNGsKr4UcDqH0KqYT9EDIlKphVfEQJWKo0RPEwKVKoCYkE9LCKnZX7E7LnKmoZxFCMnKlzbxE_MoKlQb8FFM2KlOb9FEM0KlJcIFAMrKlGcuE9MEKlGcvE7MGKlMc9E5L7KlPc8E1MAIlUcrE1MIKlgcpE7MZKlmdCE-MSKlodIE7MOKlodHE-MRKlndSE9MJKlldsE5L0KlodeFAMHKladjE9MG"]],
+   "illit:wonhee": [
+    [8,"AzyTsGrRA"],
+    [18,"ArvPLHQRu"],
+    [28,"Aj0LVHMSC"],
+    [38,"AcdL5HKSwKXEQSIuQEKVbQuIgQCKVtQOIcQKKXOO6IDSJKaCMlHyVgKctNeGrSkKdxNwGlRVKeKNcGoRfKeNNaGwRaKeBNLGvR9KdkMlGdQcKdTMdGbQ5KdVNyGeRCKdtNUGTQ0Kd9NsGXQ8KeHNsGgQqKeUOCGeQIKeaNsGiQZKebNIGYQ1KeXNXGbQcKeMOJGeQOKeLOiGZQFKeFOdGZQKKeON0GgQ4KehNYGRQhKeqNDGNQ6KeQNJGVQ2KeKOFGZQXKd7O2GNPtKd7OqGPPdKd1OTGbQ2Kd7OJGiQfKd-NuGaQuKeHOtGcQOKeCNbGYRGKdrNLGQQnKdXNEGUQQKduODGRQvKd1OlGOPnKd-NhGfQIKd3NcGLQAKd3NCGMQqKd4M2GKQTKdoNkGSQWKdUNJGSRPKdrNSGOQQLdzNCGVR5Kd-OTGbRdKeEN6GXRMKeJOVGRQIKeYO3GTPuKeUO3GaPjKecOSGWQ5KewNpGSQVKe9OUGXQ0KeoNtGoQwKeINMGdQpKeDNoGbRpKeXNzGcRZKehN0GgSjKd_N_GkQeKd2OlG5SeKeAOQGkTsKeNOCGsSIKeHOGGjSoKeWN2G8UP"],
+    [5700,"AOBPmE1MVKSrPJFPMHKW8PzE2LfKZyPIE0KpKaeO7EwLL"],
+    [5760,"AaydlE5KyKbGcoEsKbKbBaZEmK7KbhZiEuK0KbvYZEiK6KbuZEEdKqKbzZGEeKnKb2ZVEVKWKb2ZCERKJKbtYWEZK4KbcYVEVLLKbiZOC9KCecBbDD1LEKc_bmE_LLKd6dQEuLHKdoelEuKvKdMdWElLUKcicqEQLGKcfdOEkLLKc1eEEmLTKc5eLElLPKc-eGEdLPKc1eOEhLTIcyejEnLCKc7epEdLAKc8eXEcLIKc1enEXKzKcseoEZK6KctelEbLAKc9eUEWLIKc6eQERLGKcxeLEcK9"]],
+   "illit:yunah": [
+    [5830,"APXQrCoGhKOMQ9CxHEKPCPoDEHlKQbP4DQIRKQ0QwDuIsKRHTIEEJoKRcWoEfKgKSxZjEaLrKT6caEdL8KUydnEmMHKVxdkEdMsKWFefEXMLKWPf9EeLiKWriJEhKQKXUiWEoLOKXwhLE3K1KXqhTEuKbKXlhOFAMOIXQhLEzLJKW8gvEwKGKW3gUEpKuKWqf1EiK3KWtfeEcKwKWkfHEULHKWffhEcK3KWee-EdK-KWzf9ETLI"]]
+  }}
+ }
+}
