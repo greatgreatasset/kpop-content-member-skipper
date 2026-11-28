@@ -1,0 +1,94 @@
+{
+ "format": 6,
+ "videoId": "xCH6uLW7ns4",
+ "title": "진짜 MC가 되는 그 날까지 조금만 기다려~✋🏻 | 이로하 음방 MC 맛보기(?) | ILLIT (아일릿) [BESIDE-IT]",
+ "duration": 66,
+ "scannedAt": "2026-11-28T04:24:08+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 150
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 196,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":50.33,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":50.33,"end":65.33,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[3027],"tracks":{
+   "illit:iroha": [
+    [8,"AaKQgHCRWKa9QLG8RyKbhPvG6SBKcEQXG3R0KcrQwGrRnKdWRDGtROKd6ROGrRgKd3RdGqRUKeFRNGyRnKe1RAGwR7KfaQUGsSIKfiQJGxR_KfcQTG3SXKeyQVHASYKdmQlG-SFKciQiGzR8KbzP0G7SeKbQPkHDSuKexNUG-SgKe-NEHASKKe2NHG0SaKd1MLHASYKciMpG5SlKbgNrG6SwKcAMkHFTuKcsL6HTTlKdDM4HOTZKdUM3HaTCKdbL5HcTbKd2L6HfTsKd7LkHkUZKeELkHsUdKeVMYHXUFKehMnHSTwKexMdHVUmKe1NpHaTOKe-N0HfT-Ke_OgHjTjKeBOtH5TZKdZPdHyT3KdiO-H9UIKeBOhINUaKeZNdH_UvKevMSH_UwKetMjICUyKelNgIDUPKeVOTH8UCKeOOcHwUHKdqPaHeTQKc2OpHbTrLcXPvHWTDKcHQOHUSfKcQQiHISfKccQ1HCSUKcWQgHBSUKcQQVHASCKcLP1HCSdKcMP1HGSmKcmPdHCSnKdEOWHMSrKc-OHHZSjKcDNrHiTEKbBNlHbSzKaENQHSSyKZTNHHQSzKYfN2HfStKX7PQHkSRKYUP9HhR8KY6PrHQSMKZSP4HASGKZtPjG0RdKahOoGrRaKa6OLGcQ9Ka-OaGaQoKa5OcGQQTKaTOCGeQgKZyOzGlQXKZLPPG8QuKZGPiG2QZKZfPnGxQVKZ_P5GzQAKa1PzGiQMKdYMjG3SFKdJLjHFSXKdEK1G4SfKczJYHITSKceKGHNTcKcZKmHKTzKcSKzHUT2KcfKoHbTcKcVK1HfTeKcCKvHeToKbxLNHdTnKbZK7HfTgKbFKmHbTdKcVMRG3SQKcaL3G3ScKcYL5G8SuKcFLAHLTLKcCLWHKTPKb_LIHOS_KbwLOHTTgKbmK0HXTpKbcL5HSTVKbRLSHfTvKbaLOHbTzKblLgHZT9KbqLvHfTbKcSL4HATuKcwMeHDTJKdEM5G6S4KdUM1G3SwKdVMzGzS-KdYNjG1ShKdPM0G2SnKcWM3HESoKa6N2HSSaKaHOKHbSjKZ2OHHiSiKZ5OFHgShKa0OlHlSWKcZOmHaSuKduOuHISpKeOO-HKSBKfnOEHBSpKf_NeHBShKf2OdHJSbKf7N5HNS9KfzNzHRTWKexNoHhS5KeFOYHfTKKeDNhHjTdKdzNNHqTBKbWK2INWWKa3L3IIVGKbUN8IOVbKbfPSIZULKbmOcIXUzKbnNIIOVYKbZNMISUzKbQNRINUOKbSNdITUQKbQNbIUUJKbpMOIQU7Kb3MTITUgKb4MQIGUZKbsLUHxUjKcPLAHuVHKcgLQH2VDKbwKqIMViLdOOvIsVhKcfP2IjVaKbzPpIyVSKZ_QII0WDKY_QWI8V3KZ_P7I9VSKbsOUI2WyKczNkI1XPKcdOOI2WIKcGN7IwXHKbfOBIyWeKbeN6I4WUKbfOaIyVtKbnPdI8VDKb9PPIzVEKZUPRIoU1KYhOOIfU5KX8OBITVYKXtOyITUuKXDRPIzT3KWZRQI2VBKWeRRI2UrKWKQuI3UkKWDPyIpV0KWnNqIWWRKWXNCI-VaKX8NJIvWwKaINIJAXAKZmM6Mvg5KY-MqMifzKXsK3MogvKW_LLMugOKWYMPMXfqKWFN9MWeZKWNPSMVd9KWJPoMVc7KWhOnMUdfKW1PKMidqKZ2MSI9WLKaILoI9WtKaNMKJFXGKaaMQJEXPKafL2JEXbKadMCJWWrKaLLnJkYHKaPKdJ_ZfKaUM7KOZzKaiN9KRY5KaZNsKZa3IX3MKLIaiKUyMALeapKR0MnLkb2KRPPNLWaRKSbPaLGZzKUnRgKnZTKXwSdJ-YPKa0S2JQW4Kb7SLInWVKazSFIsV9KY_RuI4XAKXhSEJFXPKW2QOIzW3KWhN1JDXiKXaNmJcXEKZgM6J3XwKbPLKKfZZKcdKRKqavKdWJ4K5arKdfNLK1bKKc9QAKsa_KbmQaLAaKKZ2PsK9ZjKYuPqLAZrKZgQFKoZ8KavQYKdYtKb1QiKPYbKcfPcKFYaKdJOaJ_YrKdnN6KHZJKdWNyKCZTKcYN7KiapKbjOPKZaCKbANfKcaQKbFM8KuZuKa4MHK6aKKaTLsKialKZRKmKJasKZMJnKQabKZPJqJ6aMKZxKJKKZRKZ_L2KTZmKZ-M8J2ZqKZbLjJ5Z3KZmNSJ8ZcKaWPjJqY7KauQZJvY7Ka2ROJiYbKaJSrJQXfKZASMJJWYKYXRDI_WSLZAP1I2WMKZGN5JBXEKY2LdJJW1KYWNnJeXqKYTOgJaWwKYdO0JYWhKYeOTJQWnKX-NXJAWAKXdOXJBVdKYAPKI7V4KYMPaI_WIKX6NpJDWDKXpObIxVtKXsO0IxWfKX8OvIwWSKXlN2I8WkKW5NIJDU9KXHLpJIXCKXdMYJBYBKXaOXI3WRKX_NGJOXYKX7NOI9WSKYINMJHWpKYZL5JQYAKYSKiJgYLKZOJhJWX4KZ8KjJXXtKaiL5JjW6KbSMKJSXaKcIMNJYXuKc-MhJUX-KdiM8JdWeKdMMuJjXgKb-LkJoYtKZ4KbJzYUKW-KEKBZ_KU-KZKJaCKU9K6KsZ1KWfLuKyb3KXyMjKzawKYoO_LMa-KadPELEapKc0QBLDbfKe9QXLjbRKgwQaLib_KhuSDMDafKijRuMebcKidR7MRbCKe-Q5MNesKZ4SSNLdfKY_RlMycWKaFQrMbdE"]]
+  }}
+ }
+}
