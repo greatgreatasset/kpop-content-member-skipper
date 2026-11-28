@@ -6,5 +6,7 @@ __pycache__/
 profiles/*.local.json
 dist/
 native_host.local.json
+native_host.chromium.local.json
+*.pem
 extension/.amo-upload-uuid
 requests.local.json

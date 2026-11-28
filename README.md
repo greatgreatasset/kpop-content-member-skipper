@@ -1,7 +1,7 @@
 # kpop-content-member-skipper
 
 Personal tool: pre-scan YouTube videos of K-pop groups and record who is on
-screen when, so a Firefox extension can jump over the parts where only the
+screen when, so a browser extension (Firefox, and Chrome, Edge and Brave) can jump over the parts where only the
 members you want to skip are on screen, and mark the parts of the members you
 want to see more of (highlights). Each group is a **profile**: Hearts2Hearts
 (skip Carmen and Ye-on, highlight Ian), ILLIT (skip Yunah), KiiiKiii
@@ -147,27 +147,34 @@ picks other cookies. If they can't be read, the scan prints one line and
 downloads without them.
 scan.bat itself only starts `scan_cli.py`, which holds all the logic.
 
-### From Firefox: "Filter this video"
+### From the browser: "Filter this video"
 
 On this PC the add-on can start the scan itself. Once, double-click
 **install_native_host.bat** (per user, no admin): it registers the scanner with
 Firefox under `HKCU\Software\Mozilla\NativeMessagingHosts\kpop_content_member_skipper`
-and writes the gitignored `native_host.local.json` (the paths on this PC).
-`install_native_host.bat /uninstall` removes both. Reload the add-on afterwards.
+and with Chrome, Edge and Brave under the same name in
+`HKCU\Software\Google\Chrome\NativeMessagingHosts`, `...\Microsoft\Edge\...` and
+`...\Chromium\...` (Brave reads Chrome's), and writes the gitignored
+`native_host.local.json` and `native_host.chromium.local.json` (the paths on
+this PC, and which extension may start the scanner: the Firefox add-on ID, and
+the Chromium extension ID `fddakmaaelefbchjakeceijlhdjpfejg`).
+`install_native_host.bat /uninstall` removes all of it. Reload the add-on
+afterwards. Run it again after updating from a version that only registered
+Firefox.
 
 Then on a YouTube video, click **Filter this video** in the add-on's popup (or
 under the title of a video that isn't filtered yet). It runs the same scan,
 commit and upload as scan.bat. A small banner on the video shows
 "Filtering… 62%, about 0:20 left"; when it ends, the skips apply right away
 (without waiting for GitHub) and it shows e.g. "Done: Ian 25% · Skipped 17%".
-The popup can be closed meanwhile; the scan keeps running even if Firefox
+The popup can be closed meanwhile; the scan keeps running even if the browser
 closes, and clicking again for the same video shows the running scan instead of
 starting another. Scans log to `cache/jobs/<videoId>.log`.
 
 On PCs without the scanner (friends' PCs) the button is **Request filtering**
 instead: see [Requests from friends](#requests-from-friends-request-filtering).
 
-How it works: Firefox starts `native_host.bat` (venv Python, `native_host.py`)
+How it works: the browser starts `native_host.bat` (venv Python, `native_host.py`)
 over native messaging; it starts a separate worker process for the scan (using
 `scan_cli.py`'s scan and publish functions) that writes its progress to
 `cache/jobs/<videoId>.json`, and relays that to the add-on.
@@ -383,7 +390,7 @@ under 2 s merged, at least 1 s), minus the skipped ranges. With "Highlight
 when: only when she's the main focus" the same steps use only the frames where
 she is the `focus`. Skips never depend on that setting.
 
-## Firefox extension (`extension/`)
+## Browser extension (`extension/`)
 
 What it does on youtube.com/watch pages:
 
@@ -396,7 +403,8 @@ What it does on youtube.com/watch pages:
 - when the video has highlighted parts: a button in the player controls
   (**Ian ⏭** for one highlighted member, **Next ⏭** for several: it goes
   through all their parts in order) and **Alt+Shift+H** jump to the next one
-  (rebind under about:addons → ⚙ → Manage Extension Shortcuts). Videos without
+  (rebind under about:addons → ⚙ → Manage Extension Shortcuts; in Chrome, Edge and
+  Brave under chrome://extensions/shortcuts). Videos without
   highlights (e.g. ILLIT) have no button.
 - under the video title, only the parts that apply, each highlighted member in
   her colour: e.g. "**Ian: 29%** · Skipped: 27%" for Hearts2Hearts, "**Kya: 4%** ·
@@ -430,7 +438,7 @@ Yunah Skip, Kya Highlight, Pharita Skip, Chiquita Highlight, everyone else Norma
   under the title, and the Next button.
 - **Normal**: neither.
 
-Changes are saved for this Firefox only (`storage.local`, nothing is sent
+Changes are saved for this browser only (`storage.local`, nothing is sent
 anywhere) and apply right away, also to a video that is already open (no
 reload). **Reset to defaults** goes back to the profiles' choices.
 
@@ -487,7 +495,7 @@ every video scanned with scanner 0.5.0 or later (format 4, which has the
 timeline); for an older list the add-on can only use its default skips until
 the video is rescanned (`rescan_cached.py`, or scan it again).
 
-### Installing it permanently (and sharing it)
+### Installing it permanently in Firefox (and sharing it)
 
 Normal Firefox only keeps add-ons that Mozilla has signed. Signing is free and
 "unlisted": the add-on is not shown in Mozilla's add-on store.
@@ -509,7 +517,48 @@ manifest's `update_url`) about once a day and update themselves. To ship a
 change, raise `"version"` in `extension/manifest.json` (Mozilla signs each
 version once) and run **sign.bat** again. Skip lists and new groups
 (`skiplists/profiles.json`, from 0.7.1 on) don't need a new version; they are
-fetched from GitHub.
+fetched from GitHub. sign.bat also builds the Chrome / Edge / Brave zip and
+attaches it to the same release.
+
+### Chrome, Edge and Brave
+
+The same extension runs in Chromium browsers (from 0.10.0). Chrome only
+installs packaged extensions from its own store, so outside the store it is
+loaded as a folder in Developer mode.
+
+Friends:
+
+1. Open https://github.com/greatgreatasset/kpop-content-member-skipper/releases/latest
+   and download `kpop-content-member-skipper-<version>-chromium.zip`.
+2. Unzip it (right-click → **Extract All…**) to a folder that stays where it
+   is, e.g. `Documents\kpop-content-member-skipper`. The browser loads the
+   extension from that folder every time it starts, so don't delete it.
+3. Open `chrome://extensions` (`edge://extensions`, `brave://extensions`), turn
+   on **Developer mode**, click **Load unpacked** and pick the folder that
+   contains `manifest.json`.
+4. Reload YouTube tabs that were already open.
+
+To update: download the new zip, replace the folder's contents with it, and
+click the reload arrow (↻) on the extension's card. Settings and the request
+code are kept (the extension's ID, `fddakmaaelefbchjakeceijlhdjpfejg`, does
+not depend on the folder). There are no automatic updates this way, but skip
+lists and new groups still arrive by themselves. The browser may show a
+reminder about developer-mode extensions when it starts; it can be dismissed.
+
+On this PC: `.venv\Scripts\python build_chromium.py` makes `dist\chromium\`
+(load that folder as above) and the zip in `dist\`. Run it again after changing
+`extension\`, then click ↻. For "Filter this video", run
+**install_native_host.bat** once (see
+[From the browser](#from-the-browser-filter-this-video)).
+
+How it is built: the code in `extension/` is the same for every browser.
+`compat.js` (loaded first everywhere) gives Chromium the `browser` name for the
+extension API and a message listener that works in both. `build_chromium.py`
+makes the Chromium manifest from `extension/manifest.json`: `background.js`
+runs as a service worker instead of a background script, PNG icons
+(`extension/icons/`, copies of `icon.svg`) instead of the SVG, no Firefox
+settings, and a `key` that fixes the extension ID. The skip lists are bundled
+like in the Firefox package.
 
 ### Loading it temporarily (development)
 
@@ -535,7 +584,17 @@ node tests\blur_test.js                          # blur.js: interpolation, hold,
 .venv\Scripts\python tests\browser_test.py --scan-video <id> [--rescan]   # "Filter this video", real scan + upload
 .venv\Scripts\python tests\request_test.py --ui-only          # "Request filtering": settings page and button
 .venv\Scripts\python tests\request_test.py --video <unscanned id>   # the whole request, real scan + upload
+.venv\Scripts\python build_chromium.py --no-zip && node tests\chromium_test.js   # the Chromium build in headless Chromium
 ```
+
+`chromium_test.js` (needs `npm i playwright`, `npx playwright install chromium`
+and ffmpeg) loads `dist\chromium\` in headless Chromium. It doesn't open
+YouTube: a stand-in watch page with the elements the add-on uses and a
+generated test video answer for `www.youtube.com`, so it checks the add-on in
+Chromium (service worker, messages, storage, the skip, markers, popup, settings,
+blur, an online-only list, "Request filtering" through a stand-in relay and, on
+Linux/macOS, "Filter this video" through a stand-in native host), not
+YouTube's page.
 
 `browser_test.py` (needs `pip install -r requirements-dev.txt`) installs the
 add-on into a fresh temporary Firefox profile, opens the test video, and checks

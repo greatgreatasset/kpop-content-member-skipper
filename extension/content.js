@@ -556,7 +556,7 @@
   // frame isn't skipped; with "Blur skipped members when they can't be skipped"
   // her face is blurred instead (face boxes: timeline.faces of format-6 lists,
   // blur.js). One small canvas per face that draws that part of the current
-  // video frame blurred (canvas filter; works in every Firefox and in
+  // video frame blurred (canvas filter; works in every browser and in
   // screenshots, unlike backdrop-filter over video), in a layer over
   // the video picture inside the player (so it follows fullscreen / theater
   // mode), updated on every video frame (requestVideoFrameCallback, else
@@ -776,11 +776,11 @@
     ensureNextButton();
     renderStats();
   });
-  browser.runtime.onMessage.addListener((msg) => {
+  kmsOnMessage((msg) => {
     if (msg?.type === "nextHighlight") nextHighlight();
     if (msg?.type === "scanUpdate") onScanUpdate(msg.job);
     if (msg?.type === "status") {
-      return Promise.resolve({
+      return {
         videoId: st.videoId,
         loading: st.loading,
         scanned: !!st.list,
@@ -793,7 +793,7 @@
                                                               color: h.color })),
         scannedAt: st.list?.scannedAt || null,
         stats: statsParts().map((p) => `${p.label} ${p.pct}%`).join(" · "),
-      });
+      };
     }
     return undefined;
   });

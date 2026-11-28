@@ -1,6 +1,7 @@
 @echo off
 rem Sign the extension with Mozilla so it installs permanently in normal Firefox,
-rem then publish it as a GitHub release (installed copies auto-update).
+rem then publish it as a GitHub release (installed copies auto-update). The
+rem release also gets the zip for Chrome, Edge and Brave (see README).
 rem
 rem "Unlisted" signing: the add-on is NOT shown in Mozilla's add-on store.
 rem You need an addons.mozilla.org API key: https://addons.mozilla.org/developers/
