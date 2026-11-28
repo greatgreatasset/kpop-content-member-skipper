@@ -1,0 +1,189 @@
+{
+ "format": 6,
+ "videoId": "4-AzA0cOkoo",
+ "title": "이게 그 유명한 인기가요 하트뻥튀기? | 인기가요 매점 방문기 | ILLIT (아일릿) [BESIDE-IT]",
+ "duration": 95,
+ "scannedAt": "2026-11-28T05:18:50+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 117
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [
+  {
+   "start": 41.5,
+   "end": 53.5
+  }
+ ],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 284,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":5.0,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":5.0,"end":5.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":5.67,"end":7.33,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":7.33,"end":7.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":7.67,"end":8.67,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":8.67,"end":9.33,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":9.33,"end":10.67,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":10.67,"end":11.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":11.0,"end":12.67,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":12.67,"end":13.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":13.0,"end":15.0,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":15.0,"end":16.33,"state":"unknown"},
+   {"start":16.33,"end":17.0,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":17.0,"end":17.33,"state":"unknown"},
+   {"start":17.33,"end":18.33,"state":"none"},
+   {"start":18.33,"end":19.33,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":19.33,"end":21.0,"partial":["illit:moka"]},
+   {"start":21.0,"end":23.33,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":23.33,"end":25.33,"partial":["illit:moka"]},
+   {"start":25.33,"end":26.0,"members":["illit:moka"]},
+   {"start":26.0,"end":28.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":28.0,"end":28.33,"members":["illit:moka"]},
+   {"start":28.33,"end":29.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":29.0,"end":29.33,"members":["illit:moka"]},
+   {"start":29.33,"end":29.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":29.67,"end":32.33,"state":"unknown"},
+   {"start":32.33,"end":33.0,"state":"none"},
+   {"start":33.0,"end":34.33,"state":"unknown"},
+   {"start":34.33,"end":34.67,"state":"none"},
+   {"start":34.67,"end":35.0,"state":"unknown"},
+   {"start":35.0,"end":36.67,"state":"none"},
+   {"start":36.67,"end":37.33,"state":"unknown"},
+   {"start":37.33,"end":37.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":37.67,"end":38.33,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":38.33,"end":38.67,"state":"none"},
+   {"start":38.67,"end":40.67,"partial":["illit:moka"],"focus":"illit:moka"},
+   {"start":40.67,"end":41.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":41.0,"end":42.0,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":42.0,"end":42.33,"state":"unknown"},
+   {"start":42.33,"end":42.67,"state":"none"},
+   {"start":42.67,"end":47.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":47.67,"end":48.0,"partial":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":48.0,"end":54.0,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":54.0,"end":61.67,"state":"none"},
+   {"start":61.67,"end":63.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":63.67,"end":65.33,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":65.33,"end":65.67,"partial":["illit:minju"]},
+   {"start":65.67,"end":66.67,"state":"unknown"},
+   {"start":66.67,"end":67.0,"partial":["illit:minju"],"focus":"illit:minju"},
+   {"start":67.0,"end":68.0,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":68.0,"end":68.33,"partial":["illit:minju"],"focus":"illit:minju"},
+   {"start":68.33,"end":70.33,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":70.33,"end":70.67,"partial":["illit:minju"],"focus":"illit:minju"},
+   {"start":70.67,"end":71.0,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":71.0,"end":71.67,"state":"unknown"},
+   {"start":71.67,"end":72.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":72.67,"end":73.0,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":73.0,"end":73.67,"partial":["illit:minju"],"focus":"illit:minju"},
+   {"start":73.67,"end":74.33,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":74.33,"end":75.67,"partial":["illit:minju"],"focus":"illit:minju"},
+   {"start":75.67,"end":76.33,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":76.33,"end":77.0,"state":"none"},
+   {"start":77.0,"end":77.33,"partial":["illit:minju"],"focus":"illit:minju"},
+   {"start":77.33,"end":77.67,"members":["illit:minju"],"focus":"illit:minju"},
+   {"start":77.67,"end":78.33,"partial":["illit:minju"],"focus":"illit:minju"},
+   {"start":78.33,"end":94.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[134,561,773,1105,1473,1664,1786,1954,2246,2374,2468,3013,3111,3457,3459,3696,3830,3998,4080,4268,4364,4775],"tracks":{
+   "illit:iroha": [
+    [1489,"AX_Q7DVH9KZBRGCyHa"]],
+   "illit:minju": [
+    [1479,"Ah-NfF_OjKiMNyF6N7KikOQFwN8LiSOLF7OXKhtPaGGPIKhjQ0F-PDKhZQuF3OjKhiQ0GCOmKg-RbF8OmKgIRWF4OaKfwQkF4O0KeEQtF7PJKdCSVGJPLKciRpGAPIKcFPvF4PeKayPKFqPIKYzN8F4PKKYLMKFrPSKXmJ6FhQU"],
+    [2378,"AnwNRHjTwKi1OHG3S9KjLNTHaTqKjHLtHlTmKl3JwHzUbKogLMILUOKqCNzHqTyKpOQRHsTRKo7Q9GtSL"],
+    [3830,"AXgErPpqGKXHFVP3opKXVFIP9n8KWhHZPTmcKVmElP4nRKUmC3P6lyKUUEiP7mBKWLFnP1mrKJiAmRzqeKAAAAUBqnKAAAAQ2vC"],
+    [4000,"AAAAAXjwoIBvAAYXxpKJ0AAWFquKOmAJSftxKRtAURCqGKUBAAQlqZKVTAAQSpgKVrAjP3qDKXeBTP5pB"],
+    [4088,"AXeAASrpfKXyAASguYKZ9BMShwAKbAFhRks-KapDtRNrZKZrAZRdreKZGBDQ3qaKb0CzP5qWKcTEFPop7KcqD8PuqlKZjAAQorcKX6AARrr6KW7AARIsJKVmAASSrwKXcAAS2mIKXcBCQ9t1KWhAARsuUKXEAASQuV"],
+    [4368,"AQuAARrqfKQwAARsrEKRNAARwpsKPkAASDoeKQeAATDpnKUvAAToueKXIAATFwRKWyAAS-u2KWHAATguZKWhAAT7qbKW3AAUftaKVmAAU6q-KVhAAVJqjKVtAAU2pcLScAAVFqyKPeDPT8ycKLSAAV-yQKF6AAXa08KGUFZXa4OKIEOnXZxYKJ3A9aL_CKHkAAgC__"],
+    [4629,"AFqAAf900KI7AAYu3SKK-AAao__KNDAAXq5TKKsAAZK5MKLRAAZv4WKKlAAaM3s"]],
+   "illit:moka": [
+    [8,"ASqAAZhujKR0AAaVuIKPAAAaUwaKN8AAZ3z-KQVAAYb0AKQ0AAY2yBKTkAAX1zZKUZAAYuyZKQMAAZx0nKMDAAa5yaKPcAAYwxpKNdAAaD03KLeAAcJ4q"],
+    [138,"AYmAAal4VKVoAAbS8SKTiAAb58uKPJAAbJ5cKR1AAZ34DKUpAAbU2IKUoAAbg18KTzAAc92ZKUGAAd141KUxAAd24VKVRAAdv1HKKxAAdwzNKNYAAc1w7KLlAAdZt9KL2AAbxwzKJ0AAZiwnKPJAAURq2KRCCFSJptKQrAAR3qCKOxBzRpqCKToAARnqnKVcAATQnwKTtAAVCpgKU3AAVxoEKVyAAVLq4KWOAAVevMKTLAAVJu4KTmAAUrvdKUeAAVAytKUKAAVZx4KUwAAVHzAKT6AAUCupKUvAAUhuPKREAAXEtuKPJAAYftyKQIAAYpvOKQpAAXvw6LTrAAWTwAKU4AAVUyBKVVAAT_vEKUQAATRvqKSrAAUPvGKUZAAVLwD"],
+    [569,"AYRAAXtu3KXQAAXIvRKSZAAWOvWKMjAAYcwQKFKAAcEuyKIUAAaCxnKNqAAYdxxKPbAAXEyGKWCAAUlvUKXYAAUMv2KTWAAVornKSqAAVNt6KVpAAVUvnKUnAAWAwfKS9AAXEsDKWRAAW8urKX_AAWZwuKT8AAWUyRKPTAAW9wYKSfAAVYvWKP9AAWDwp"],
+    [779,"APcAAWBmlKR5AAUSm9KTTAATsn_KUYAAUCoDKT0AAVnkZKQqAAXNkrKQsAAY3m6KQJAAZDovKKVAAaUtbKIRAAaJoAKKiAAaAm6KMyAAZDnIKTGAAYMnIKcJAAXtnQKeOAAXPlOKefAAXwmNKYfAAXupjKW0AAXdpaKV_AAXQoDKWEAAWao4KXcAAXdl6KW5AAdLkvKaGAAaLjyKXuAAZGn_KfzAAZVokKmsAAZThcKpKAAW1dF"],
+    [1109,"AY7AAWLguKdZAAXCdgKgMAAVacoKhTAAVFcIKm4AAScZxKqDAASZa6KsPAATKaLKsbAASxb2KtFAASqbiKsDAASgdQKrmAASVc2KsDAATlemKsLAATpeVKsmAATZeaKtFAAS6gfKrOAAToliKnYAAUHoMKiJAAUhnsKdfAAXKqDKX6AAaCufKUGAAcEybKVDAAbOyNKX4AAbmyFKZ9AAaqxAKbhAAYiv1KcTAAZkuZKe7AAX6qTKhWAAW7mIKkDAAWThpKl4AAWShGKpBAAW-i7KqFAAV6l0KqiAAVdm1KqTAAVsqCKp8AAWDtcKosAAXTwKKmoAAZXy_"],
+    [1479,"AsGAAT5vtKreAAUhuzKsTAATsugLsdAATiudKrIAAU3vOKqbAAVkv_Kp_AAV6vZKqmAAVZuoKpSEdVuvQKmyJBWKtMKnXJ5Vfs6KndMuTwqwKnIQbTMoqKnHTrSUoBKnLWCSFnMKnsZbRIldKoFbPQ5jnKo4c4SMi6Knuc0S6jL"],
+    [1670,"AoJdwUJiPKoqabU3lkKovZiU9mdKobXyVboNKoMYtVAnSKn4XzVXn9KoRX2VjoJKonWcWHpjKosX5Vhn5KopYbV7nCKnNXlWBnDKnuYUU0me"],
+    [2248,"Ad2AAUCtGKOcAAUxvWKKTAAXJvTKKKAAYptVKJaAAaPtCKEXAAePyJeHhAAa_yMKICAAZPvpKJyAAXwvKKQjAAV8rrKEdAAZMgV"],
+    [2378,"AR3AAXRsmKK2AAZGvUKDZAAdnwBKAAAAexzTKAAAAhJzZKDwAAhVy7KIfAAfB0yKNQAAb32zKOsAAaZ2S"]],
+   "illit:yunah": [
+    [1489,"AbdOxEIJ8KbgPFDzJrLaAPxEZJQKZJRQDwJcKYiSUDqJhKYMR6DnJfKX_RxDpJfKXIRzDqJtKWMRWD1J2KWGQzD-J7KVPRWECJ1KURSvEKJmKTnSBEPJtKTBQaEuJyKSePzEoKSKSOOjEQKuKSaNIERKcKROMGEOKf"],
+    [1670,"APVI3E-NEKPhH3FJNVKPlHkFYNoKOpH9FeNuKNUJkFsOAKLMINGPObKKqHeF-PHKLKHwF-OgKL8IgF0OdKNyJEFPOcKO-KwFXNi"],
+    [2468,"AWwLpHZQtKWcKeHeRnKWkJOHfRSKV1IRHtRCLWNGqHjRaKW4FdH4R5oPOAAJxXXKPqAAKRYoKMyAAL-ZgKLCGoMweJKMvQKMqdbKJiSeN-fcKM6HnO7jgKPuNzOtkYKQCNRPDlZKQmGqPooHKRzAAQjoUKSTAARGl5KTxAAQdn-KV6GFPDmKKXQCDOdl8KZNAAN7j-KbfAANmhmKdNAAM2gqKd2AqMQftKdlBjLwdnKb1BDLpc2KYtBQLcclKXxCvLndWKXwEdLndAKYtDqLwdvKY_DKLwd-KaYCFLvevKamCZL_eDKbJC7L5dZKbuCELxcWKb-B_Lob0KXxAAMHaTKY2AAMVaBKYwAAMLdlKZgBeLyeBKaaD6LhcdKbHGULecjKbMFvL0cvKanD6MucjKYaI2Nba-KWRLYOEZXKVjKwOvaRKVOIXPBbGKVPE1PAdgKWqAANmfDKWoAANGdR"],
+    [3019,"AWQESNOg3KWTFtNBgmKWMGqNFhjKWQHrNDguKXBK4M_enKYEN7MzdsKZLPfMscgKYzOVM1dbKYDMWNSeoKXiMwNSfI"],
+    [3119,"Aa3MRSKrAKa0MxSMscKavMiSNr3KatMtSOrnKaiL9SQq4KagLzSNq9KamKrSXqoKcFJKSereKalKUSusyKYOIwT6w5KY4GVWk2rKb1AIbw_3"],
+    [3700,"AcSOtLOb-KbWM9LKbkKamElLobwKcWEvMSccKfeELMHeVKkLGrMQbiKlXL7MLb6KkQPpMPa_KgOOKNNapKhmLeM5clKgqRIM7dZKckRVNgelKY8O0OSgO"],
+    [4298,"AcoezFFLwKc6f4FKL2KedcvFPL1KeZcEFeMVKfLazFrNRKeAaZF-OBKcfYrGUOu"]]
+  }}
+ }
+}
