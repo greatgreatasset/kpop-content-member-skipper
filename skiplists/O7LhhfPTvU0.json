@@ -1,0 +1,46 @@
+{
+ "format": 6,
+ "videoId": "O7LhhfPTvU0",
+ "title": "Love Lee 말고 Y S Lee | 이 사인에서 Y S Lee를 찾아보세요 | 영서의 데뷔 버킷리스트 - ILLIT (아일릿)",
+ "duration": 297,
+ "scannedAt": "2026-11-28T08:17:58+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [],
+ "skipMembers": [],
+ "skips": [],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 890,
+  "members": [],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":3.0,"state":"none"},
+   {"start":3.0,"end":70.67,"state":"unknown"},
+   {"start":70.67,"end":71.67,"state":"none"},
+   {"start":71.67,"end":205.0,"state":"unknown"},
+   {"start":205.0,"end":206.33,"state":"none"},
+   {"start":206.33,"end":243.67,"state":"unknown"},
+   {"start":243.67,"end":246.67,"state":"none"},
+   {"start":246.67,"end":281.67,"state":"unknown"},
+   {"start":281.67,"end":296.67,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[182,190,198,206,402,1081,1479,1768,2078,2184,2751,2931,4248,4308,4316,4324,4332,4673,4757,4969,5039,5317,5690,5906,6142,6504,6733,7021,7393,7864,8094,8258,8647,8709,9195,9924,10062,10927,11165,11770,11900,12298,12366,12374,12382,12701,12817,14424,14615,14795,15115,15209,15405,15558,15862,16324,16468,16907],"tracks":{
+
+  }}
+ }
+}
