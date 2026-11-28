@@ -1,0 +1,199 @@
+{
+ "format": 6,
+ "videoId": "C9hXukq4t-M",
+ "title": "폐호텔에서 공포 체험하다가 거울 셀카 찍는 아이돌 | ILLIT (아일릿) [BESIDE-IT]",
+ "duration": 96,
+ "scannedAt": "2026-11-28T06:02:43+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 187
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [
+  {
+   "start": 12.17,
+   "end": 13.83
+  }
+ ],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 288,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":0.33,"members":["illit:iroha","illit:wonhee","illit:yunah"]},
+   {"start":0.33,"end":2.67,"members":["illit:wonhee","illit:yunah"],"partial":["illit:iroha"]},
+   {"start":2.67,"end":3.67,"members":["illit:wonhee","illit:yunah"],"focus":"illit:yunah"},
+   {"start":3.67,"end":4.0,"members":["illit:wonhee","illit:yunah"]},
+   {"start":4.0,"end":4.33,"members":["illit:yunah"]},
+   {"start":4.33,"end":5.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":5.33,"end":6.0,"members":["illit:yunah"]},
+   {"start":6.0,"end":6.33,"partial":["illit:wonhee"]},
+   {"start":6.33,"end":7.0,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":7.0,"end":7.33,"state":"unknown"},
+   {"start":7.33,"end":8.0,"state":"none"},
+   {"start":8.0,"end":8.33,"state":"unknown"},
+   {"start":8.33,"end":9.67,"state":"none"},
+   {"start":9.67,"end":10.33,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":10.33,"end":11.33,"state":"unknown"},
+   {"start":11.33,"end":11.67,"state":"none"},
+   {"start":11.67,"end":12.0,"state":"unknown"},
+   {"start":12.0,"end":12.33,"state":"none"},
+   {"start":12.33,"end":13.33,"state":"unknown"},
+   {"start":13.33,"end":13.67,"members":["illit:yunah"]},
+   {"start":13.67,"end":14.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":14.33,"end":14.67,"state":"unknown"},
+   {"start":14.67,"end":15.33,"state":"none"},
+   {"start":15.33,"end":19.33,"state":"unknown"},
+   {"start":19.33,"end":19.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":19.67,"end":21.33,"state":"unknown"},
+   {"start":21.33,"end":22.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":22.0,"end":23.67,"state":"unknown"},
+   {"start":23.67,"end":24.0,"members":["illit:moka"]},
+   {"start":24.0,"end":24.33,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":24.33,"end":25.67,"members":["illit:moka","illit:wonhee"]},
+   {"start":25.67,"end":26.0,"members":["illit:moka","illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":26.0,"end":27.0,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":27.0,"end":27.33,"members":["illit:moka","illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":27.33,"end":28.0,"members":["illit:wonhee"],"partial":["illit:moka"],"focus":"illit:wonhee"},
+   {"start":28.0,"end":29.67,"members":["illit:moka","illit:wonhee"]},
+   {"start":29.67,"end":30.0,"members":["illit:wonhee"],"partial":["illit:moka"]},
+   {"start":30.0,"end":31.67,"members":["illit:moka","illit:wonhee"]},
+   {"start":31.67,"end":34.0,"members":["illit:wonhee"]},
+   {"start":34.0,"end":37.0,"members":["illit:moka","illit:wonhee"],"focus":"illit:moka"},
+   {"start":37.0,"end":37.67,"members":["illit:moka","illit:wonhee"]},
+   {"start":37.67,"end":40.0,"members":["illit:moka","illit:wonhee"],"focus":"illit:moka"},
+   {"start":40.0,"end":41.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":41.67,"end":42.0,"members":["illit:moka"]},
+   {"start":42.0,"end":43.33,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":43.33,"end":46.0,"members":["illit:moka","illit:wonhee"],"focus":"illit:moka"},
+   {"start":46.0,"end":46.33,"members":["illit:moka","illit:wonhee"]},
+   {"start":46.33,"end":50.0,"members":["illit:moka","illit:wonhee"],"focus":"illit:moka"},
+   {"start":50.0,"end":50.33,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":50.33,"end":54.0,"members":["illit:moka","illit:wonhee"],"focus":"illit:moka"},
+   {"start":54.0,"end":58.67,"members":["illit:moka","illit:wonhee"]},
+   {"start":58.67,"end":59.67,"members":["illit:wonhee"]},
+   {"start":59.67,"end":61.67,"members":["illit:moka","illit:wonhee"]},
+   {"start":61.67,"end":62.33,"members":["illit:moka","illit:wonhee"],"focus":"illit:moka"},
+   {"start":62.33,"end":62.67,"members":["illit:moka","illit:wonhee"]},
+   {"start":62.67,"end":63.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":63.0,"end":67.0,"members":["illit:moka","illit:wonhee"]},
+   {"start":67.0,"end":67.67,"state":"none"},
+   {"start":67.67,"end":68.0,"state":"unknown"},
+   {"start":68.0,"end":68.33,"state":"none"},
+   {"start":68.33,"end":70.33,"state":"unknown"},
+   {"start":70.33,"end":70.67,"state":"none"},
+   {"start":70.67,"end":71.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":71.0,"end":72.67,"members":["illit:moka"]},
+   {"start":72.67,"end":73.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":73.0,"end":73.33,"members":["illit:moka"]},
+   {"start":73.33,"end":74.33,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":74.33,"end":75.33,"members":["illit:moka"]},
+   {"start":75.33,"end":78.67,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":78.67,"end":79.0,"members":["illit:moka"]},
+   {"start":79.0,"end":81.0,"members":["illit:moka"],"focus":"illit:moka"},
+   {"start":81.0,"end":96.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[164,585,765,913,1313,1626,1902,2044,3121,3249,3578,3738,4014,4088,4234,4521,4859],"tracks":{
+   "illit:iroha": [
+    [8,"A4tdBHSWBK5mdhGZVvK52dtGJVxK5yePGNVcK57eUGEVIK6CeFF9VAK6EebF7UxK6FeRF6VAK57eOGEVGK5-eVGBU3K54dnGHVMK58dAGDVRK59ciGCVSK59bhGCV7K6IakF3V5K6IaZF3WM"],
+    [589,"AXKTKEmK0KXWSgEnLnKYZSgEXLYKaYTuEFKt"]],
+   "illit:moka": [
+    [1169,"AfkVIFhL9KerT9FhMgKc-R2FuMFKcWQHFwMd"],
+    [1249,"AgyiYGhNBKh_ilG6NnKhRjBGrMtKfGinG4MdKcyjSHDNWKbXl6G-OBKbZoQHIN2"],
+    [1399,"AtwQcF7LnKsGR7GbLgKqLTsGBMyKo8SuF0NpKowSBF7NkKouRjF_NpKonQyGMODKogQZGWONKonQTGaOYKotQBGdO1KpLPlGjO0LqaOlGgO0KrqN-GbOaKtDNvGOOUKt7NpF8OTKusNrFnOZKvvPFEiNIKvaQAD4MiKvRRRDlLVKvDRjDbK0"],
+    [1630,"A4cRVHjP0K4_ROHAQaK4-ULHBRjK4WSKHpRcK4SUOHtS5K2KQmJLUrKw4PFJrU1KudLDJuW8KtXMhKNXqKqkLDKpYNKpxMELEYZKs-NXLcY9KuoOPL2aAKwGP8MscJKx1PYM4dxK0vPKLQfoK0tQoLSfwK0URgLrgEK0XSNLocCKzURzMEcZKw9PbNFchKvGPlMic7KtgPAMteIKrTO3NCelKqJPRM3fJKpKPOM7gBKo-O_M3fwKqWOeNVeh"],
+    [2048,"AkxIiI8UIKk2IeIzUfKkiI3I1UQKkLIlI9U5Kj7JXIzU4Kj2KGImUZKjrKmIfUBKjbK6IVUlKjILJIZUpKjAK_IXUvKizK8IUUpKjHK2IzUDKi_LCJOTnKiqLFI_U3KiDLUI5VMKhYLkI0VTKgjLuIsVLKeQOkGUTGKetOCGGTVKfDNxGCTqKfVNaF8TzKfpNYGLT4KfZMqGeUQKfPMVGuUpKfxMUG2UiKgCL1HZUbKhZLwHxVCKjFLDH-VfKj_LAIAVNKj_LCH4VbKjxLmH2VCKjbL4HrVDKixMUHmUnKiLMYHrUkKh1MVHgUkKhmMvHbUNKhfNRHfT1KhYNJHaT7KhYNNHaTyKhGNmHCT2KhuLbHEToKiQLfHnTTKiWLgHjT3KiOMHHNTMKiHMRHQS1KiFLwHkTALh8LvHvTPKhnK4H7TNKhxKBIUUUKiSKZIbUWKi-KXIdUfKjaJdIiUWKj4JLIkTnKj1JGIrTrKj6JHInUHKj5JmIsUIKkTKLIUTzKkjKcIRTsKkyKIIHTeKlOJ2IDSUKlfKTIHRwKmIKMIoSfKmIKUIvTGKlhKsIrUpKlPLOIoU4Kk6LQIgUcKkXLMIdUkKjqMJILTrKjiMZH6TnKjkLqH0TnKjjLnHrTkKjhNkHdUEKjWN9HLTYKhbMZHvUcKhUMtHhUMKhTM_HfUZKheNmHqURKhsOIHPUGKhbOaHJUJKhYOXHUUgKhQOyHcUHKhJOkHiUiKhKOuHoUnKhcOlH4U0KimOoIdVDKjpNMIsViKjINTIsUjKiRN1IrU3KhfOfIiUuKgzPMIqUkKgTPOIjUjKf3PRIfUNKfSPwIdT-Ke6P1IOT6KeMOGIHUdKdxPAHuUmKdqO3HgU_KdvOlHeVEKd_O0HVUtKeSOoHkUwKeyO3HPUiKfLOyGwUYKfiOeGyU2KfnO2GyUkKgKRKGqUGKgwTdGtTrKhBUUG5T0Kg5SDHOUk"],
+    [3129,"AlgIqIxURKlTIiJBVlKlMJYJLVbKk9JzJOVMKk4KBJNVHKlAKJJLVMKlAKMJFVQKk4J8I8UuKlBKcI4UhKlXK9I3UtKmFK5IqUoKmKLQIkUv"],
+    [3249,"AhEPTHbROKhLPAHYRfKheOgHPRcKhxN-HMRdKiPN7HIRWKixNzHHRTKjINsHCRVKjTORHGSOKjbN_G2PbKizOFG7P1KiWO6GyPXKh_O-GqPcKhkO3GzP4KhgPJG0PuKhuO_GpPAKh0OhGpOuKiBOPG2PCKiINTHJQQKh0NTHPQKKhdNNHLQGKhNNIHGQIKhKNSHHQWKhMNYHFQPKhMNeHEQXKhUNwHCQTKhgN4G_QLLhmNxG8QO"],
+    [3580,"ArPRzIJSvKrARvIPS0KrFRqIVTGKr5SgISS0KsqRvIeTYKsuPBIiTmKslOUImTXKsaNvI-T1Kr7NUJqU7KrhLrKWWcKpsKMK4WOKkqLKNBVHKbkOeOEZjKWtJ5MnegKURMXLodeKT2MxKYdY"],
+    [3740,"AjlO-InTsKjwOcIhTnKj0NGIZTEKjMMxImTzKiZNTIsT4KhWNlI5TvKf5N_JEURKfEOfJDT5KeiORJCUJKeROgI-TMKd7OSI4S_KdzOYI-TGKeNN_JMUVKfJOEJdVdKgYN2JZVoKiMNbJaVlKkdNYJpVjKmaKOJ1WgKngHqKjXPKo3H_LFYYKpgKdLKZSKpfMqK3Y_KqFPRKkXRKrcQ6KhW0KsoSCKnV-Ks4R4KuV7KsRQuKsWdIrtQSKoWU"],
+    [4238,"AhPU5EtNQKhXVUErNAKhXVRErNCKhXVREuM-KhYVKEuNEKhcVJEsNHKhcVKEsNPKheVaEvNJKhlVfEtNKKhnVXE1NhKh2VyEvNNKhyV4E5M_KhrVmE_MrKhkUbFDM-KhnUKFKNJKhtT0FKNTKhwTrFLNbKhwTlFLNeKhtTlFLNRKhlTjFNNVKhfSaFMOIKhTTGFLNvKhBTZFJN1KgyUSFTNsKg8VEFVNXKhWVDFdNiKhnVEFhNZLiMVIFkNMKibU3FdNS"],
+    [4529,"AYjI5JtXZKXXIsKEX8KWyJEKGYZKWUIeKkZMKWiIaKfZeKWsIqKaZXKXCI_KgZ3KXDJwKkZ-KWRILKpaRKVeFbK7a5KVDFTLccLKV2EnLkdJKXfGFLPeLKYvF8Lce-KZbE7M_dTKZ-EGNDg5KY0ItMDf5KUrCKMKhcKPCDjNUjHKJlAAPZmeKC7AASDnDKG8EsQfnJKMKINOYiKKPHLdNaf4KQFNSNde5KRdLSNNfEKShKBNQfpKTkJUNDfrKUsIlMygXKVrI2NBguKW2K-M9hLKW9MZNAgwKW3NrM2f4"]],
+   "illit:wonhee": [
+    [8,"AdRWQGLPbKeSVCGDObKexU-F5PFKfHVvF5O3KfXWEF4OjKfwWRF1OnKf6WXFzO-KfqWaF0O7KfqWBFxOzKf3VUF6O7KgBVOF1O8Kf8VQF4OTKfpU_GDOWKfkU3F9ORKfcTuGCPCKfST7GBPE"],
+    [168,"Ax9P5F8QKK0cPlFxPkK2NO5FtPdK3qMaFmQLK30MIFtQSK4kKyFeSAK39OEGfUBK1YLNHuTh"],
+    [368,"AflAAHSTwKhEAAH9XlKhtGdH8YiKggKYH8ZpKdhOIIEZX"],
+    [1459,"ASVOpGjQJKSQN7HHRFKRgONHjSDKS6PCFzSHKTiPDFoR5LT6PLF3SIKTtO1GCSaKSTO5F2RPKQBM-GaRxKONMBG2R0KNML7HcR4KLgMjHgRIKLWMAHORVKLwMDHMRCKM1LrHIROKOLLHHLRlKPnLHG5Rh"],
+    [1630,"AHGHiMxgxKHuHfM2hIKICJXNFhCKHYI9NDgMKIYGyMifaKLWNhH_XyKF6NgIhX5KDCPcI1WSKCvOaJoaaKE6QCImYvKFEL0J4dSKI0MEKvevKKKNPJ2ehKIfNbKtesKHhPOK7ekKH4O6K_ftKGVQML0gyKE5RMMGgbKEKTBL1fFKDaTUL4fQKCiSCMHeoKCJTQLUeGKCpT0K6dnKCcTeLEd1KBuTGLjeOKAdUYL2dIKApUbMJduKCdTjLpfJ"],
+    [1910,"APzSxF-PKKPtS9GGPDKPwS-GMPEKP6SeGMPUKP_R5GKPkKQERvGNPOKQLRUGCO7KQKRYGCOoKQLRcGEOlIQIQ4GCPIKQHREGBPDKQSQsF6O_KQBQnF8O1KQVQcF2Ox"],
+    [2048,"AS_QcF2OXKTEQJF7OaKTJQpF6OfKS3Q_F7OlKSrRgF6OmKSiRvF6OaKSXRyF9OpKSKR7F7OmKR5R7F_OkKRpR7GEOnKRfR0GCOvKRSR6F9OtKRDSDF7O0KQ2SDF-O8KQhR7GBO-KQUSFF9OxKQBRzGEOpKPxRAF7ORKQDQjF6OUKQLQvF2N5KQVRPFzN-KQJRZFzOGKP5Q9F3OIKPsRUGBOfKQDRXF6OUKP0Q7F0NwKQVQ7FyNnKQxQWGBOGKQ1QqGFOGKQORNGHOdKP2Q-GIOYKPgQ1GIOcKPWRDGEN6KPTRPGGNnKPLRVGFOKKOuQ3GKOa"],
+    [2599,"AR0PQGQN4KRmPAGBN8KQ2O6GLOMKQWPSGSOdKRBPmGTOtKR7PzGQOsKSCQFGROyKRxQIGKOxKRYQBGKO7KQzQKGPO9KQZQPGPPMKQEQSGKO_KP5QQGMPBKP6QVGKO5KP-QLGNPDKQBQJGLPCKP9QBGOPRKPzP5GWO_KPRQ6F7O-KPCROGEOrKOwRSF7OkKN8RfGBOcKNSR0GLOsKNNSKGIOzKMrS1F_OiKNFTKGMOpKNfTnGEOZKN1TzGGOsKOJUIGQOiKP8T1GFOhKQQUTGXOZKQKVAGaOdKPyVmGpOHKPfVMGqOQKPbTWGCNvKOZTLGVNtKOcTKGSOlKOeS8GYOcKOfTOGYORKOUTEGYOgKOWTdGWOfUOzT9GpOpKPATcGaOZKPGTUGROXKPKTEGROmKPRTZGVOlKPqTrGMOHKPwT2GIN9KPyTKGJNtKQETvGLOXKQOT0GLOjKQeT1GQOe"],
+    [3129,"AVTR1F4OuKU7RqGGOoKUgRoF-OIKTyRTGDOuKTiRSGEOVKTTQyGDOqKTuQyGBOmKT7QzGBO4KUFQ0GEO1KURQ2GCO8KUgRKGEOvKU2RRGGO1"],
+    [3249,"ATMRZF5O6KTiQxFvPbKVNQYFmQOKWLQDGEQgKWUQRGCQHKWlQ4FqPyKWyRQF1PwKW1RfFvPdKWyRsFkPWKXARtFsPUKW9R_FnPMKWsSJFpOzKWIQiF6NmKUvQVF-NSKTKQnGDN5KRvQBGON6KRFQBGHOnKQ2P-GDO8KQyQPGCPFKREQaF_PQKRVQdGCPOKRsQwF_PJKSTSeFzPIKS2T_FtPFKTBUQFuO4KTSTuFvOwLT0TqFrOvKU6TQFcOMKV8SuF0OIKV1S7FwOJKWBS8FnN-KV3S-FTN_KV2TAFOOI"],
+    [3580,"AVwVKHESzKV7UZG2TqKUZRqHjVMKTgRqIGWBKTURMILV-KTkQ9IaWBKUoSNIZVgKWeT8IZVAKWgUaI0U4KVaViJMU1KTrU8JHVFKRFRqIqVPKNiQDItWAKLlPqJOW-KKwP3J0WlKN2P1HvWB"],
+    [3740,"ANXNkJFXvKM3OQJEXUKNMPwIdWdUN1PzHgXFKMyPtIMWdKMnQHIGWfKLxQEIzWlKLjQOI4VsKLtP4JFV5KL0PKJDWcKMJOjIzWxKMWOqI0WYKMVOYI_WUKMnOzI4V-KM7PEI4VcKM6OfJAWBKMnNsJAVxKMbNtJEVjKMVNkJNVqKMPNeJDV_KL9NyJBV3KLxNpJDWCKMBOZJCV_KLrN_JSWfKLMNHJKXHKK7NPJkXdILrNjJhXJ"]],
+   "illit:yunah": [
+    [8,"AGWSRGDUdKHBR0GPVTKHMSOGSVVKHfTDF-U1KHiS5F9VAKHhS5F7U6KHJSZGZVOKHhTAF9U3KG8SfGeVtKGBQwG5WJKFWRnG_ViKEaQFHjWHKEOO7HmWsKFAPGHIWcKFSOLG4WDKFfO8GzV1"],
+    [168,"AOrKuIaUeKSPKtIcUlKUiKVIjUqKV5IUIsVgKVyIOIkVaKVzHLIeVJKVzGoIeVZKV9GLIlV5KWjHWIfWcKYqHeJDV_KY1JSJHVAKV8O4JOU2KQNWAJEUoKONWwJDUnKLGV0JHUaKJmTaI9U-KHjTAJOUzKEuU6I9UKKDaaPIdSu"],
+    [809,"AFybSEuK1KJkZ2EkLNKL4YNEsMJKNpWaEoMoKQcVrEuNq"]]
+  }}
+ }
+}
