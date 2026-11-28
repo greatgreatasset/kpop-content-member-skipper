@@ -1,0 +1,149 @@
+{
+ "format": 6,
+ "videoId": "71BeXJJ0sQg",
+ "title": "이렇게 입으면 기분이 조크든요 | 90년대 컨셉 패션 인터뷰📹 | I'LL LIKE YOU 콘셉트 포토 현장 | ILLIT (아일릿) [BESIDE-IT]",
+ "duration": 48,
+ "scannedAt": "2026-11-28T01:00:32+00:00",
+ "scannerVersion": "0.7.0",
+ "groups": [
+  {
+   "id": "illit",
+   "name": "ILLIT",
+   "faces": 91
+  }
+ ],
+ "skipMembers": [
+  {
+   "member": "yunah",
+   "name": "Yunah",
+   "group": "ILLIT",
+   "profile": "illit"
+  }
+ ],
+ "skips": [
+  {
+   "start": 0.5,
+   "end": 19.17
+  }
+ ],
+ "highlights": [],
+ "timeline": {
+  "fps": 3.0,
+  "frames": 144,
+  "members": [
+   {
+    "key": "illit:yunah",
+    "member": "yunah",
+    "name": "Yunah",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "skip"
+   },
+   {
+    "key": "illit:minju",
+    "member": "minju",
+    "name": "Minju",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:moka",
+    "member": "moka",
+    "name": "Moka",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:wonhee",
+    "member": "wonhee",
+    "name": "Wonhee",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   },
+   {
+    "key": "illit:iroha",
+    "member": "iroha",
+    "name": "Iroha",
+    "group": "ILLIT",
+    "profile": "illit",
+    "default": "normal"
+   }
+  ],
+  "rules": {
+   "fillGap": 3.0,
+   "median": 5,
+   "mergeGap": 1.0,
+   "minSkip": 2.0,
+   "edgeTrim": 0.5,
+   "minTrimmed": 1.5,
+   "hlMedian": 3,
+   "hlMergeGap": 2.0,
+   "hlMin": 1.0
+  },
+  "focusRule": {
+   "minRatio": 1.5,
+   "maxOffCenter": 0.3
+  },
+  "segments": [
+   {"start":0.0,"end":0.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":0.67,"end":1.33,"partial":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":1.33,"end":9.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":9.67,"end":10.67,"state":"none"},
+   {"start":10.67,"end":11.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":11.33,"end":11.67,"partial":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":11.67,"end":13.33,"state":"none"},
+   {"start":13.33,"end":16.67,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":16.67,"end":17.0,"members":["illit:yunah"]},
+   {"start":17.0,"end":19.33,"members":["illit:yunah"],"focus":"illit:yunah"},
+   {"start":19.33,"end":20.0,"state":"none"},
+   {"start":20.0,"end":23.0,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":23.0,"end":24.0,"state":"none"},
+   {"start":24.0,"end":24.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":24.33,"end":26.0,"state":"none"},
+   {"start":26.0,"end":28.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":28.33,"end":29.67,"state":"none"},
+   {"start":29.67,"end":30.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":30.33,"end":30.67,"state":"none"},
+   {"start":30.67,"end":31.33,"state":"unknown"},
+   {"start":31.33,"end":31.67,"state":"none"},
+   {"start":31.67,"end":32.33,"members":["illit:wonhee"],"focus":"illit:wonhee"},
+   {"start":32.33,"end":32.67,"members":["illit:wonhee"]},
+   {"start":32.67,"end":33.0,"state":"none"},
+   {"start":33.0,"end":35.33,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":35.33,"end":36.0,"partial":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":36.0,"end":36.33,"state":"none"},
+   {"start":36.33,"end":40.0,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":40.0,"end":41.67,"state":"none"},
+   {"start":41.67,"end":42.0,"state":"unknown"},
+   {"start":42.0,"end":43.33,"members":["illit:iroha"],"focus":"illit:iroha"},
+   {"start":43.33,"end":43.67,"state":"unknown"},
+   {"start":43.67,"end":48.0,"state":"none"}
+  ],
+  "faces": {"fps":60,"hold":0.34,"cuts":[282,578,706,800,972,1068,1194,1294,1376,1458,1566,1770,1822,1894,1988,2184,2408,2568,2658],"tracks":{
+   "illit:iroha": [
+    [1988,"AeeFZGaQbKezJgGsRQKe5JyHSSsKeIIKHgT1Kd9GzH2VoKd2GCITWyKeyHYIaXwKe4JgIzXxKeSLUI-YNKd-LmJTYiKehKgJaZzKfEHNJXZ4Ke8FdJpacKdfCYJwbQKctAAKNYtKbDAAKuUuKZ5AALORiKYbAALlOq"],
+    [2188,"AOZDdSLwLKPyDwRuvrKQBEHR0v8KOsFBSnvaKOIFwTNvRKPKGUTDu5KP5HBSauLKOwCZTAwCKNvBeTWwDKN7BUSuvcKOlBVSUvBKO6CbSHuHKO_DkR-tDKQOEoRUsPKRMBXQsrXKRTC6QMqAKRgFBP0pcKSTIJPpn8KSAJgPqmyKSgJVPrm8KS4I_Plm5KTKHoPond"],
+    [2518,"Ag9HzGnQyKf5M9GwQrKeVPfG2RBKeFP8GwRpKejSHHTRz"],
+    [2568,"AXBLjKWa-KWiKxKVbOKWgKkKVbNKUaNNK4bU"]],
+   "illit:wonhee": [
+    [1198,"Ab3GiQGnUKa6HYQXoBKZkEoQtozKY4DlQ2qGKXqF8RCrVKWqEORaqwKVMFfRnptKVAFNRZpmKV-GgR2pXKXHHlRrpO"],
+    [1298,"AZPMgNYhqKaAN6M0gfKZfOgMceyKY4MiL2eWKYiKnLkctKZsMXK8azKbUOyKIaSKb9QLKHY3"],
+    [1448,"AWaIzKsbo"],
+    [1568,"AayESOLjlKZPESNzkXKZMHNOIjMKXPIpOjkZKWDI3PwmwKWOGlRbq2KXQFYSLtMKYTFeSptwKZMHQS3uEKXaFRVr26KWbCQY064KUQAAbk9DKSkAAdf-FKPhAAe598"],
+    [1778,"AY-DTNlhTKcOAAN3kCKbnAUQznsKbtDhTPqZKduCgUJtH"],
+    [1838,"AdKAAaSktKdPAAZmjcKbmAAZ4bQKdVAAYMZnKguAAYTbZ"],
+    [1898,"ARTAAWf0RKOrAAUZucKQMAASXn3KNOAARlnGKGpAARpnXKAACbQ-pL"]],
+   "illit:yunah": [
+    [0,"AWpI7HKQnIVoFQHvRxKWHDDIaUBKYTAAI5VKKXyAAJYUmKXOAAKYUcKXNAALYWJKXVAALwZ8KWDAAMgfvKUMGaNAiPKWuHgMxhlKYrG4Mvg7KZGG-MQfQKYnIAL9fXKX3GrL8fOKXcGBL1eiKXlEZMJhSKXMDtMHg0KV7DsMhirKUZFQNGieKUHHAM8jjKTXHkN9kgKTcHPOZlFKTjG5OeldKTLINOlj_KTOKXObkNKTzJ-O3k8KULFIPMl3KTtC8PPmx"],
+    [288,"AcLJUMAcGKckJmLkcoKcbKJLFb_Ka9LNKqaSKbgMHJ7YVKcjL5JaYIKeAL_IuWaKemKgIZVLKeyJSIJUoKfIITIEVFKgNGeIaVIKg3F1IZU8KgrE1IgVUKf0EwI2WEKenFlJOXVKcdHBJuZCKapHaKra3KaGHYLgeKKaZGeMYhTKalGmNgjVKZ-G4O8nzKY9IkQZqGKXlHURetDKXDHIRuuEKXJJVRxtMKXPNERdtcKX6QHQlrYKYgPzQPrLKZPNjPvoP"],
+    [578,"AcoAAMLSe"],
+    [638,"AfDAANPa-Kh7AANggoKimAANnieKlYAAONjYKm7AAPIjSKnNAAQ1hxKnbAATEew"],
+    [808,"AaDATPVijKagDxPFhjKaQDsO1icKaMEHOziLKZ9DtO2iFKZyD7OwiLKZ0DvOgiWKagDKOWiGKZTAAOIh6KXHAAOGhPKXaAAN4isKYkBWN8ivKZTCDN6ibKZpELN0iiKZ1ElN4irKZyFgN1iWKaGFcNsh4"],
+    [988,"AmOijGaIdKlMfaGiH_Kk5bAGXH1KkrZPG2HuKlBYqH1JKKkWY2IDKGKjrZjINKqKj4b-I0L5"],
+    [1068,"AgjLjGxRDKfQMcGyRDKd_QaG_PrKevQNG8QbKgbMQHSSrKiNMjHXSkKj1N4HvSUKm1MsH5T_KrXMbISUC"]]
+  }}
+ }
+}
