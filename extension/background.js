@@ -5,7 +5,11 @@
 // One skip list per video, for whichever groups are in it: <base>/<videoId>.json.
 // Lists published before 0.5.0 live at <base>/<profile>/<videoId>.json and are
 // still read as a fallback.
+// Firefox runs this as a background script (compat.js is loaded first by the
+// manifest); Chromium browsers run it as the service worker.
 "use strict";
+
+if (typeof importScripts === "function") importScripts("compat.js");
 
 const DEFAULT_BASE =
   "https://raw.githubusercontent.com/greatgreatasset/kpop-content-member-skipper/master/skiplists/";
@@ -223,6 +227,8 @@ function talk(request, onFirst) {
     broadcast(job);
   });
   port.onDisconnect.addListener((p) => {
+    // Chromium reports "host not found" here; reading it keeps that off the error list
+    const lastError = browser.runtime.lastError || p.error || null;
     if (!hello) {
       // not installed (or not allowed): no button, no error shown
       hostOk = false;
@@ -234,11 +240,15 @@ function talk(request, onFirst) {
     const job = jobs.get(vid);
     if (job && job.state === "running") {
       Object.assign(job, { state: "error", error: "Lost the connection to the scanner." });
-      if (p.error) console.warn("[kms] native host:", p.error.message);
+      if (lastError) console.warn("[kms] native host:", lastError.message);
       broadcast(job);
     }
   });
-  port.postMessage(request);
+  try {
+    port.postMessage(request);
+  } catch (e) {
+    answer(null); // already disconnected
+  }
 }
 
 const ask = (request) => new Promise((resolve) => talk(request, resolve));
@@ -498,7 +508,7 @@ async function requestScan(id, code) {
   return { available: false, job: publicJob(requestJob(rec)), request };
 }
 
-browser.runtime.onMessage.addListener((msg) => {
+kmsOnMessage((msg) => {
   if (!msg) return undefined;
   if (msg.type === "requestScan") return requestScan(msg.id, msg.code);
   if (msg.type === "setRequestCode") return setRequestCode(msg.code);
@@ -506,9 +516,9 @@ browser.runtime.onMessage.addListener((msg) => {
   if (msg.type === "getList") return getList(msg.id);
   if (msg.type === "scanState") return scanState(msg.id);
   if (msg.type === "startScan") return startScan(msg.id, msg.rescan, msg.profile);
-  if (msg.type === "clearCache") return clearCache();
+  if (msg.type === "clearCache") return clearCache().then(() => true);
   if (msg.type === "profiles") return getProfiles();
-  if (msg.type === "defaults") return Promise.resolve(DEFAULTS);
+  if (msg.type === "defaults") return DEFAULTS;
   return undefined;
 });
 

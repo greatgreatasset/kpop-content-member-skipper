@@ -1,5 +1,5 @@
 @echo off
-rem Lets the Firefox add-on start scans on this PC ("Filter this video" button).
+rem Lets the add-on (Firefox, Chrome, Edge, Brave) start scans on this PC ("Filter this video" button).
 rem   install_native_host.bat              install (per user, no admin needed)
 rem   install_native_host.bat /uninstall   remove
 cd /d "%~dp0"

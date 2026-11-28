@@ -1,13 +1,16 @@
 """Publish a signed .xpi (made by sign.bat) as a GitHub release and add it to
-updates.json, so installed copies of the extension update themselves.
+updates.json, so installed copies of the extension update themselves. The
+release also gets the zip for Chrome, Edge and Brave (build_chromium.py).
 
     python release.py [--dry-run]
 
 Steps: find dist/*-<version>.xpi for the version in extension/manifest.json,
-copy it to dist/kpop-content-member-skipper-<version>.xpi, create GitHub
-release v<version> with it attached (gh CLI), add the version to updates.json,
-commit only updates.json and push. Firefox checks updates.json (the manifest's
-update_url) about once a day.
+copy it to dist/kpop-content-member-skipper-<version>.xpi, build
+dist/kpop-content-member-skipper-<version>-chromium.zip, create GitHub
+release v<version> with both attached (gh CLI), add the version to
+updates.json, commit only updates.json and push. Firefox checks updates.json
+(the manifest's update_url) about once a day; the Chromium build is loaded
+unpacked and updated by hand.
 """
 import argparse
 import json
@@ -15,6 +18,7 @@ import shutil
 import subprocess
 import sys
 
+import build_chromium
 from common import ROOT
 
 REPO = "greatgreatasset/kpop-content-member-skipper"
@@ -54,17 +58,25 @@ def main():
     else:
         entries.append({"version": ver, "update_link": link})
     upd_path.write_text(json.dumps(upd, indent=1) + "\n", encoding="utf-8")
+    _, czip, _ = build_chromium.build()  # the same code for Chrome, Edge and Brave
     if a.dry_run:
         print(f"[dry run] {xpi.name} -> {link}")
+        print(f"[dry run] {czip.name} ({czip.stat().st_size / 1e6:.1f} MB) would be attached too")
         return
 
     if run("gh", "release", "view", tag, "-R", REPO, check=False).returncode == 0:
-        print(f"Release {tag} already exists; not uploading again.")
+        print(f"Release {tag} already exists; not uploading the .xpi again.")
+        run("gh", "release", "upload", tag, str(czip), "-R", REPO, "--clobber")
+        print(f"Attached {czip.name} to it.")
     else:
-        run("gh", "release", "create", tag, str(xpi), "-R", REPO, "--title", f"Extension {ver}",
-            "--notes", "Signed Firefox add-on. Open the .xpi in Firefox to install; "
-                       "installed copies update automatically.")
-        print(f"Created release {tag} with {xpi.name}")
+        run("gh", "release", "create", tag, str(xpi), str(czip), "-R", REPO, "--title", f"Extension {ver}",
+            "--notes", "Firefox: open the .xpi in Firefox to install; installed copies update "
+                       "automatically.\n\n"
+                       "Chrome, Edge, Brave: download the -chromium.zip, unzip it to a folder you keep, "
+                       "open chrome://extensions, turn on Developer mode, click \"Load unpacked\" and "
+                       "pick that folder. Updates: replace the folder's contents with the new zip and "
+                       "click the reload arrow.")
+        print(f"Created release {tag} with {xpi.name} and {czip.name}")
     run("git", "add", "--", "updates.json")
     if run("git", "diff", "--cached", "--quiet", "--", "updates.json", check=False).returncode:
         run("git", "commit", "-q", "-m", f"updates.json: extension {ver}", "--", "updates.json")
